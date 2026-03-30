@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { signOut, useSession } from 'next-auth/react'
 
 // Navigation: 3 層結構
 // Layer 1: 最上層導航（Whisky, Other Drinks, Gin...）
@@ -341,10 +342,16 @@ export default function DesignPage() {
           <div className="bg-amber-500 text-white font-bold px-3 py-1.5">W</div>
           <h1 className="text-lg font-bold text-gray-800">Design Studio</h1>
         </div>
-        <button onClick={handleSave}
-          className="flex items-center gap-1.5 px-4 py-1.5 text-sm font-medium bg-green-500 text-white hover:bg-green-600">
-          <Icons.Save /> 儲存
-        </button>
+        <div className="flex items-center gap-2">
+          <button onClick={() => signOut({ callbackUrl: '/' })}
+            className="flex items-center gap-1.5 px-4 py-1.5 text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200">
+            登出
+          </button>
+          <button onClick={handleSave}
+            className="flex items-center gap-1.5 px-4 py-1.5 text-sm font-medium bg-green-500 text-white hover:bg-green-600">
+            <Icons.Save /> 儲存
+          </button>
+        </div>
       </div>
 
       {/* Tabs */}

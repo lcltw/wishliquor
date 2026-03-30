@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { signOut } from 'next-auth/react'
 
 interface Product {
   id: number
@@ -231,6 +232,12 @@ export default function AdminPage() {
               {hasChanges && (
                 <span className="text-sm text-orange-500">Unsaved changes</span>
               )}
+              <button
+                onClick={() => signOut({ callbackUrl: '/' })}
+                className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200"
+              >
+                登出
+              </button>
               <button
                 onClick={handleSave}
                 disabled={!hasChanges}
