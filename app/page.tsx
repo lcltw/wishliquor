@@ -159,72 +159,80 @@ export default function HomePage() {
   const [toast, setToast] = useState('')
   const [cart, setCart] = useState<CartItem[]>([])
   
-  // Load initial data from localStorage (key point: admin saves here, page reads from here)
-  const [productList, setProductList] = useState<Product[]>(() => {
-    const saved = loadFromStorage<Product[]>('wishliquor_products', [])
-    return saved.length > 0 ? saved : products
-  })
-  const [siteSettings, setSiteSettings] = useState<typeof defaultSiteSettings>(() => {
-    const saved = loadFromStorage('wishliquor_site_settings', null)
-    return saved && Object.keys(saved).length > 0 ? saved : defaultSiteSettings
-  })
-  const [filterOpts, setFilterOpts] = useState<typeof filterOptions>(() => {
-    const saved = loadFromStorage<FilterOption[]>('wishliquor_filters', [])
-    if (saved.length > 0) {
-      return {
-        country: saved.find(f => f.id === 'country')?.values || ['Scotland', 'Japan', 'Taiwan', 'USA'],
-        brand: saved.find(f => f.id === 'brand')?.values || ['Macallan', 'Glenfiddich'],
-        volume: saved.find(f => f.id === 'volume')?.values || ['700ml', '750ml', '1000ml'],
-        price: filterOptions.price,
-      }
-    }
-    return filterOptions
-  })
+  // Load initial data from localStorage (must be in useEffect to avoid SSR issues)
+  const [productList, setProductList] = useState<Product[]>(products)
+  const [siteSettings, setSiteSettings] = useState(defaultSiteSettings)
+  const [filterOpts, setFilterOpts] = useState(filterOptions)
 
-  // Poll localStorage for changes from admin/design pages - runs every 500ms
+  // Load from localStorage after mount
+  useEffect(() => {
+    const savedProducts = localStorage.getItem('wishliquor_products')
+    if (savedProducts) {
+      try {
+        const parsed = JSON.parse(savedProducts)
+        if (parsed.length > 0) setProductList(parsed)
+      } catch (e) {}
+    }
+    const savedSettings = localStorage.getItem('wishliquor_site_settings')
+    if (savedSettings) {
+      try {
+        const parsed = JSON.parse(savedSettings)
+        if (parsed && Object.keys(parsed).length > 0) setSiteSettings(parsed)
+      } catch (e) {}
+    }
+    const savedFilters = localStorage.getItem('wishliquor_filters')
+    if (savedFilters) {
+      try {
+        const parsed = JSON.parse(savedFilters)
+        if (parsed.length > 0) {
+          setFilterOpts({
+            country: parsed.find((f: any) => f.id === 'country')?.values || ['Scotland', 'Japan', 'Taiwan', 'USA'],
+            brand: parsed.find((f: any) => f.id === 'brand')?.values || ['Macallan', 'Glenfiddich'],
+            volume: parsed.find((f: any) => f.id === 'volume')?.values || ['700ml', '750ml', '1000ml'],
+            price: filterOptions.price,
+          })
+        }
+      } catch (e) {}
+    }
+  }, [])
+
+  // Poll localStorage for changes from admin/design pages (every 500ms)
   useEffect(() => {
     const checkForUpdates = () => {
-      // Check products - use direct reference comparison
+      // Products
       const savedProducts = localStorage.getItem('wishliquor_products')
       if (savedProducts) {
         try {
           const parsed = JSON.parse(savedProducts)
-          if (parsed.length > 0) {
-            setProductList(parsed)
-          }
+          if (parsed.length > 0) setProductList(parsed)
         } catch (e) {}
       }
-      // Check filters
+      // Filters
       const savedFilters = localStorage.getItem('wishliquor_filters')
       if (savedFilters) {
         try {
           const parsed = JSON.parse(savedFilters)
           if (parsed.length > 0) {
-            const newFilterOpts = {
+            setFilterOpts({
               country: parsed.find((f: any) => f.id === 'country')?.values || ['Scotland', 'Japan', 'Taiwan', 'USA'],
               brand: parsed.find((f: any) => f.id === 'brand')?.values || ['Macallan', 'Glenfiddich'],
               volume: parsed.find((f: any) => f.id === 'volume')?.values || ['700ml', '750ml', '1000ml'],
               price: filterOptions.price,
-            }
-            setFilterOpts(newFilterOpts)
+            })
           }
         } catch (e) {}
       }
-      // Check settings
+      // Settings
       const savedSettings = localStorage.getItem('wishliquor_site_settings')
       if (savedSettings) {
         try {
           const parsed = JSON.parse(savedSettings)
-          if (parsed && Object.keys(parsed).length > 0) {
-            setSiteSettings(parsed)
-          }
+          if (parsed && Object.keys(parsed).length > 0) setSiteSettings(parsed)
         } catch (e) {}
       }
     }
 
-    // Check immediately on mount
-    checkForUpdates()
-    // Then poll every 500ms
+    // Poll every 500ms
     const interval = setInterval(checkForUpdates, 500)
     return () => clearInterval(interval)
   }, [])
