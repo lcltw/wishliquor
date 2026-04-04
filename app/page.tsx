@@ -140,6 +140,16 @@ const defaultSiteSettings = {
   },
 }
 
+// Helper to load data from localStorage
+function loadFromStorage<T>(key: string, fallback: T): T {
+  if (typeof window === 'undefined') return fallback
+  try {
+    const saved = localStorage.getItem(key)
+    if (saved) return JSON.parse(saved)
+  } catch (e) {}
+  return fallback
+}
+
 export default function HomePage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
@@ -148,31 +158,50 @@ export default function HomePage() {
   const [selectedProduct, setSelectedProduct] = useState<typeof products[0] | null>(null)
   const [toast, setToast] = useState('')
   const [cart, setCart] = useState<CartItem[]>([])
-  const [productList, setProductList] = useState(products)
-  const [siteSettings, setSiteSettings] = useState(defaultSiteSettings)
-  const [filterOpts, setFilterOpts] = useState(filterOptions)
   
-  // Fetch data from API on mount (fetches fresh data every time)
+  // Load initial data from localStorage (stable across server restarts)
+  const [productList, setProductList] = useState<Product[]>(() => loadFromStorage('wishliquor_products', products))
+  const [siteSettings, setSiteSettings] = useState<typeof defaultSiteSettings>(() => loadFromStorage('wishliquor_site_settings', defaultSiteSettings))
+  const [filterOpts, setFilterOpts] = useState<typeof filterOptions>(() => {
+    const saved = loadFromStorage<FilterOption[]>('wishliquor_filters', [])
+    if (saved.length > 0) {
+      return {
+        country: saved.find(f => f.id === 'country')?.values || ['Scotland', 'Japan', 'Taiwan', 'USA'],
+        brand: saved.find(f => f.id === 'brand')?.values || ['Macallan', 'Glenfiddich'],
+        volume: saved.find(f => f.id === 'volume')?.values || ['700ml', '750ml', '1000ml'],
+        price: filterOptions.price,
+      }
+    }
+    return filterOptions
+  })
+  
+  // Sync with API in background (for cross-page updates)
   useEffect(() => {
-    async function fetchData() {
+    async function syncWithAPI() {
       try {
         const res = await fetch('/api/shared-data')
         if (res.ok) {
           const data = await res.json()
-          setProductList(data.products || [])
-          setSiteSettings(data.settings || defaultSiteSettings)
-          setFilterOpts({
-            country: data.filters?.find((f: FilterOption) => f.id === 'country')?.values || ['Scotland', 'Japan', 'Taiwan', 'USA'],
-            brand: data.filters?.find((f: FilterOption) => f.id === 'brand')?.values || ['Macallan', 'Glenfiddich'],
-            volume: data.filters?.find((f: FilterOption) => f.id === 'volume')?.values || ['700ml', '750ml', '1000ml'],
-            price: filterOptions.price,
-          })
+          // Only update if API has newer data than localStorage
+          const localProducts = loadFromStorage('wishliquor_products', null)
+          const localSettings = loadFromStorage('wishliquor_site_settings', null)
+          
+          if (!localProducts || !localSettings) {
+            // First load - populate localStorage from API
+            setProductList(data.products || [])
+            setSiteSettings(data.settings || defaultSiteSettings)
+            localStorage.setItem('wishliquor_products', JSON.stringify(data.products || []))
+            localStorage.setItem('wishliquor_site_settings', JSON.stringify(data.settings || defaultSiteSettings))
+            if (data.filters) {
+              localStorage.setItem('wishliquor_filters', JSON.stringify(data.filters))
+            }
+          }
         }
       } catch (err) {
-        console.error('Failed to fetch data:', err)
+        console.error('API sync failed:', err)
       }
     }
-    fetchData()
+    syncWithAPI()
   }, [])
 
   const [expandedSections, setExpandedSections] = useState<string[]>(['Country', 'Brand'])

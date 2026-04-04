@@ -143,24 +143,50 @@ export default function AdminPage() {
     }
   }, [])
 
+  // Sync products and filters to localStorage whenever they change
+  useEffect(() => {
+    if (products.length > 0) {
+      localStorage.setItem('wishliquor_products', JSON.stringify(products))
+    }
+  }, [products])
+
+  useEffect(() => {
+    if (filters.length > 0) {
+      localStorage.setItem('wishliquor_filters', JSON.stringify(filters))
+    }
+  }, [filters])
+
   const showToast = (message: string) => {
     setToast(message)
     setTimeout(() => setToast(''), 2500)
   }
 
-  const saveToStorage = async (newProducts: Product[], newFilters: FilterOption[]) => {
-    // Save to localStorage (local backup)
-    localStorage.setItem('wishliquor_products', JSON.stringify(newProducts))
-    localStorage.setItem('wishliquor_filters', JSON.stringify(newFilters))
+  const saveToStorage = async () => {
+    // Read current state directly from localStorage to avoid stale closure
+    const currentProducts = JSON.parse(localStorage.getItem('wishliquor_products') || '[]')
+    const currentFilters = JSON.parse(localStorage.getItem('wishliquor_filters') || '[]')
+    
+    if (currentProducts.length === 0) {
+      showToast('沒有資料需要儲存')
+      return
+    }
+    
+    // Save to localStorage (local backup) - already done in handlers, but double-check
+    localStorage.setItem('wishliquor_products', JSON.stringify(currentProducts))
+    localStorage.setItem('wishliquor_filters', JSON.stringify(currentFilters))
     
     // Save to shared API (so all pages see the same data)
     try {
-      await fetch('/api/shared-data', {
+      const res = await fetch('/api/shared-data', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ products: newProducts, filters: newFilters })
+        body: JSON.stringify({ products: currentProducts, filters: currentFilters })
       })
-      showToast('✅ 已儲存（所有頁面同步）！')
+      if (res.ok) {
+        showToast('✅ 已儲存（所有頁面同步）！')
+      } else {
+        showToast('⚠️ 已儲存到本地')
+      }
     } catch (err) {
       console.error('Failed to sync:', err)
       showToast('已儲存到本地（雲端同步失敗）')
@@ -169,7 +195,7 @@ export default function AdminPage() {
   }
 
   const handleSave = () => {
-    saveToStorage(products, filters)
+    saveToStorage()
   }
 
   const handleAddProduct = () => {

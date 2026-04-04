@@ -211,28 +211,38 @@ export default function DesignPage() {
   const [dragOverBlock, setDragOverBlock] = useState<string | null>(null)
 
   useEffect(() => {
-    // Fetch settings from API
-    fetch('/api/settings')
-      .then(res => res.json())
-      .then(data => {
+    // Load from localStorage first (user's saved work)
+    const savedSettings = localStorage.getItem('wishliquor_site_settings')
+    if (savedSettings) {
+      try {
+        const parsed = JSON.parse(savedSettings)
         setSettings({
           ...defaultSettings,
-          ...data,
-          colors: { ...defaultColors, ...(data.colors || {}) }
+          ...parsed,
+          colors: { ...defaultColors, ...parsed.colors }
         })
+      } catch (e) {
+        console.error('Failed to parse localStorage settings:', e)
+      }
+    }
+    
+    // Also fetch from API to sync with any changes from other pages
+    fetch('/api/shared-data')
+      .then(res => res.json())
+      .then(data => {
+        if (data.settings) {
+          // Only update if we don't have localStorage data or API is newer
+          if (!savedSettings) {
+            setSettings({
+              ...defaultSettings,
+              ...data.settings,
+              colors: { ...defaultColors, ...data.settings.colors }
+            })
+          }
+        }
       })
       .catch(err => {
-        console.error('Failed to load settings:', err)
-        // Fallback to localStorage
-        const saved = localStorage.getItem('wishliquor_site_settings')
-        if (saved) {
-          const parsed = JSON.parse(saved)
-          setSettings({
-            ...defaultSettings,
-            ...parsed,
-            colors: { ...defaultColors, ...parsed.colors }
-          })
-        }
+        console.error('Failed to sync from API:', err)
       })
 
     // Load local-only data (assignments, blockColors, blocks)
@@ -249,6 +259,25 @@ export default function DesignPage() {
       setBlocks(JSON.parse(savedBlocks))
     }
   }, [])
+
+  // Sync settings to localStorage whenever they change
+  useEffect(() => {
+    if (settings && Object.keys(settings).length > 0) {
+      localStorage.setItem('wishliquor_site_settings', JSON.stringify(settings))
+    }
+  }, [settings])
+
+  useEffect(() => {
+    localStorage.setItem('wishliquor_assignments', JSON.stringify(assignments))
+  }, [assignments])
+
+  useEffect(() => {
+    localStorage.setItem('wishliquor_block_colors', JSON.stringify(blockColors))
+  }, [blockColors])
+
+  useEffect(() => {
+    localStorage.setItem('wishliquor_blocks', JSON.stringify(blocks))
+  }, [blocks])
 
   const showToast = (message: string) => {
     setToast(message)
