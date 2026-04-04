@@ -154,16 +154,20 @@ export default function AdminPage() {
     setTimeout(() => setToast(''), 2500)
   }
 
-  // Save - save to both localStorage and API
+  // Save - save current state to localStorage and API
   const handleSave = async () => {
-    const saved = localStorage.getItem('wishliquor_products')
-    if (!saved) {
+    // Force read current state from DOM/localStorage
+    const currentProducts = JSON.parse(localStorage.getItem('wishliquor_products') || '[]')
+    const currentFilters = JSON.parse(localStorage.getItem('wishliquor_filters') || '[]')
+    
+    if (currentProducts.length === 0) {
       showToast('沒有資料需要儲存')
       return
     }
-    // Save to localStorage
-    localStorage.setItem('wishliquor_products', JSON.stringify(products))
-    localStorage.setItem('wishliquor_filters', JSON.stringify(filters))
+    
+    // Save to localStorage (use currentProducts which should be up to date)
+    localStorage.setItem('wishliquor_products', JSON.stringify(currentProducts))
+    localStorage.setItem('wishliquor_filters', JSON.stringify(currentFilters))
     
     // Also save to API so incognito mode can access
     try {
@@ -171,8 +175,8 @@ export default function AdminPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          products: products,
-          filters: filters
+          products: currentProducts,
+          filters: currentFilters
         })
       })
     } catch (err) {

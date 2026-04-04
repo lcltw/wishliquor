@@ -148,31 +148,39 @@ export default function HomePage() {
   const [siteSettings, setSiteSettings] = useState(defaultSiteSettings)
   const [filterOpts, setFilterOpts] = useState(filterOptions)
 
-  // Always fetch from API as single source of truth
+  // Load from localStorage first (admin is source of truth for products)
   useEffect(() => {
-    fetch('/api/shared-data')
-      .then(res => res.json())
-      .then(data => {
-        if (data.products && data.products.length > 0) {
-          setProductList(data.products)
-          // Cache in localStorage
-          localStorage.setItem('wishliquor_products', JSON.stringify(data.products))
-        }
-        if (data.settings && Object.keys(data.settings).length > 0) {
-          setSiteSettings(data.settings)
-          localStorage.setItem('wishliquor_site_settings', JSON.stringify(data.settings))
-        }
-        if (data.filters && data.filters.length > 0) {
-          localStorage.setItem('wishliquor_filters', JSON.stringify(data.filters))
+    // Products - load from localStorage only (set by admin)
+    const savedProducts = localStorage.getItem('wishliquor_products')
+    if (savedProducts) {
+      try {
+        const parsed = JSON.parse(savedProducts)
+        if (parsed.length > 0) setProductList(parsed)
+      } catch (e) {}
+    }
+    // Settings - load from localStorage
+    const savedSettings = localStorage.getItem('wishliquor_site_settings')
+    if (savedSettings) {
+      try {
+        const parsed = JSON.parse(savedSettings)
+        if (parsed && Object.keys(parsed).length > 0) setSiteSettings(parsed)
+      } catch (e) {}
+    }
+    // Filters - load from localStorage
+    const savedFilters = localStorage.getItem('wishliquor_filters')
+    if (savedFilters) {
+      try {
+        const parsed = JSON.parse(savedFilters)
+        if (parsed.length > 0) {
           setFilterOpts({
-            country: data.filters.find((f: any) => f.id === 'country')?.values || ['Scotland', 'Japan', 'Taiwan', 'USA'],
-            brand: data.filters.find((f: any) => f.id === 'brand')?.values || ['Macallan', 'Glenfiddich'],
-            volume: data.filters.find((f: any) => f.id === 'volume')?.values || ['700ml', '750ml', '1000ml'],
+            country: parsed.find((f: any) => f.id === 'country')?.values || ['Scotland', 'Japan', 'Taiwan', 'USA'],
+            brand: parsed.find((f: any) => f.id === 'brand')?.values || ['Macallan', 'Glenfiddich'],
+            volume: parsed.find((f: any) => f.id === 'volume')?.values || ['700ml', '750ml', '1000ml'],
             price: filterOptions.price,
           })
         }
-      })
-      .catch(err => console.error('Failed to fetch from API:', err))
+      } catch (e) {}
+    }
   }, [])
 
   // Poll localStorage for quick updates from same-browser admin tab (every 1s)
