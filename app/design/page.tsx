@@ -785,7 +785,6 @@ export default function DesignPage() {
                 <div className="flex items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
                     <img src={settings.logoUrl} alt="logo" className="h-10" />
-                    <span className="font-semibold hidden sm:block" style={{ color: s.text }}>{settings.siteName}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <button style={{ backgroundColor: s.buttonPrimary, color: '#fff' }} className="flex items-center gap-2 px-4 py-2 text-sm font-medium">Login</button>
