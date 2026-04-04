@@ -49,6 +49,32 @@ const BLOCK_META: Record<string, { id: string; label: string; labelZh: string }>
   heroAccent:     { id: 'hero',       label: 'Hero',       labelZh: 'Hero' },
 }
 
+// 顏色 key 用途對照表（用於提示）
+const COLOR_KEY_HINTS: Record<string, string> = {
+  background: '頁面背景',
+  text: '內文文字',
+  cardBackground: '卡片背景',
+  cardBorder: '卡片邊框',
+  primary: '主要強調（國家標籤）',
+  secondary: '次要強調（按鈕邊框）',
+  accent: '點綴色彩（價格、強調）',
+  navBackground: '導航列背景',
+  navText: '導航列文字',
+  navHover: '導航列懸停',
+  navDropdownBg: '下拉選單背景',
+  navDropdownText: '下拉選單連結',
+  navDropdownHover: '下拉選單懸停',
+  navDropdownLabel: '下拉選單標題',
+  buttonPrimary: '主要按鈕',
+  buttonAccent: '次要按鈕',
+  footerBackground: '頁腳背景',
+  footerText: '頁腳標題',
+  footerMuted: '頁腳次要文字',
+  heroBackground: 'Hero 區塊背景',
+  heroText: 'Hero 標題文字',
+  heroAccent: 'Hero 按鈕',
+}
+
 // 固定附掛在BLOCK_META的key（不可刪）
 const FIXED_KEYS = Object.keys(BLOCK_META)
 
@@ -521,7 +547,7 @@ export default function DesignPage() {
                             }`}
                           draggable
                           onDragStart={() => handleKeyDragStart(key)}
-                          title={`拖移「${key}」到其他區塊`}
+                          title={`${key}：${COLOR_KEY_HINTS[key] || '點擊拖移到其他區塊'}`}
                         >
                           <div className="w-3 h-3 border border-gray-300 rounded-full flex-shrink-0" style={{ backgroundColor: blockColors[block.id] || '#CCCCCC' }} />
                           <span>{key}</span>
