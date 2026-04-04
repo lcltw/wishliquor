@@ -41,7 +41,6 @@ const BLOCK_META: Record<string, { id: string; label: string; labelZh: string }>
   navDropdownHover:{ id: 'dropdown', label: 'Dropdown',    labelZh: 'Dropdown' },
   navDropdownLabel:{ id: 'dropdown', label: 'Dropdown',    labelZh: 'Dropdown' },
   buttonPrimary:  { id: 'buttons',    label: 'Buttons',    labelZh: 'Buttons' },
-  buttonAccent:   { id: 'buttons',    label: 'Buttons',    labelZh: 'Buttons' },
   footerBackground: { id: 'footer',   label: 'Footer',     labelZh: 'Footer' },
   footerText:     { id: 'footer',     label: 'Footer',     labelZh: 'Footer' },
   footerMuted:    { id: 'footer',     label: 'Footer',     labelZh: 'Footer' },
@@ -156,18 +155,17 @@ export default function DesignPage() {
   const [activeTab, setActiveTab] = useState<'general' | 'colors' | 'hero' | 'navigation' | 'footer'>('colors')
   const [toast, setToast] = useState('')
 
-  // 動態區塊列表
+  // 動態區塊列表 - 必須與 BLOCK_META 的 block IDs 對應
   const [blocks, setBlocks] = useState<Block[]>([
     { id: 'general',  label: 'General',    labelZh: 'General' },
-    { id: 'nav',      label: 'Navigation',   labelZh: 'Navigation' },
-    { id: 'dropdown', label: 'Dropdown',     labelZh: 'Dropdown' },
-    { id: 'buttons',  label: 'Buttons',      labelZh: 'Buttons' },
-    { id: 'footer',   label: 'Footer',       labelZh: 'Footer' },
-    { id: 'cards',    label: 'Cards',         labelZh: 'Cards' },
-    { id: 'hero',     label: 'Hero',          labelZh: 'Hero' },
-    { id: 'text1',    label: 'Text 1',        labelZh: 'Text 1' },
-    { id: 'text2',    label: 'Text 2',        labelZh: 'Text 2' },
-    { id: 'text3',    label: 'Text 3',        labelZh: 'Text 3' },
+    { id: 'primary',  label: 'Primary',     labelZh: 'Primary' },
+    { id: 'secondary', label: 'Secondary',  labelZh: 'Secondary' },
+    { id: 'accent',   label: 'Accent',     labelZh: 'Accent' },
+    { id: 'nav',      label: 'Navigation', labelZh: 'Navigation' },
+    { id: 'dropdown', label: 'Dropdown',   labelZh: 'Dropdown' },
+    { id: 'buttons',  label: 'Buttons',    labelZh: 'Buttons' },
+    { id: 'footer',   label: 'Footer',    labelZh: 'Footer' },
+    { id: 'hero',     label: 'Hero',       labelZh: 'Hero' },
   ])
 
   // key → blockId 對應關係（只針對 FIXED_KEYS）
@@ -182,15 +180,14 @@ export default function DesignPage() {
     const bc: Record<string, string> = {}
     ;[
       { id: 'general' },
+      { id: 'primary' },
+      { id: 'secondary' },
+      { id: 'accent' },
       { id: 'nav' },
       { id: 'dropdown' },
       { id: 'buttons' },
       { id: 'footer' },
-      { id: 'cards' },
       { id: 'hero' },
-      { id: 'text1' },
-      { id: 'text2' },
-      { id: 'text3' },
     ].forEach(({ id }) => {
       const firstKey = FIXED_KEYS.find(k => BLOCK_META[k].id === id)
       bc[id] = firstKey ? defaultColors[firstKey] : '#CCCCCC'
