@@ -144,7 +144,7 @@ export default function HomePage() {
   const [cart, setCart] = useState<CartItem[]>([])
   
   // Load initial data from localStorage (must be in useEffect to avoid SSR issues)
-  const [productList, setProductList] = useState<Product[]>(products)
+  const [productList, setProductList] = useState<any[]>(products)
   const [siteSettings, setSiteSettings] = useState(defaultSiteSettings)
   const [filterOpts, setFilterOpts] = useState(filterOptions)
 

@@ -97,8 +97,8 @@ function loadFromStorage<T>(key: string, defaultValue: T): T {
     const saved = localStorage.getItem(key)
     if (saved) {
       const parsed = JSON.parse(saved)
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed
-      if (!Array.isArray(parsed) && Object.keys(parsed).length > 0) return parsed
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed as T
+      if (!Array.isArray(parsed) && Object.keys(parsed).length > 0) return parsed as T
     }
   } catch (e) {}
   return defaultValue
