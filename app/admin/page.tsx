@@ -114,8 +114,9 @@ const defaultFilters: FilterOption[] = [
   { id: 'volume', label: 'Volume', values: ['700ml', '750ml', '1000ml'] },
 ]
 
-// Load from localStorage (client only)
+// Load from localStorage (client only - returns defaults during SSR)
 function loadProductsFromStorage(): Product[] {
+  if (typeof window === 'undefined') return defaultProducts
   try {
     const saved = localStorage.getItem('wishliquor_products')
     if (saved) {
@@ -129,6 +130,7 @@ function loadProductsFromStorage(): Product[] {
 }
 
 function loadFiltersFromStorage(): FilterOption[] {
+  if (typeof window === 'undefined') return defaultFilters
   try {
     const saved = localStorage.getItem('wishliquor_filters')
     if (saved) {
@@ -142,8 +144,8 @@ function loadFiltersFromStorage(): FilterOption[] {
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<'products' | 'filters' | 'settings'>('products')
-  const [products, setProducts] = useState<Product[]>(() => loadProductsFromStorage())
-  const [filters, setFilters] = useState<FilterOption[]>(() => loadFiltersFromStorage())
+  const [products, setProducts] = useState<Product[]>(loadProductsFromStorage)
+  const [filters, setFilters] = useState<FilterOption[]>(loadFiltersFromStorage)
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
   const [isAddingProduct, setIsAddingProduct] = useState(false)
   const [hasChanges, setHasChanges] = useState(false)
