@@ -799,6 +799,25 @@ export default function DesignPage() {
                     ))}
                   </div>
                 </div>
+                {/* Dropdown Preview - shows dropdown colors */}
+                <div className="max-w-6xl mx-auto px-4 pb-3">
+                  <div className="grid grid-cols-5 gap-4 py-2" style={{ backgroundColor: s.navDropdownBg }}>
+                    {[
+                      { label: 'Scotland', brands: ['Macallan', 'Octomore', 'Johnnie Walker', 'Royal Salute'] },
+                      { label: 'Japanese', brands: ['Yamazaki', 'Hakushu', 'Hibiki'] },
+                      { label: 'American', brands: ['W.L. Weller', "Jack Daniel's"] },
+                      { label: 'Taiwan', brands: ['Kavalan', 'Omar'] },
+                      { label: 'More', brands: ['Gin', 'Rum', 'Wine'] },
+                    ].map((col, i) => (
+                      <div key={i}>
+                        <h4 className="text-xs font-bold uppercase tracking-wide mb-2" style={{ color: s.navDropdownLabel }}>{col.label}</h4>
+                        {col.brands.map((brand, j) => (
+                          <a key={j} href="#" className="block px-2 py-1 text-sm" style={{ color: s.navDropdownText }}>{brand}</a>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </nav>
             </header>
 
