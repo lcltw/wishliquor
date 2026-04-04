@@ -202,10 +202,21 @@ export default function DesignPage() {
   const assignmentsRef = useRef(assignments)
   const blockColorsRef = useRef(blockColors)
   const blocksRef = useRef(blocks)
+  const settingsRef = useRef(settings)
 
   useEffect(() => { assignmentsRef.current = assignments }, [assignments])
   useEffect(() => { blockColorsRef.current = blockColors }, [blockColors])
   useEffect(() => { blocksRef.current = blocks }, [blocks])
+  useEffect(() => { settingsRef.current = settings }, [settings])
+
+  // Helper for functional updates - prevents stale closure
+  const updateSettings = (updates: Partial<SiteSettings>) => {
+    setSettings(prev => ({ ...prev, ...updates }))
+  }
+
+  const updateSettingsDeep = (updater: (prev: SiteSettings) => SiteSettings) => {
+    setSettings(updater)
+  }
 
   const [draggingKey, setDraggingKey] = useState<string | null>(null)
   const [dragOverBlock, setDragOverBlock] = useState<string | null>(null)
@@ -288,13 +299,14 @@ export default function DesignPage() {
     const currentAssignments = assignmentsRef.current
     const currentBlockColors = blockColorsRef.current
     const currentBlocks = blocksRef.current
+    const currentSettings = settingsRef.current
 
     const colors: Record<string, string> = {}
     FIXED_KEYS.forEach(key => {
       const blockId = currentAssignments[key]
       colors[key] = currentBlockColors[blockId] || '#CCCCCC'
     })
-    const newSettings = { ...settings, colors, navigation: settings.navigation }
+    const newSettings = { ...currentSettings, colors, navigation: currentSettings.navigation }
 
     // Save to localStorage (always, as backup)
     localStorage.setItem('wishliquor_site_settings', JSON.stringify(newSettings))
@@ -346,8 +358,9 @@ export default function DesignPage() {
 
   const handleBlockDrop = (blockId: string) => {
     if (!draggingKey) return
+    const blockLabel = blocksRef.current.find((b: Block) => b.id === blockId)?.labelZh || blockId
     setAssignments(prev => ({ ...prev, [draggingKey]: blockId }))
-    showToast(`「${draggingKey}」已移至 ${blocks.find((b: Block) => b.id === blockId)?.labelZh}`)
+    showToast(`「${draggingKey}」已移至 ${blockLabel}`)
     setDraggingKey(null)
     setDragOverBlock(null)
   }
@@ -552,13 +565,13 @@ export default function DesignPage() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Site Name</label>
-                  <input type="text" value={settings.siteName} onChange={(e) => { setSettings({...settings, siteName: e.target.value}); }}
+                  <input type="text" value={settings.siteName} onChange={(e) => { updateSettings({ siteName: e.target.value }); }}
                     className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Logo</label>
                   <div className="flex gap-2">
-                    <input type="text" value={settings.logoUrl} onChange={(e) => { setSettings({...settings, logoUrl: e.target.value}); }}
+                    <input type="text" value={settings.logoUrl} onChange={(e) => { updateSettings({ logoUrl: e.target.value }); }}
                       placeholder="/Logo.png"
                       className="flex-1 px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500" />
                     <label className="px-4 py-2 bg-amber-500 text-white text-sm font-medium cursor-pointer hover:bg-amber-600 flex items-center">
@@ -573,7 +586,7 @@ export default function DesignPage() {
                           const res = await fetch('/api/upload', { method: 'POST', body: formData })
                           const data = await res.json()
                           if (data.url) {
-                            setSettings({...settings, logoUrl: data.url})
+                            updateSettings({ logoUrl: data.url })
                             showToast('✅ Logo 已上傳！')
                           } else {
                             showToast('❌ 上傳失敗：' + data.error)
@@ -592,12 +605,12 @@ export default function DesignPage() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Contact Email</label>
-                  <input type="email" value={settings.contactEmail} onChange={(e) => { setSettings({...settings, contactEmail: e.target.value}); }}
+                  <input type="email" value={settings.contactEmail} onChange={(e) => { updateSettings({ contactEmail: e.target.value }); }}
                     className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">UBN</label>
-                  <input type="text" value={settings.ubn} onChange={(e) => { setSettings({...settings, ubn: e.target.value}); }}
+                  <input type="text" value={settings.ubn} onChange={(e) => { updateSettings({ ubn: e.target.value }); }}
                     className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500" />
                 </div>
               </div>
@@ -608,17 +621,17 @@ export default function DesignPage() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
-                  <input type="text" value={settings.hero.title} onChange={(e) => { setSettings({...settings, hero: {...settings.hero, title: e.target.value}}); }}
+                  <input type="text" value={settings.hero.title} onChange={(e) => { updateSettingsDeep(prev => ({ ...prev, hero: { ...prev.hero, title: e.target.value } })); }}
                     className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Subtitle</label>
-                  <textarea value={settings.hero.subtitle} onChange={(e) => { setSettings({...settings, hero: {...settings.hero, subtitle: e.target.value}}); }}
+                  <textarea value={settings.hero.subtitle} onChange={(e) => { updateSettingsDeep(prev => ({ ...prev, hero: { ...prev.hero, subtitle: e.target.value } })); }}
                     rows={3} className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">CTA Button Text</label>
-                  <input type="text" value={settings.hero.ctaText} onChange={(e) => { setSettings({...settings, hero: {...settings.hero, ctaText: e.target.value}}); }}
+                  <input type="text" value={settings.hero.ctaText} onChange={(e) => { updateSettingsDeep(prev => ({ ...prev, hero: { ...prev.hero, ctaText: e.target.value } })); }}
                     className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500" />
                 </div>
               </div>
@@ -640,19 +653,19 @@ export default function DesignPage() {
                         onChange={(e) => {
                           const n = [...settings.navigation]
                           n[l1Index].label = e.target.value
-                          setSettings({ ...settings, navigation: n })
+                          setSettings(prev => ({ ...prev, navigation: n }))
                         }}
                         className="flex-1 px-2 py-1 border border-gray-300 text-sm font-medium focus:outline-none focus:border-amber-500 rounded" />
                       <input type="text" value={item.href}
                         onChange={(e) => {
                           const n = [...settings.navigation]
                           n[l1Index].href = e.target.value
-                          setSettings({ ...settings, navigation: n })
+                          setSettings(prev => ({ ...prev, navigation: n }))
                         }}
                         className="w-40 px-2 py-1 border border-gray-300 text-xs focus:outline-none focus:border-amber-500 rounded" />
                       <button onClick={() => {
                         const n = settings.navigation.filter((_, i) => i !== l1Index)
-                        setSettings({ ...settings, navigation: n })
+                        setSettings(prev => ({ ...prev, navigation: n }))
                       }} className="p-1 text-gray-400 hover:text-red-500"><Icons.Trash /></button>
                     </div>
 
@@ -665,13 +678,13 @@ export default function DesignPage() {
                             onChange={(e) => {
                               const n = [...settings.navigation]
                               n[l1Index].sub![l2Index].label = e.target.value
-                              setSettings({ ...settings, navigation: n })
+                              setSettings(prev => ({ ...prev, navigation: n }))
                             }}
                             className="flex-1 px-2 py-1 border border-gray-200 text-xs font-medium focus:outline-none focus:border-amber-500 rounded" />
                           <button onClick={() => {
                             const n = [...settings.navigation]
                             n[l1Index].sub = n[l1Index].sub!.filter((_, i) => i !== l2Index)
-                            setSettings({ ...settings, navigation: n })
+                            setSettings(prev => ({ ...prev, navigation: n }))
                           }} className="p-0.5 text-gray-400 hover:text-red-500"><Icons.Trash /></button>
                         </div>
 
@@ -683,20 +696,20 @@ export default function DesignPage() {
                               onChange={(e) => {
                                 const n = [...settings.navigation]
                                 n[l1Index].sub![l2Index].sub![l3Index].label = e.target.value
-                                setSettings({ ...settings, navigation: n })
+                                setSettings(prev => ({ ...prev, navigation: n }))
                               }}
                               className="flex-1 px-2 py-0.5 border border-gray-200 text-xs focus:outline-none focus:border-amber-500 rounded" />
                             <input type="text" value={l3.href}
                               onChange={(e) => {
                                 const n = [...settings.navigation]
                                 n[l1Index].sub![l2Index].sub![l3Index].href = e.target.value
-                                setSettings({ ...settings, navigation: n })
+                                setSettings(prev => ({ ...prev, navigation: n }))
                               }}
                               className="w-40 px-2 py-0.5 border border-gray-200 text-xs focus:outline-none focus:border-amber-500 rounded" />
                             <button onClick={() => {
                               const n = [...settings.navigation]
                               n[l1Index].sub![l2Index].sub = n[l1Index].sub![l2Index].sub!.filter((_, i) => i !== l3Index)
-                              setSettings({ ...settings, navigation: n })
+                              setSettings(prev => ({ ...prev, navigation: n }))
                             }} className="p-0.5 text-gray-400 hover:text-red-500"><Icons.Trash /></button>
                           </div>
                         ))}
@@ -708,7 +721,7 @@ export default function DesignPage() {
                               const n = [...settings.navigation]
                               if (!n[l1Index].sub![l2Index].sub) n[l1Index].sub![l2Index].sub = []
                               n[l1Index].sub![l2Index].sub!.push({ label: 'New Brand', href: '/shop?brand=new-brand' })
-                              setSettings({ ...settings, navigation: n })
+                              setSettings(prev => ({ ...prev, navigation: n }))
                             }}
                             className="text-xs text-amber-600 hover:text-amber-700 flex items-center gap-1">
                             <Icons.Plus /> 新增 L3 品牌
@@ -724,7 +737,7 @@ export default function DesignPage() {
                           const n = [...settings.navigation]
                           if (!n[l1Index].sub) n[l1Index].sub = []
                           n[l1Index].sub!.push({ label: 'New Group', sub: [] })
-                          setSettings({ ...settings, navigation: n })
+                          setSettings(prev => ({ ...prev, navigation: n }))
                         }}
                         className="text-xs text-amber-600 hover:text-amber-700 flex items-center gap-1">
                         <Icons.Plus /> 新增 L2 分組
@@ -736,10 +749,10 @@ export default function DesignPage() {
                 {/* Add L1 top-level item */}
                 <button
                   onClick={() => {
-                    setSettings({
-                      ...settings,
-                      navigation: [...settings.navigation, { label: 'New Item', href: '#', sub: [] }]
-                    })
+                    updateSettingsDeep(prev => ({
+                      ...prev,
+                      navigation: [...prev.navigation, { label: 'New Item', href: '#', sub: [] }]
+                    }))
                   }}
                   className="w-full py-2 text-sm text-amber-600 border border-amber-300 hover:bg-amber-50 flex items-center justify-center gap-1 rounded-lg">
                   <Icons.Plus /> 新增 L1 導航
@@ -752,12 +765,12 @@ export default function DesignPage() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Brand Name</label>
-                  <input type="text" value={settings.footer.brand} onChange={(e) => { setSettings({...settings, footer: {...settings.footer, brand: e.target.value}}); }}
+                  <input type="text" value={settings.footer.brand} onChange={(e) => { updateSettingsDeep(prev => ({ ...prev, footer: { ...prev.footer, brand: e.target.value } })); }}
                     className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                  <textarea value={settings.footer.description} onChange={(e) => { setSettings({...settings, footer: {...settings.footer, description: e.target.value}}); }}
+                  <textarea value={settings.footer.description} onChange={(e) => { updateSettingsDeep(prev => ({ ...prev, footer: { ...prev.footer, description: e.target.value } })); }}
                     rows={3} className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500" />
                 </div>
               </div>

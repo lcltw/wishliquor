@@ -143,26 +143,14 @@ export default function AdminPage() {
     }
   }, [])
 
-  // Sync products and filters to localStorage whenever they change
-  useEffect(() => {
-    if (products.length > 0) {
-      localStorage.setItem('wishliquor_products', JSON.stringify(products))
-    }
-  }, [products])
-
-  useEffect(() => {
-    if (filters.length > 0) {
-      localStorage.setItem('wishliquor_filters', JSON.stringify(filters))
-    }
-  }, [filters])
-
   const showToast = (message: string) => {
     setToast(message)
     setTimeout(() => setToast(''), 2500)
   }
 
   const saveToStorage = async () => {
-    // Read current state directly from localStorage to avoid stale closure
+    // Data is already saved to localStorage by the handlers
+    // This function just syncs to the API
     const currentProducts = JSON.parse(localStorage.getItem('wishliquor_products') || '[]')
     const currentFilters = JSON.parse(localStorage.getItem('wishliquor_filters') || '[]')
     
@@ -171,11 +159,7 @@ export default function AdminPage() {
       return
     }
     
-    // Save to localStorage (local backup) - already done in handlers, but double-check
-    localStorage.setItem('wishliquor_products', JSON.stringify(currentProducts))
-    localStorage.setItem('wishliquor_filters', JSON.stringify(currentFilters))
-    
-    // Save to shared API (so all pages see the same data)
+    // Sync to shared API (so all pages see the same data)
     try {
       const res = await fetch('/api/shared-data', {
         method: 'POST',
@@ -199,58 +183,82 @@ export default function AdminPage() {
   }
 
   const handleAddProduct = () => {
-    const newId = Math.max(...products.map(p => p.id), 0) + 1
-    const newProduct: Product = {
-      id: newId,
-      name: "New Product",
-      brand: "Brand",
-      country: "Scotland",
-      category: "Single Malt",
-      age: "NAS",
-      volume: "700ml",
-      price: 99,
-      img: "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=400&h=400&fit=crop",
-      description: ""
-    }
-    const newProducts = [...products, newProduct]
-    setProducts(newProducts)
-    setHasChanges(true)
-    setEditingProduct(newProduct)
-    setIsAddingProduct(true)
+    setProducts(currentProducts => {
+      const newId = Math.max(...currentProducts.map(p => p.id), 0) + 1
+      const newProduct: Product = {
+        id: newId,
+        name: "New Product",
+        brand: "Brand",
+        country: "Scotland",
+        category: "Single Malt",
+        age: "NAS",
+        volume: "700ml",
+        price: 99,
+        img: "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=400&h=400&fit=crop",
+        description: ""
+      }
+      const newProducts = [...currentProducts, newProduct]
+      // Update localStorage immediately
+      localStorage.setItem('wishliquor_products', JSON.stringify(newProducts))
+      setHasChanges(true)
+      setEditingProduct(newProduct)
+      setIsAddingProduct(true)
+      return newProducts
+    })
   }
 
   const handleUpdateProduct = (updated: Product) => {
-    setProducts(currentProducts => currentProducts.map(p => p.id === updated.id ? updated : p))
-    setHasChanges(true)
-    setEditingProduct(null)
-    setIsAddingProduct(false)
+    setProducts(currentProducts => {
+      const newProducts = currentProducts.map(p => p.id === updated.id ? updated : p)
+      // Update localStorage immediately
+      localStorage.setItem('wishliquor_products', JSON.stringify(newProducts))
+      setHasChanges(true)
+      setEditingProduct(null)
+      setIsAddingProduct(false)
+      return newProducts
+    })
   }
 
   const handleDeleteProduct = (id: number) => {
     if (confirm('Are you sure you want to delete this product?')) {
-      setProducts(currentProducts => currentProducts.filter(p => p.id !== id))
-      setHasChanges(true)
+      setProducts(currentProducts => {
+        const newProducts = currentProducts.filter(p => p.id !== id)
+        // Update localStorage immediately
+        localStorage.setItem('wishliquor_products', JSON.stringify(newProducts))
+        setHasChanges(true)
+        return newProducts
+      })
     }
   }
 
   const handleAddFilterValue = (filterId: string, value: string) => {
-    setFilters(currentFilters => currentFilters.map(f => {
-      if (f.id === filterId && !f.values.includes(value)) {
-        return { ...f, values: [...f.values, value] }
-      }
-      return f
-    }))
-    setHasChanges(true)
+    setFilters(currentFilters => {
+      const newFilters = currentFilters.map(f => {
+        if (f.id === filterId && !f.values.includes(value)) {
+          return { ...f, values: [...f.values, value] }
+        }
+        return f
+      })
+      // Update localStorage immediately
+      localStorage.setItem('wishliquor_filters', JSON.stringify(newFilters))
+      setHasChanges(true)
+      return newFilters
+    })
   }
 
   const handleRemoveFilterValue = (filterId: string, value: string) => {
-    setFilters(currentFilters => currentFilters.map(f => {
-      if (f.id === filterId) {
-        return { ...f, values: f.values.filter(v => v !== value) }
-      }
-      return f
-    }))
-    setHasChanges(true)
+    setFilters(currentFilters => {
+      const newFilters = currentFilters.map(f => {
+        if (f.id === filterId) {
+          return { ...f, values: f.values.filter(v => v !== value) }
+        }
+        return f
+      })
+      // Update localStorage immediately
+      localStorage.setItem('wishliquor_filters', JSON.stringify(newFilters))
+      setHasChanges(true)
+      return newFilters
+    })
   }
 
   return (
