@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { signOut } from 'next-auth/react'
 
@@ -124,8 +124,6 @@ function loadProductsFromStorage(): Product[] {
       if (Array.isArray(parsed) && parsed.length > 0) return parsed
     }
   } catch (e) {}
-  // First time - use defaults and save
-  localStorage.setItem('wishliquor_products', JSON.stringify(defaultProducts))
   return defaultProducts
 }
 
@@ -138,7 +136,6 @@ function loadFiltersFromStorage(): FilterOption[] {
       if (Array.isArray(parsed) && parsed.length > 0) return parsed
     }
   } catch (e) {}
-  localStorage.setItem('wishliquor_filters', JSON.stringify(defaultFilters))
   return defaultFilters
 }
 
@@ -146,6 +143,15 @@ export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<'products' | 'filters' | 'settings'>('products')
   const [products, setProducts] = useState<Product[]>(loadProductsFromStorage)
   const [filters, setFilters] = useState<FilterOption[]>(loadFiltersFromStorage)
+  
+  // Refs to track latest state for save function
+  const productsRef = useRef(products)
+  const filtersRef = useRef(filters)
+  
+  // Keep refs updated with latest state
+  useEffect(() => { productsRef.current = products }, [products])
+  useEffect(() => { filtersRef.current = filters }, [filters])
+  
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
   const [isAddingProduct, setIsAddingProduct] = useState(false)
   const [hasChanges, setHasChanges] = useState(false)
@@ -156,18 +162,17 @@ export default function AdminPage() {
     setTimeout(() => setToast(''), 2500)
   }
 
-  // Save - save current state to localStorage and API
+  // Save - use refs to get latest state and save to localStorage + API
   const handleSave = async () => {
-    // Force read current state from DOM/localStorage
-    const currentProducts = JSON.parse(localStorage.getItem('wishliquor_products') || '[]')
-    const currentFilters = JSON.parse(localStorage.getItem('wishliquor_filters') || '[]')
+    const currentProducts = productsRef.current
+    const currentFilters = filtersRef.current
     
     if (currentProducts.length === 0) {
       showToast('沒有資料需要儲存')
       return
     }
     
-    // Save to localStorage (use currentProducts which should be up to date)
+    // Save to localStorage
     localStorage.setItem('wishliquor_products', JSON.stringify(currentProducts))
     localStorage.setItem('wishliquor_filters', JSON.stringify(currentFilters))
     
