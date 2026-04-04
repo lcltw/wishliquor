@@ -174,35 +174,6 @@ export default function HomePage() {
     }
     return filterOptions
   })
-  
-  // Sync with API in background (for cross-page updates)
-  useEffect(() => {
-    async function syncWithAPI() {
-      try {
-        const res = await fetch('/api/shared-data')
-        if (res.ok) {
-          const data = await res.json()
-          // Only update if API has newer data than localStorage
-          const localProducts = loadFromStorage('wishliquor_products', null)
-          const localSettings = loadFromStorage('wishliquor_site_settings', null)
-          
-          if (!localProducts || !localSettings) {
-            // First load - populate localStorage from API
-            setProductList(data.products || [])
-            setSiteSettings(data.settings || defaultSiteSettings)
-            localStorage.setItem('wishliquor_products', JSON.stringify(data.products || []))
-            localStorage.setItem('wishliquor_site_settings', JSON.stringify(data.settings || defaultSiteSettings))
-            if (data.filters) {
-              localStorage.setItem('wishliquor_filters', JSON.stringify(data.filters))
-            }
-          }
-        }
-      } catch (err) {
-        console.error('API sync failed:', err)
-      }
-    }
-    syncWithAPI()
-  }, [])
 
   const [expandedSections, setExpandedSections] = useState<string[]>(['Country', 'Brand'])
   const [selectedFilters, setSelectedFilters] = useState<Record<string, string[]>>({ country: [], brand: [], volume: [], price: [] })

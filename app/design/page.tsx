@@ -295,53 +295,23 @@ export default function DesignPage() {
     setTimeout(() => setToast(''), 2000)
   }
 
-  const handleSave = useCallback(async () => {
-    const currentAssignments = assignmentsRef.current
-    const currentBlockColors = blockColorsRef.current
-    const currentBlocks = blocksRef.current
-    const currentSettings = settingsRef.current
-
+  // Simple save - read current state and save to localStorage
+  const handleSave = () => {
     const colors: Record<string, string> = {}
     FIXED_KEYS.forEach(key => {
-      const blockId = currentAssignments[key]
-      colors[key] = currentBlockColors[blockId] || '#CCCCCC'
+      const blockId = assignments[key]
+      colors[key] = blockColors[blockId] || '#CCCCCC'
     })
-    const newSettings = { ...currentSettings, colors, navigation: currentSettings.navigation }
+    const newSettings = { ...settings, colors, navigation: settings.navigation }
 
-    // Save to localStorage (always, as backup)
+    // Save all to localStorage
     localStorage.setItem('wishliquor_site_settings', JSON.stringify(newSettings))
-    localStorage.setItem('wishliquor_assignments', JSON.stringify(currentAssignments))
-    localStorage.setItem('wishliquor_block_colors', JSON.stringify(currentBlockColors))
-    localStorage.setItem('wishliquor_blocks', JSON.stringify(currentBlocks))
+    localStorage.setItem('wishliquor_assignments', JSON.stringify(assignments))
+    localStorage.setItem('wishliquor_block_colors', JSON.stringify(blockColors))
+    localStorage.setItem('wishliquor_blocks', JSON.stringify(blocks))
 
-    // Save to shared API (syncs with all pages)
-    let apiSuccess = false
-    try {
-      const res = await fetch('/api/shared-data', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ settings: newSettings })
-      })
-      if (res.ok) {
-        apiSuccess = true
-      }
-    } catch (err) {
-      console.error('API save failed:', err)
-    }
-
-    // Also save to localStorage (local backup)
-    localStorage.setItem('wishliquor_site_settings', JSON.stringify(newSettings))
-    localStorage.setItem('wishliquor_assignments', JSON.stringify(currentAssignments))
-    localStorage.setItem('wishliquor_block_colors', JSON.stringify(currentBlockColors))
-    localStorage.setItem('wishliquor_blocks', JSON.stringify(currentBlocks))
-
-    setSettings(newSettings)
-    if (apiSuccess) {
-      showToast('✅ 已儲存（所有頁面同步）！')
-    } else {
-      showToast('✅ 已儲存（本地）！')
-    }
-  }, [settings])
+    showToast('✅ 已儲存！')
+  }
 
   const updateBlockColor = (blockId: string, color: string) => {
     setBlockColors(prev => ({ ...prev, [blockId]: color }))

@@ -114,72 +114,57 @@ const defaultFilters: FilterOption[] = [
   { id: 'volume', label: 'Volume', values: ['700ml', '750ml', '1000ml'] },
 ]
 
+// Lazy load from localStorage
+function getInitialProducts(): Product[] {
+  if (typeof window === 'undefined') return defaultProducts
+  try {
+    const saved = localStorage.getItem('wishliquor_products')
+    if (saved) {
+      const parsed = JSON.parse(saved)
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed
+    }
+  } catch (e) {}
+  // First time - initialize with defaults
+  localStorage.setItem('wishliquor_products', JSON.stringify(defaultProducts))
+  return defaultProducts
+}
+
+function getInitialFilters(): FilterOption[] {
+  if (typeof window === 'undefined') return defaultFilters
+  try {
+    const saved = localStorage.getItem('wishliquor_filters')
+    if (saved) {
+      const parsed = JSON.parse(saved)
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed
+    }
+  } catch (e) {}
+  localStorage.setItem('wishliquor_filters', JSON.stringify(defaultFilters))
+  return defaultFilters
+}
+
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<'products' | 'filters' | 'settings'>('products')
-  const [products, setProducts] = useState<Product[]>([])
-  const [filters, setFilters] = useState<FilterOption[]>([])
+  const [products, setProducts] = useState<Product[]>(getInitialProducts)
+  const [filters, setFilters] = useState<FilterOption[]>(getInitialFilters)
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
   const [isAddingProduct, setIsAddingProduct] = useState(false)
   const [hasChanges, setHasChanges] = useState(false)
   const [toast, setToast] = useState('')
-
-  // Load data from localStorage
-  useEffect(() => {
-    const savedProducts = localStorage.getItem('wishliquor_products')
-    const savedFilters = localStorage.getItem('wishliquor_filters')
-    
-    if (savedProducts) {
-      setProducts(JSON.parse(savedProducts))
-    } else {
-      setProducts(defaultProducts)
-      localStorage.setItem('wishliquor_products', JSON.stringify(defaultProducts))
-    }
-    
-    if (savedFilters) {
-      setFilters(JSON.parse(savedFilters))
-    } else {
-      setFilters(defaultFilters)
-      localStorage.setItem('wishliquor_filters', JSON.stringify(defaultFilters))
-    }
-  }, [])
 
   const showToast = (message: string) => {
     setToast(message)
     setTimeout(() => setToast(''), 2500)
   }
 
-  const saveToStorage = async () => {
-    // Data is already saved to localStorage by the handlers
-    // This function just syncs to the API
-    const currentProducts = JSON.parse(localStorage.getItem('wishliquor_products') || '[]')
-    const currentFilters = JSON.parse(localStorage.getItem('wishliquor_filters') || '[]')
-    
-    if (currentProducts.length === 0) {
+  // Simple save - data already in localStorage from handlers
+  const handleSave = () => {
+    const saved = localStorage.getItem('wishliquor_products')
+    if (!saved) {
       showToast('沒有資料需要儲存')
       return
     }
-    
-    // Sync to shared API (so all pages see the same data)
-    try {
-      const res = await fetch('/api/shared-data', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ products: currentProducts, filters: currentFilters })
-      })
-      if (res.ok) {
-        showToast('✅ 已儲存（所有頁面同步）！')
-      } else {
-        showToast('⚠️ 已儲存到本地')
-      }
-    } catch (err) {
-      console.error('Failed to sync:', err)
-      showToast('已儲存到本地（雲端同步失敗）')
-    }
+    showToast('✅ 已儲存！')
     setHasChanges(false)
-  }
-
-  const handleSave = () => {
-    saveToStorage()
   }
 
   const handleAddProduct = () => {
