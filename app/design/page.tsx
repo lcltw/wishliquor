@@ -310,6 +310,29 @@ export default function DesignPage() {
     showToast('✅ 已儲存！')
   }
 
+  // Sync with localStorage when admin saves (storage event from same tab)
+  useEffect(() => {
+    const checkForUpdates = () => {
+      // Check settings
+      const savedSettings = localStorage.getItem('wishliquor_site_settings')
+      if (savedSettings) {
+        try {
+          const parsed = JSON.parse(savedSettings)
+          if (parsed && Object.keys(parsed).length > 0) {
+            setSettings({
+              ...defaultSettings,
+              ...parsed,
+              colors: { ...defaultColors, ...parsed.colors }
+            })
+          }
+        } catch (e) {}
+      }
+    }
+    // Poll every 500ms for localStorage changes
+    const interval = setInterval(checkForUpdates, 500)
+    return () => clearInterval(interval)
+  }, [])
+
   const updateBlockColor = (blockId: string, color: string) => {
     setBlockColors(prev => ({ ...prev, [blockId]: color }))
   }
