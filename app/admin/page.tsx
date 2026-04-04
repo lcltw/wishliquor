@@ -154,16 +154,31 @@ export default function AdminPage() {
     setTimeout(() => setToast(''), 2500)
   }
 
-  // Save - data is already in localStorage from handlers, just confirm
-  const handleSave = () => {
+  // Save - save to both localStorage and API
+  const handleSave = async () => {
     const saved = localStorage.getItem('wishliquor_products')
     if (!saved) {
       showToast('沒有資料需要儲存')
       return
     }
-    // Force save current state to ensure it's latest
+    // Save to localStorage
     localStorage.setItem('wishliquor_products', JSON.stringify(products))
     localStorage.setItem('wishliquor_filters', JSON.stringify(filters))
+    
+    // Also save to API so incognito mode can access
+    try {
+      await fetch('/api/shared-data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          products: products,
+          filters: filters
+        })
+      })
+    } catch (err) {
+      console.error('Failed to sync to API:', err)
+    }
+    
     showToast('✅ 已儲存！')
     setHasChanges(false)
   }
