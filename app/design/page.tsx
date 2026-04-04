@@ -813,20 +813,20 @@ export default function DesignPage() {
                     <img src={settings.logoUrl} alt="logo" className="h-10" />
                   </div>
                   <div className="flex items-center gap-2">
-                    <button style={{ backgroundColor: s.buttonPrimary, color: '#fff' }} className="flex items-center gap-2 px-4 py-2 text-sm font-medium">Login</button>
+                    <button title="buttonPrimary" style={{ backgroundColor: s.buttonPrimary, color: '#fff' }} className="flex items-center gap-2 px-4 py-2 text-sm font-medium">Login</button>
                   </div>
                 </div>
               </div>
-              <nav style={{ backgroundColor: s.navBackground }}>
+              <nav title="navBackground" style={{ backgroundColor: s.navBackground }}>
                 <div className="max-w-6xl mx-auto px-4">
                   <div className="flex gap-1 py-2 overflow-x-auto">
                     {settings.navigation.map((item, i) => (
-                      <a key={i} href={item.href} className="px-3 py-1 text-sm whitespace-nowrap transition-colors" style={{ color: s.navText }}>{item.label}</a>
+                      <a key={i} href={item.href} title="navText" className="px-3 py-1 text-sm whitespace-nowrap transition-colors" style={{ color: s.navText }}>{item.label}</a>
                     ))}
                   </div>
                 </div>
                 {/* Dropdown Preview - shows dropdown colors */}
-                <div className="max-w-6xl mx-auto px-4 pb-3">
+                <div title="navDropdownBg" className="max-w-6xl mx-auto px-4 pb-3">
                   <div className="grid grid-cols-5 gap-4 py-2" style={{ backgroundColor: s.navDropdownBg }}>
                     {[
                       { label: 'Scotland', brands: ['Macallan', 'Octomore', 'Johnnie Walker', 'Royal Salute'] },
@@ -836,9 +836,9 @@ export default function DesignPage() {
                       { label: 'More', brands: ['Gin', 'Rum', 'Wine'] },
                     ].map((col, i) => (
                       <div key={i}>
-                        <h4 className="text-xs font-bold uppercase tracking-wide mb-2" style={{ color: s.navDropdownLabel }}>{col.label}</h4>
+                        <h4 title="navDropdownLabel" className="text-xs font-bold uppercase tracking-wide mb-2" style={{ color: s.navDropdownLabel }}>{col.label}</h4>
                         {col.brands.map((brand, j) => (
-                          <a key={j} href="#" className="block px-2 py-1 text-sm" style={{ color: s.navDropdownText }}>{brand}</a>
+                          <a key={j} href="#" title="navDropdownText" className="block px-2 py-1 text-sm" style={{ color: s.navDropdownText }}>{brand}</a>
                         ))}
                       </div>
                     ))}
@@ -848,16 +848,16 @@ export default function DesignPage() {
             </header>
 
             {/* Hero */}
-            <section className="text-center py-12 px-4" style={{ backgroundColor: s.heroBackground || s.background }}>
-              <h1 className="text-2xl lg:text-3xl font-bold mb-3" style={{ color: s.heroText || s.text }}>{settings.hero.title}</h1>
+            <section title="heroBackground" className="text-center py-12 px-4" style={{ backgroundColor: s.heroBackground || s.background }}>
+              <h1 title="heroText" className="text-2xl lg:text-3xl font-bold mb-3" style={{ color: s.heroText || s.text }}>{settings.hero.title}</h1>
               <p className="max-w-xl mx-auto mb-6" style={{ color: s.footerMuted }}>{settings.hero.subtitle}</p>
-              <button style={{ backgroundColor: s.heroAccent || s.buttonPrimary, color: '#fff' }} className="px-6 py-3 font-semibold">{settings.hero.ctaText}</button>
+              <button title="heroAccent" style={{ backgroundColor: s.heroAccent || s.buttonPrimary, color: '#fff' }} className="px-6 py-3 font-semibold">{settings.hero.ctaText}</button>
             </section>
 
             {/* Products */}
             <section className="px-4 pb-8">
               <div className="max-w-6xl mx-auto">
-                <h3 className="text-sm font-semibold mb-4" style={{ color: s.text }}>Featured Products</h3>
+                <h3 title="text" className="text-sm font-semibold mb-4" style={{ color: s.text }}>Featured Products</h3>
                 <div className="grid grid-cols-4 gap-4">
                   {[
                     { name: 'Macallan 12Y', country: 'Scotland', price: 169 },
@@ -865,12 +865,12 @@ export default function DesignPage() {
                     { name: 'Kavalan Concert', country: 'Taiwan', price: 89 },
                     { name: 'Glenlivet 15Y', country: 'Scotland', price: 149 },
                   ].map((p, i) => (
-                    <div key={i} className="border" style={{ backgroundColor: s.cardBackground, borderColor: s.cardBorder }}>
+                    <div key={i} title="cardBackground/cardBorder" className="border" style={{ backgroundColor: s.cardBackground, borderColor: s.cardBorder }}>
                       <div className="aspect-square bg-gray-100" />
                       <div className="p-3">
-                        <p className="text-xs font-semibold" style={{ color: s.accent }}>{p.country}</p>
-                        <p className="text-sm font-medium truncate" style={{ color: s.text }}>{p.name}</p>
-                        <p className="text-sm font-bold" style={{ color: s.text }}>${p.price}</p>
+                        <p title="accent" className="text-xs font-semibold" style={{ color: s.accent }}>{p.country}</p>
+                        <p title="text" className="text-sm font-medium truncate" style={{ color: s.text }}>{p.name}</p>
+                        <p title="text" className="text-sm font-bold" style={{ color: s.text }}>${p.price}</p>
                       </div>
                     </div>
                   ))}
@@ -879,28 +879,28 @@ export default function DesignPage() {
             </section>
 
             {/* Footer */}
-            <footer style={{ backgroundColor: s.footerBackground, borderTop: `1px solid ${s.cardBorder || '#E5E7EB'}` }} className="px-4 py-8 mt-8">
+            <footer title="footerBackground" style={{ backgroundColor: s.footerBackground, borderTop: `1px solid ${s.cardBorder || '#E5E7EB'}` }} className="px-4 py-8 mt-8">
               <div className="max-w-6xl mx-auto">
                 <div className="grid grid-cols-3 gap-8">
                   <div>
-                    <h4 className="font-semibold mb-2" style={{ color: s.footerText }}>{settings.footer.brand}</h4>
-                    <p className="text-sm" style={{ color: s.footerMuted }}>{settings.footer.description}</p>
-                    <p className="text-sm mt-2" style={{ color: s.footerMuted }}>{settings.contactEmail}</p>
+                    <h4 title="footerText" className="font-semibold mb-2" style={{ color: s.footerText }}>{settings.footer.brand}</h4>
+                    <p title="footerMuted" className="text-sm" style={{ color: s.footerMuted }}>{settings.footer.description}</p>
+                    <p title="footerMuted" className="text-sm mt-2" style={{ color: s.footerMuted }}>{settings.contactEmail}</p>
                   </div>
                   <div>
-                    <h4 className="text-sm font-semibold mb-2" style={{ color: s.footerText }}>Featured</h4>
+                    <h4 title="footerText" className="text-sm font-semibold mb-2" style={{ color: s.footerText }}>Featured</h4>
                     {settings.footer.featuredLinks.slice(0, 3).map((link, i) => (
-                      <p key={i} className="text-sm" style={{ color: s.footerMuted }}>{link}</p>
+                      <p key={i} title="footerMuted" className="text-sm" style={{ color: s.footerMuted }}>{link}</p>
                     ))}
                   </div>
                   <div>
-                    <h4 className="text-sm font-semibold mb-2" style={{ color: s.footerText }}>About</h4>
+                    <h4 title="footerText" className="text-sm font-semibold mb-2" style={{ color: s.footerText }}>About</h4>
                     {settings.footer.aboutLinks.slice(0, 3).map((link, i) => (
-                      <p key={i} className="text-sm" style={{ color: s.footerMuted }}>{link}</p>
+                      <p key={i} title="footerMuted" className="text-sm" style={{ color: s.footerMuted }}>{link}</p>
                     ))}
                   </div>
                 </div>
-                <p className="text-center text-sm mt-8" style={{ color: s.footerMuted }}>© 2026 {settings.siteName} All rights reserved.</p>
+                <p title="footerMuted" className="text-center text-sm mt-8" style={{ color: s.footerMuted }}>© 2026 {settings.siteName} All rights reserved.</p>
               </div>
             </footer>
           </div>
