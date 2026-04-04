@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { getUserByEmail, createUser, generateVerificationToken } from "@/auth"
+import { getUserByEmail, createUser, generateVerificationToken, getBaseUrl } from "@/auth"
 
 export async function POST(request: Request) {
   try {
@@ -44,6 +44,7 @@ export async function POST(request: Request) {
 
     // Generate verification token
     const token = generateVerificationToken(email)
+    const baseUrl = getBaseUrl()
 
     // In production, you would send an email here
     // For now, we log the verification link
@@ -52,13 +53,14 @@ export async function POST(request: Request) {
 📧 EMAIL VERIFICATION
 ========================================
 To: ${email}
-Verification Link: http://localhost:3000/api/auth/verify?token=${token}
+Verification Link: ${baseUrl}/api/auth/verify?token=${token}
 ========================================
     `)
 
     return NextResponse.json({
       message: "Registration successful! Please check your email to verify your account.",
-      verificationToken: token // Only for development/testing
+      verificationToken: token, // Only for development/testing
+      verificationLink: `${baseUrl}/api/auth/verify?token=${token}`
     })
   } catch (error) {
     console.error("Registration error:", error)

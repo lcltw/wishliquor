@@ -11,6 +11,29 @@ interface User {
   isVerified: boolean
 }
 
+// Helper to get base URL for emails and redirects
+export function getBaseUrl(): string {
+  // Check for NEXTAUTH_URL first
+  if (process.env.NEXTAUTH_URL && !process.env.NEXTAUTH_URL.includes("localhost")) {
+    return process.env.NEXTAUTH_URL
+  }
+  // Check for Vercel deployment URL
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`
+  }
+  // Fallback to localhost (development only)
+  return process.env.NEXTAUTH_URL || "http://localhost:3000"
+}
+
+// Warn if using localhost in production
+if (process.env.NODE_ENV === "production") {
+  const baseUrl = getBaseUrl()
+  if (baseUrl.includes("localhost")) {
+    console.warn("⚠️ WARNING: NEXTAUTH_URL contains localhost in production! This will cause 'Configuration' errors.")
+    console.warn("⚠️ Please set NEXTAUTH_URL to your production domain (e.g., https://your-app.vercel.app)")
+  }
+}
+
 // Simple in-memory user store (in production, use a database)
 const users: User[] = [
   {

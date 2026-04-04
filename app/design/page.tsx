@@ -15,6 +15,7 @@ interface NavItem { label: string; href: string; sub?: NavLayer2[] }
 interface SiteSettings {
   siteName: string
   logo: string
+  logoUrl: string
   contactEmail: string
   ubn: string
   colors: Record<string, string>
@@ -25,7 +26,6 @@ interface SiteSettings {
 
 // 每個大項的顏色 key → 區塊 id
 const BLOCK_META: Record<string, { id: string; label: string; labelZh: string }> = {
-  primary:        { id: 'general',    label: 'General',    labelZh: 'General' },
   secondary:      { id: 'general',    label: 'General',    labelZh: 'General' },
   accent:         { id: 'general',    label: 'General',    labelZh: 'General' },
   background:     { id: 'general',    label: 'General',    labelZh: 'General' },
@@ -60,7 +60,6 @@ interface Block {
 }
 
 const defaultColors: Record<string, string> = {
-  primary: '#C9A227',
   secondary: '#DC2626',
   accent: '#C9A227',
   background: '#FFFFFF',
@@ -88,6 +87,7 @@ const defaultColors: Record<string, string> = {
 const defaultSettings: SiteSettings = {
   siteName: 'wishliquor.co',
   logo: 'W',
+  logoUrl: '/Logo.png',
   contactEmail: 'wishliquor@outlook.com',
   ubn: '83120142',
   colors: { ...defaultColors },
@@ -211,15 +211,31 @@ export default function DesignPage() {
   const [dragOverBlock, setDragOverBlock] = useState<string | null>(null)
 
   useEffect(() => {
-    const saved = localStorage.getItem('wishliquor_site_settings')
-    if (saved) {
-      const parsed = JSON.parse(saved)
-      setSettings({
-        ...defaultSettings,
-        ...parsed,
-        colors: { ...defaultColors, ...parsed.colors }
+    // Fetch settings from API
+    fetch('/api/settings')
+      .then(res => res.json())
+      .then(data => {
+        setSettings({
+          ...defaultSettings,
+          ...data,
+          colors: { ...defaultColors, ...(data.colors || {}) }
+        })
       })
-    }
+      .catch(err => {
+        console.error('Failed to load settings:', err)
+        // Fallback to localStorage
+        const saved = localStorage.getItem('wishliquor_site_settings')
+        if (saved) {
+          const parsed = JSON.parse(saved)
+          setSettings({
+            ...defaultSettings,
+            ...parsed,
+            colors: { ...defaultColors, ...parsed.colors }
+          })
+        }
+      })
+
+    // Load local-only data (assignments, blockColors, blocks)
     const savedAssignments = localStorage.getItem('wishliquor_assignments')
     if (savedAssignments) {
       setAssignments(JSON.parse(savedAssignments))
@@ -239,7 +255,7 @@ export default function DesignPage() {
     setTimeout(() => setToast(''), 2000)
   }
 
-  const handleSave = useCallback(() => {
+  const handleSave = useCallback(async () => {
     const currentAssignments = assignmentsRef.current
     const currentBlockColors = blockColorsRef.current
     const currentBlocks = blocksRef.current
@@ -250,12 +266,34 @@ export default function DesignPage() {
       colors[key] = currentBlockColors[blockId] || '#CCCCCC'
     })
     const newSettings = { ...settings, colors, navigation: settings.navigation }
+
+    // Save to localStorage (always, as backup)
     localStorage.setItem('wishliquor_site_settings', JSON.stringify(newSettings))
     localStorage.setItem('wishliquor_assignments', JSON.stringify(currentAssignments))
     localStorage.setItem('wishliquor_block_colors', JSON.stringify(currentBlockColors))
     localStorage.setItem('wishliquor_blocks', JSON.stringify(currentBlocks))
+
+    // Try to save to API
+    let apiSuccess = false
+    try {
+      const res = await fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newSettings)
+      })
+      if (res.ok) {
+        apiSuccess = true
+      }
+    } catch (err) {
+      console.error('API save failed:', err)
+    }
+
     setSettings(newSettings)
-    showToast('✅ 已儲存！')
+    if (apiSuccess) {
+      showToast('✅ 已儲存（雲端 + 本地）！')
+    } else {
+      showToast('✅ 已儲存（本地）！')
+    }
   }, [settings])
 
   const updateBlockColor = (blockId: string, color: string) => {
@@ -339,7 +377,7 @@ export default function DesignPage() {
       {/* Top Header */}
       <div className="flex items-center justify-between px-4 py-3 bg-white border-b border-gray-200">
         <div className="flex items-center gap-3">
-          <div className="bg-amber-500 text-white font-bold px-3 py-1.5">W</div>
+          <img src="/Logo.png" alt="logo" className="h-8" />
           <h1 className="text-lg font-bold text-gray-800">Design Studio</h1>
         </div>
         <div className="flex items-center gap-2">
@@ -484,8 +522,38 @@ export default function DesignPage() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Logo</label>
-                  <input type="text" value={settings.logo} onChange={(e) => { setSettings({...settings, logo: e.target.value}); }}
-                    className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500" />
+                  <div className="flex gap-2">
+                    <input type="text" value={settings.logoUrl} onChange={(e) => { setSettings({...settings, logoUrl: e.target.value}); }}
+                      placeholder="/Logo.png"
+                      className="flex-1 px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500" />
+                    <label className="px-4 py-2 bg-amber-500 text-white text-sm font-medium cursor-pointer hover:bg-amber-600 flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="mr-1"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                      上傳
+                      <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                        const file = e.target.files?.[0]
+                        if (!file) return
+                        const formData = new FormData()
+                        formData.append('file', file)
+                        try {
+                          const res = await fetch('/api/upload', { method: 'POST', body: formData })
+                          const data = await res.json()
+                          if (data.url) {
+                            setSettings({...settings, logoUrl: data.url})
+                            showToast('✅ Logo 已上傳！')
+                          } else {
+                            showToast('❌ 上傳失敗：' + data.error)
+                          }
+                        } catch (err) {
+                          showToast('❌ 上傳失敗')
+                        }
+                      }} />
+                    </label>
+                  </div>
+                  {settings.logoUrl && (
+                    <div className="mt-2 border border-gray-200 rounded p-2 bg-gray-50">
+                      <img src={settings.logoUrl} alt="logo preview" className="h-12" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
+                    </div>
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Contact Email</label>
@@ -678,7 +746,7 @@ export default function DesignPage() {
               <div className="max-w-6xl mx-auto px-4 py-3">
                 <div className="flex items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
-                    <div style={{ backgroundColor: s.primary, color: '#fff' }} className="font-bold px-3 py-1.5 text-lg">{settings.logo}</div>
+                    <img src={settings.logoUrl} alt="logo" className="h-10" />
                     <span className="font-semibold hidden sm:block" style={{ color: s.text }}>{settings.siteName}</span>
                   </div>
                   <div className="flex items-center gap-2">
@@ -718,7 +786,7 @@ export default function DesignPage() {
                     <div key={i} className="border" style={{ backgroundColor: s.cardBackground, borderColor: s.cardBorder }}>
                       <div className="aspect-square bg-gray-100" />
                       <div className="p-3">
-                        <p className="text-xs font-semibold" style={{ color: s.primary }}>{p.country}</p>
+                        <p className="text-xs font-semibold" style={{ color: s.accent }}>{p.country}</p>
                         <p className="text-sm font-medium truncate" style={{ color: s.text }}>{p.name}</p>
                         <p className="text-sm font-bold" style={{ color: s.text }}>${p.price}</p>
                       </div>

@@ -122,7 +122,17 @@ function LoginForm() {
 
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
-            {error}
+            {error === "Configuration" ? (
+              <>
+                <strong>Server Configuration Error</strong>
+                <p className="text-sm mt-1">
+                  This is usually caused by NEXTAUTH_URL being set to "localhost" in production.
+                  Please contact the administrator to fix the server configuration.
+                </p>
+              </>
+            ) : (
+              error
+            )}
           </div>
         )}
 
