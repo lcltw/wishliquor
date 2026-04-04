@@ -114,9 +114,8 @@ const defaultFilters: FilterOption[] = [
   { id: 'volume', label: 'Volume', values: ['700ml', '750ml', '1000ml'] },
 ]
 
-// Lazy load from localStorage
-function getInitialProducts(): Product[] {
-  if (typeof window === 'undefined') return defaultProducts
+// Load from localStorage (client only)
+function loadProductsFromStorage(): Product[] {
   try {
     const saved = localStorage.getItem('wishliquor_products')
     if (saved) {
@@ -124,13 +123,12 @@ function getInitialProducts(): Product[] {
       if (Array.isArray(parsed) && parsed.length > 0) return parsed
     }
   } catch (e) {}
-  // First time - initialize with defaults
+  // First time - use defaults and save
   localStorage.setItem('wishliquor_products', JSON.stringify(defaultProducts))
   return defaultProducts
 }
 
-function getInitialFilters(): FilterOption[] {
-  if (typeof window === 'undefined') return defaultFilters
+function loadFiltersFromStorage(): FilterOption[] {
   try {
     const saved = localStorage.getItem('wishliquor_filters')
     if (saved) {
@@ -144,8 +142,8 @@ function getInitialFilters(): FilterOption[] {
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<'products' | 'filters' | 'settings'>('products')
-  const [products, setProducts] = useState<Product[]>(getInitialProducts)
-  const [filters, setFilters] = useState<FilterOption[]>(getInitialFilters)
+  const [products, setProducts] = useState<Product[]>(() => loadProductsFromStorage())
+  const [filters, setFilters] = useState<FilterOption[]>(() => loadFiltersFromStorage())
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
   const [isAddingProduct, setIsAddingProduct] = useState(false)
   const [hasChanges, setHasChanges] = useState(false)
