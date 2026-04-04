@@ -181,8 +181,7 @@ export default function AdminPage() {
   }
 
   const handleUpdateProduct = (updated: Product) => {
-    const newProducts = products.map(p => p.id === updated.id ? updated : p)
-    setProducts(newProducts)
+    setProducts(currentProducts => currentProducts.map(p => p.id === updated.id ? updated : p))
     setHasChanges(true)
     setEditingProduct(null)
     setIsAddingProduct(false)
@@ -190,31 +189,28 @@ export default function AdminPage() {
 
   const handleDeleteProduct = (id: number) => {
     if (confirm('Are you sure you want to delete this product?')) {
-      const newProducts = products.filter(p => p.id !== id)
-      setProducts(newProducts)
+      setProducts(currentProducts => currentProducts.filter(p => p.id !== id))
       setHasChanges(true)
     }
   }
 
   const handleAddFilterValue = (filterId: string, value: string) => {
-    const newFilters = filters.map(f => {
+    setFilters(currentFilters => currentFilters.map(f => {
       if (f.id === filterId && !f.values.includes(value)) {
         return { ...f, values: [...f.values, value] }
       }
       return f
-    })
-    setFilters(newFilters)
+    }))
     setHasChanges(true)
   }
 
   const handleRemoveFilterValue = (filterId: string, value: string) => {
-    const newFilters = filters.map(f => {
+    setFilters(currentFilters => currentFilters.map(f => {
       if (f.id === filterId) {
         return { ...f, values: f.values.filter(v => v !== value) }
       }
       return f
-    })
-    setFilters(newFilters)
+    }))
     setHasChanges(true)
   }
 
