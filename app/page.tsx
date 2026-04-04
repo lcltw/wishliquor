@@ -159,9 +159,15 @@ export default function HomePage() {
   const [toast, setToast] = useState('')
   const [cart, setCart] = useState<CartItem[]>([])
   
-  // Load initial data from localStorage
-  const [productList, setProductList] = useState<Product[]>(() => loadFromStorage('wishliquor_products', products))
-  const [siteSettings, setSiteSettings] = useState<typeof defaultSiteSettings>(() => loadFromStorage('wishliquor_site_settings', defaultSiteSettings))
+  // Load initial data from localStorage (key point: admin saves here, page reads from here)
+  const [productList, setProductList] = useState<Product[]>(() => {
+    const saved = loadFromStorage<Product[]>('wishliquor_products', [])
+    return saved.length > 0 ? saved : products
+  })
+  const [siteSettings, setSiteSettings] = useState<typeof defaultSiteSettings>(() => {
+    const saved = loadFromStorage('wishliquor_site_settings', null)
+    return saved && Object.keys(saved).length > 0 ? saved : defaultSiteSettings
+  })
   const [filterOpts, setFilterOpts] = useState<typeof filterOptions>(() => {
     const saved = loadFromStorage<FilterOption[]>('wishliquor_filters', [])
     if (saved.length > 0) {
@@ -175,40 +181,53 @@ export default function HomePage() {
     return filterOptions
   })
 
-  // Poll localStorage for changes from admin/design pages
+  // Poll localStorage for changes from admin/design pages - runs every 500ms
   useEffect(() => {
     const checkForUpdates = () => {
-      // Check products
-      const savedProducts = loadFromStorage<Product[]>('wishliquor_products', [])
-      if (savedProducts.length > 0 && JSON.stringify(savedProducts) !== JSON.stringify(productList)) {
-        setProductList(savedProducts)
+      // Check products - use direct reference comparison
+      const savedProducts = localStorage.getItem('wishliquor_products')
+      if (savedProducts) {
+        try {
+          const parsed = JSON.parse(savedProducts)
+          if (parsed.length > 0) {
+            setProductList(parsed)
+          }
+        } catch (e) {}
       }
       // Check filters
-      const savedFilters = loadFromStorage<FilterOption[]>('wishliquor_filters', [])
-      if (savedFilters.length > 0) {
-        const newFilterOpts = {
-          country: savedFilters.find(f => f.id === 'country')?.values || ['Scotland', 'Japan', 'Taiwan', 'USA'],
-          brand: savedFilters.find(f => f.id === 'brand')?.values || ['Macallan', 'Glenfiddich'],
-          volume: savedFilters.find(f => f.id === 'volume')?.values || ['700ml', '750ml', '1000ml'],
-          price: filterOptions.price,
-        }
-        if (JSON.stringify(newFilterOpts) !== JSON.stringify(filterOpts)) {
-          setFilterOpts(newFilterOpts)
-        }
+      const savedFilters = localStorage.getItem('wishliquor_filters')
+      if (savedFilters) {
+        try {
+          const parsed = JSON.parse(savedFilters)
+          if (parsed.length > 0) {
+            const newFilterOpts = {
+              country: parsed.find((f: any) => f.id === 'country')?.values || ['Scotland', 'Japan', 'Taiwan', 'USA'],
+              brand: parsed.find((f: any) => f.id === 'brand')?.values || ['Macallan', 'Glenfiddich'],
+              volume: parsed.find((f: any) => f.id === 'volume')?.values || ['700ml', '750ml', '1000ml'],
+              price: filterOptions.price,
+            }
+            setFilterOpts(newFilterOpts)
+          }
+        } catch (e) {}
       }
       // Check settings
-      const savedSettings = loadFromStorage('wishliquor_site_settings', null)
-      if (savedSettings && JSON.stringify(savedSettings) !== JSON.stringify(siteSettings)) {
-        setSiteSettings(savedSettings)
+      const savedSettings = localStorage.getItem('wishliquor_site_settings')
+      if (savedSettings) {
+        try {
+          const parsed = JSON.parse(savedSettings)
+          if (parsed && Object.keys(parsed).length > 0) {
+            setSiteSettings(parsed)
+          }
+        } catch (e) {}
       }
     }
 
-    // Check immediately
+    // Check immediately on mount
     checkForUpdates()
-    // Then check every 500ms
+    // Then poll every 500ms
     const interval = setInterval(checkForUpdates, 500)
     return () => clearInterval(interval)
-  }, [productList, filterOpts, siteSettings])
+  }, [])
 
   const [expandedSections, setExpandedSections] = useState<string[]>(['Country', 'Brand'])
   const [selectedFilters, setSelectedFilters] = useState<Record<string, string[]>>({ country: [], brand: [], volume: [], price: [] })
