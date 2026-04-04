@@ -152,22 +152,27 @@ export default function HomePage() {
   const [siteSettings, setSiteSettings] = useState(defaultSiteSettings)
   const [filterOpts, setFilterOpts] = useState(filterOptions)
   
+  // Fetch data from API on mount (fetches fresh data every time)
   useEffect(() => {
-    const savedProducts = localStorage.getItem('wishliquor_products')
-    const savedFilters = localStorage.getItem('wishliquor_filters')
-    const savedSiteSettings = localStorage.getItem('wishliquor_site_settings')
-    
-    if (savedProducts) setProductList(JSON.parse(savedProducts))
-    if (savedSiteSettings) setSiteSettings(JSON.parse(savedSiteSettings))
-    if (savedFilters) {
-      const parsed = JSON.parse(savedFilters)
-      setFilterOpts({
-        country: parsed.find((f: FilterOption) => f.id === 'country')?.values || ['Scotland', 'Japan', 'Taiwan', 'USA'],
-        brand: parsed.find((f: FilterOption) => f.id === 'brand')?.values || ['Macallan', 'Glenfiddich'],
-        volume: parsed.find((f: FilterOption) => f.id === 'volume')?.values || ['700ml', '750ml', '1000ml'],
-        price: filterOptions.price,
-      })
+    async function fetchData() {
+      try {
+        const res = await fetch('/api/shared-data')
+        if (res.ok) {
+          const data = await res.json()
+          setProductList(data.products || [])
+          setSiteSettings(data.settings || defaultSiteSettings)
+          setFilterOpts({
+            country: data.filters?.find((f: FilterOption) => f.id === 'country')?.values || ['Scotland', 'Japan', 'Taiwan', 'USA'],
+            brand: data.filters?.find((f: FilterOption) => f.id === 'brand')?.values || ['Macallan', 'Glenfiddich'],
+            volume: data.filters?.find((f: FilterOption) => f.id === 'volume')?.values || ['700ml', '750ml', '1000ml'],
+            price: filterOptions.price,
+          })
+        }
+      } catch (err) {
+        console.error('Failed to fetch data:', err)
+      }
     }
+    fetchData()
   }, [])
 
   const [expandedSections, setExpandedSections] = useState<string[]>(['Country', 'Brand'])

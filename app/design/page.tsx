@@ -273,13 +273,13 @@ export default function DesignPage() {
     localStorage.setItem('wishliquor_block_colors', JSON.stringify(currentBlockColors))
     localStorage.setItem('wishliquor_blocks', JSON.stringify(currentBlocks))
 
-    // Try to save to API
+    // Save to shared API (syncs with all pages)
     let apiSuccess = false
     try {
-      const res = await fetch('/api/settings', {
+      const res = await fetch('/api/shared-data', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newSettings)
+        body: JSON.stringify({ settings: newSettings })
       })
       if (res.ok) {
         apiSuccess = true
@@ -288,9 +288,15 @@ export default function DesignPage() {
       console.error('API save failed:', err)
     }
 
+    // Also save to localStorage (local backup)
+    localStorage.setItem('wishliquor_site_settings', JSON.stringify(newSettings))
+    localStorage.setItem('wishliquor_assignments', JSON.stringify(currentAssignments))
+    localStorage.setItem('wishliquor_block_colors', JSON.stringify(currentBlockColors))
+    localStorage.setItem('wishliquor_blocks', JSON.stringify(currentBlocks))
+
     setSettings(newSettings)
     if (apiSuccess) {
-      showToast('✅ 已儲存（雲端 + 本地）！')
+      showToast('✅ 已儲存（所有頁面同步）！')
     } else {
       showToast('✅ 已儲存（本地）！')
     }

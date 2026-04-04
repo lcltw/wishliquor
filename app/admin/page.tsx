@@ -148,11 +148,24 @@ export default function AdminPage() {
     setTimeout(() => setToast(''), 2500)
   }
 
-  const saveToStorage = (newProducts: Product[], newFilters: FilterOption[]) => {
+  const saveToStorage = async (newProducts: Product[], newFilters: FilterOption[]) => {
+    // Save to localStorage (local backup)
     localStorage.setItem('wishliquor_products', JSON.stringify(newProducts))
     localStorage.setItem('wishliquor_filters', JSON.stringify(newFilters))
+    
+    // Save to shared API (so all pages see the same data)
+    try {
+      await fetch('/api/shared-data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ products: newProducts, filters: newFilters })
+      })
+      showToast('✅ 已儲存（所有頁面同步）！')
+    } catch (err) {
+      console.error('Failed to sync:', err)
+      showToast('已儲存到本地（雲端同步失敗）')
+    }
     setHasChanges(false)
-    showToast('Changes saved successfully!')
   }
 
   const handleSave = () => {
