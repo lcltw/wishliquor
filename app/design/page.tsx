@@ -318,20 +318,55 @@ export default function DesignPage() {
     setTimeout(() => setToast(''), 2000)
   }
 
-  // Simple save - read current state and save to localStorage
-  const handleSave = () => {
+  // Save - use refs to ensure we get the latest state
+  const handleSave = async () => {
+    const currentSettings = settingsRef.current
+    const currentAssignments = assignmentsRef.current
+    const currentBlockColors = blockColorsRef.current
+    const currentBlocks = blocksRef.current
+
+    // Build colors from block colors
     const colors: Record<string, string> = {}
     FIXED_KEYS.forEach(key => {
-      const blockId = assignments[key]
-      colors[key] = blockColors[blockId] || '#CCCCCC'
+      const blockId = currentAssignments[key]
+      colors[key] = currentBlockColors[blockId] || '#CCCCCC'
     })
-    const newSettings = { ...settings, colors, navigation: settings.navigation }
 
-    // Save all to localStorage
+    // Merge settings with new colors
+    const newSettings = {
+      ...currentSettings,
+      colors,
+      navigation: currentSettings.navigation,
+      hero: currentSettings.hero,
+      footer: currentSettings.footer,
+      siteName: currentSettings.siteName,
+      logo: currentSettings.logo,
+      logoUrl: currentSettings.logoUrl,
+      contactEmail: currentSettings.contactEmail,
+      ubn: currentSettings.ubn,
+    }
+
+    // Save to localStorage
     localStorage.setItem('wishliquor_site_settings', JSON.stringify(newSettings))
-    localStorage.setItem('wishliquor_assignments', JSON.stringify(assignments))
-    localStorage.setItem('wishliquor_block_colors', JSON.stringify(blockColors))
-    localStorage.setItem('wishliquor_blocks', JSON.stringify(blocks))
+    localStorage.setItem('wishliquor_assignments', JSON.stringify(currentAssignments))
+    localStorage.setItem('wishliquor_block_colors', JSON.stringify(currentBlockColors))
+    localStorage.setItem('wishliquor_blocks', JSON.stringify(currentBlocks))
+
+    // Also save to API
+    try {
+      await fetch('/api/shared-data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          settings: newSettings,
+          assignments: currentAssignments,
+          blockColors: currentBlockColors,
+          blocks: currentBlocks,
+        })
+      })
+    } catch (err) {
+      console.error('Failed to save to API:', err)
+    }
 
     showToast('✅ 已儲存！')
   }
