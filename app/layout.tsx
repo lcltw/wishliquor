@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import { Providers } from './providers'
+import { DataProvider } from './context/DataContext'
 
 export const metadata: Metadata = {
   title: 'wishliquor.co | Premium Whiskies Curated From Around The World',
@@ -15,7 +15,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen">
-        <Providers>{children}</Providers>
+        <DataProvider>{children}</DataProvider>
       </body>
     </html>
   )

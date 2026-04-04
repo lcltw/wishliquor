@@ -159,7 +159,7 @@ export default function HomePage() {
   const [toast, setToast] = useState('')
   const [cart, setCart] = useState<CartItem[]>([])
   
-  // Load initial data from localStorage (stable across server restarts)
+  // Load initial data from localStorage
   const [productList, setProductList] = useState<Product[]>(() => loadFromStorage('wishliquor_products', products))
   const [siteSettings, setSiteSettings] = useState<typeof defaultSiteSettings>(() => loadFromStorage('wishliquor_site_settings', defaultSiteSettings))
   const [filterOpts, setFilterOpts] = useState<typeof filterOptions>(() => {
@@ -174,6 +174,41 @@ export default function HomePage() {
     }
     return filterOptions
   })
+
+  // Poll localStorage for changes from admin/design pages
+  useEffect(() => {
+    const checkForUpdates = () => {
+      // Check products
+      const savedProducts = loadFromStorage<Product[]>('wishliquor_products', [])
+      if (savedProducts.length > 0 && JSON.stringify(savedProducts) !== JSON.stringify(productList)) {
+        setProductList(savedProducts)
+      }
+      // Check filters
+      const savedFilters = loadFromStorage<FilterOption[]>('wishliquor_filters', [])
+      if (savedFilters.length > 0) {
+        const newFilterOpts = {
+          country: savedFilters.find(f => f.id === 'country')?.values || ['Scotland', 'Japan', 'Taiwan', 'USA'],
+          brand: savedFilters.find(f => f.id === 'brand')?.values || ['Macallan', 'Glenfiddich'],
+          volume: savedFilters.find(f => f.id === 'volume')?.values || ['700ml', '750ml', '1000ml'],
+          price: filterOptions.price,
+        }
+        if (JSON.stringify(newFilterOpts) !== JSON.stringify(filterOpts)) {
+          setFilterOpts(newFilterOpts)
+        }
+      }
+      // Check settings
+      const savedSettings = loadFromStorage('wishliquor_site_settings', null)
+      if (savedSettings && JSON.stringify(savedSettings) !== JSON.stringify(siteSettings)) {
+        setSiteSettings(savedSettings)
+      }
+    }
+
+    // Check immediately
+    checkForUpdates()
+    // Then check every 500ms
+    const interval = setInterval(checkForUpdates, 500)
+    return () => clearInterval(interval)
+  }, [productList, filterOpts, siteSettings])
 
   const [expandedSections, setExpandedSections] = useState<string[]>(['Country', 'Brand'])
   const [selectedFilters, setSelectedFilters] = useState<Record<string, string[]>>({ country: [], brand: [], volume: [], price: [] })

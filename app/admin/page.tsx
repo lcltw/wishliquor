@@ -156,13 +156,16 @@ export default function AdminPage() {
     setTimeout(() => setToast(''), 2500)
   }
 
-  // Simple save - data already in localStorage from handlers
+  // Save - data is already in localStorage from handlers, just confirm
   const handleSave = () => {
     const saved = localStorage.getItem('wishliquor_products')
     if (!saved) {
       showToast('沒有資料需要儲存')
       return
     }
+    // Force save current state to ensure it's latest
+    localStorage.setItem('wishliquor_products', JSON.stringify(products))
+    localStorage.setItem('wishliquor_filters', JSON.stringify(filters))
     showToast('✅ 已儲存！')
     setHasChanges(false)
   }
