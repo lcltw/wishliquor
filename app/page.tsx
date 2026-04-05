@@ -148,32 +148,55 @@ export default function HomePage() {
   const [siteSettings, setSiteSettings] = useState(defaultSiteSettings)
   const [filterOpts, setFilterOpts] = useState(filterOptions)
 
-  // Load data from API (works on Vercel and local)
+  // Load data from localStorage first (admin saves here), then sync with API
   useEffect(() => {
-    // Fetch from API - this is the single source of truth
-    fetch('/api/shared-data')
-      .then(res => res.json())
-      .then(data => {
-        if (data.products && data.products.length > 0) {
-          setProductList(data.products)
-          // Cache in localStorage for offline use
-          localStorage.setItem('wishliquor_products', JSON.stringify(data.products))
-        }
-        if (data.settings && Object.keys(data.settings).length > 0) {
-          setSiteSettings(data.settings)
-          localStorage.setItem('wishliquor_site_settings', JSON.stringify(data.settings))
-        }
-        if (data.filters && data.filters.length > 0) {
-          localStorage.setItem('wishliquor_filters', JSON.stringify(data.filters))
+    // First, try localStorage (source of truth for admin edits)
+    const savedProducts = localStorage.getItem('wishliquor_products')
+    const savedSettings = localStorage.getItem('wishliquor_site_settings')
+    const savedFilters = localStorage.getItem('wishliquor_filters')
+    
+    if (savedProducts) {
+      try {
+        const parsed = JSON.parse(savedProducts)
+        if (parsed.length > 0) setProductList(parsed)
+      } catch (e) {}
+    }
+    if (savedSettings) {
+      try {
+        const parsed = JSON.parse(savedSettings)
+        if (parsed && Object.keys(parsed).length > 0) setSiteSettings(parsed)
+      } catch (e) {}
+    }
+    if (savedFilters) {
+      try {
+        const parsed = JSON.parse(savedFilters)
+        if (parsed.length > 0) {
           setFilterOpts({
-            country: data.filters.find((f: any) => f.id === 'country')?.values || ['Scotland', 'Japan', 'Taiwan', 'USA'],
-            brand: data.filters.find((f: any) => f.id === 'brand')?.values || ['Macallan', 'Glenfiddich'],
-            volume: data.filters.find((f: any) => f.id === 'volume')?.values || ['700ml', '750ml', '1000ml'],
+            country: parsed.find((f: any) => f.id === 'country')?.values || ['Scotland', 'Japan', 'Taiwan', 'USA'],
+            brand: parsed.find((f: any) => f.id === 'brand')?.values || ['Macallan', 'Glenfiddich'],
+            volume: parsed.find((f: any) => f.id === 'volume')?.values || ['700ml', '750ml', '1000ml'],
             price: filterOptions.price,
           })
         }
       } catch (e) {}
     }
+    
+    // Then fetch from API to ensure we have latest (in case other tabs saved)
+    fetch('/api/shared-data')
+      .then(res => res.json())
+      .then(data => {
+        // Only update if we got valid data from API
+        if (data.products && data.products.length > 0) {
+          // Update localStorage with API data
+          localStorage.setItem('wishliquor_products', JSON.stringify(data.products))
+          setProductList(data.products)
+        }
+        if (data.settings && Object.keys(data.settings).length > 0) {
+          localStorage.setItem('wishliquor_site_settings', JSON.stringify(data.settings))
+          setSiteSettings(data.settings)
+        }
+      })
+      .catch(err => console.error('API sync failed:', err))
   }, [])
 
   // Poll localStorage for quick updates from same-browser admin tab (every 1s)
