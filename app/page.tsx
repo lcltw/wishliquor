@@ -148,34 +148,27 @@ export default function HomePage() {
   const [siteSettings, setSiteSettings] = useState(defaultSiteSettings)
   const [filterOpts, setFilterOpts] = useState(filterOptions)
 
-  // Load from localStorage first (admin is source of truth for products)
+  // Load data from API (works on Vercel and local)
   useEffect(() => {
-    // Products - load from localStorage only (set by admin)
-    const savedProducts = localStorage.getItem('wishliquor_products')
-    if (savedProducts) {
-      try {
-        const parsed = JSON.parse(savedProducts)
-        if (parsed.length > 0) setProductList(parsed)
-      } catch (e) {}
-    }
-    // Settings - load from localStorage
-    const savedSettings = localStorage.getItem('wishliquor_site_settings')
-    if (savedSettings) {
-      try {
-        const parsed = JSON.parse(savedSettings)
-        if (parsed && Object.keys(parsed).length > 0) setSiteSettings(parsed)
-      } catch (e) {}
-    }
-    // Filters - load from localStorage
-    const savedFilters = localStorage.getItem('wishliquor_filters')
-    if (savedFilters) {
-      try {
-        const parsed = JSON.parse(savedFilters)
-        if (parsed.length > 0) {
+    // Fetch from API - this is the single source of truth
+    fetch('/api/shared-data')
+      .then(res => res.json())
+      .then(data => {
+        if (data.products && data.products.length > 0) {
+          setProductList(data.products)
+          // Cache in localStorage for offline use
+          localStorage.setItem('wishliquor_products', JSON.stringify(data.products))
+        }
+        if (data.settings && Object.keys(data.settings).length > 0) {
+          setSiteSettings(data.settings)
+          localStorage.setItem('wishliquor_site_settings', JSON.stringify(data.settings))
+        }
+        if (data.filters && data.filters.length > 0) {
+          localStorage.setItem('wishliquor_filters', JSON.stringify(data.filters))
           setFilterOpts({
-            country: parsed.find((f: any) => f.id === 'country')?.values || ['Scotland', 'Japan', 'Taiwan', 'USA'],
-            brand: parsed.find((f: any) => f.id === 'brand')?.values || ['Macallan', 'Glenfiddich'],
-            volume: parsed.find((f: any) => f.id === 'volume')?.values || ['700ml', '750ml', '1000ml'],
+            country: data.filters.find((f: any) => f.id === 'country')?.values || ['Scotland', 'Japan', 'Taiwan', 'USA'],
+            brand: data.filters.find((f: any) => f.id === 'brand')?.values || ['Macallan', 'Glenfiddich'],
+            volume: data.filters.find((f: any) => f.id === 'volume')?.values || ['700ml', '750ml', '1000ml'],
             price: filterOptions.price,
           })
         }
