@@ -185,7 +185,7 @@ export default function HomePage() {
     
     // Then fetch from API to ensure we have latest (in case other tabs saved)
     fetch('/api/shared-data')
-      .then(res => res.json())
+      .then(res => res.json() as { products?: any[]; settings?: any })
       .then(data => {
         // Only update if we got valid data from API (client-side only)
         if (typeof window !== 'undefined' && data.products && data.products.length > 0) {
