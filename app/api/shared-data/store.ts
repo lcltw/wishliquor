@@ -180,10 +180,13 @@ class DataStore {
 
   // Get all data at once
   getAll(): { products: Product[]; filters: FilterOption[]; settings: SiteSettings } {
+    const products = this.getProducts()
+    const filters = this.getFilters()
+    const settings = this.getSettings()
     return {
-      products: this.getProducts(),
-      filters: this.getFilters(),
-      settings: this.getSettings(),
+      products: products.length > 0 ? products : [],
+      filters: filters.length > 0 ? filters : [],
+      settings: settings
     }
   }
 

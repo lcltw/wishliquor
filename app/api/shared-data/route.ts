@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server'
 import { dataStore } from './store'
 
 export async function GET() {
-  return NextResponse.json(dataStore.getAll() as { products: any[]; filters: any[]; settings: any })
+  const data = dataStore.getAll()
+  return NextResponse.json(data as unknown)
 }
 
 export async function POST(request: Request) {

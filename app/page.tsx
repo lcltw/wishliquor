@@ -183,22 +183,22 @@ export default function HomePage() {
       } catch (e) {}
     }
     
-    // Then fetch from API to ensure we have latest (in case other tabs saved)
-    fetch('/api/shared-data')
-      .then(res => res.json() as { products?: any[]; settings?: any })
-      .then(data => {
-        // Only update if we got valid data from API (client-side only)
-        if (typeof window !== 'undefined' && data.products && data.products.length > 0) {
-          // Update localStorage with API data
-          localStorage.setItem('wishliquor_products', JSON.stringify(data.products))
-          setProductList(data.products)
-        }
-        if (typeof window !== 'undefined' && data.settings && Object.keys(data.settings).length > 0) {
-          localStorage.setItem('wishliquor_site_settings', JSON.stringify(data.settings))
-          setSiteSettings(data.settings)
-        }
-      })
-      .catch(err => console.error('API sync failed:', err))
+    // Only fetch from API if localStorage is empty (fallback)
+    if (!savedProducts || JSON.parse(savedProducts || '[]').length === 0) {
+      fetch('/api/shared-data')
+        .then(res => res.json() as { products?: any[]; settings?: any })
+        .then(data => {
+          if (typeof window !== 'undefined' && data.products && data.products.length > 0) {
+            localStorage.setItem('wishliquor_products', JSON.stringify(data.products))
+            setProductList(data.products)
+          }
+          if (typeof window !== 'undefined' && data.settings && Object.keys(data.settings).length > 0) {
+            localStorage.setItem('wishliquor_site_settings', JSON.stringify(data.settings))
+            setSiteSettings(data.settings)
+          }
+        })
+        .catch(err => console.error('API sync failed:', err))
+    }
   }, [])
 
   // Poll localStorage for quick updates from same-browser admin tab (every 1s)
