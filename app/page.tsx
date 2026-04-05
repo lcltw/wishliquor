@@ -148,8 +148,10 @@ export default function HomePage() {
   const [siteSettings, setSiteSettings] = useState(defaultSiteSettings)
   const [filterOpts, setFilterOpts] = useState(filterOptions)
 
-  // Load data from localStorage first (admin saves here), then sync with API
+  // Load data - localStorage first (admin saves here), then sync with API
   useEffect(() => {
+    if (typeof window === 'undefined') return
+    
     // First, try localStorage (source of truth for admin edits)
     const savedProducts = localStorage.getItem('wishliquor_products')
     const savedSettings = localStorage.getItem('wishliquor_site_settings')
@@ -185,13 +187,13 @@ export default function HomePage() {
     fetch('/api/shared-data')
       .then(res => res.json())
       .then(data => {
-        // Only update if we got valid data from API
-        if (data.products && data.products.length > 0) {
+        // Only update if we got valid data from API (client-side only)
+        if (typeof window !== 'undefined' && data.products && data.products.length > 0) {
           // Update localStorage with API data
           localStorage.setItem('wishliquor_products', JSON.stringify(data.products))
           setProductList(data.products)
         }
-        if (data.settings && Object.keys(data.settings).length > 0) {
+        if (typeof window !== 'undefined' && data.settings && Object.keys(data.settings).length > 0) {
           localStorage.setItem('wishliquor_site_settings', JSON.stringify(data.settings))
           setSiteSettings(data.settings)
         }
@@ -201,6 +203,8 @@ export default function HomePage() {
 
   // Poll localStorage for quick updates from same-browser admin tab (every 1s)
   useEffect(() => {
+    if (typeof window === 'undefined') return
+    
     const checkForUpdates = () => {
       // Quick check localStorage first (no network)
       const savedProducts = localStorage.getItem('wishliquor_products')
