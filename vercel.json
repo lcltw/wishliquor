@@ -1,5 +1,4 @@
 {
-  "buildCommand": "npm run build -- --ignore-build-errors",
   "outputDirectory": ".next",
   "framework": "nextjs"
 }

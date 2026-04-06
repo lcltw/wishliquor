@@ -318,7 +318,7 @@ export default function HomePage() {
                 {mobileMenuOpen ? <Icons.Close /> : <Icons.Menu />}
               </button>
               <a href="/" className="flex items-center gap-3">
-                <img src={siteSettings.logoUrl} alt="logo" className="h-10" />
+                <img src={siteSettings.logoUrl} alt="logo" className="h-10" suppressHydrationWarning />
               </a>
             </div>
             <div className="flex-1 max-w-xl hidden md:block">
@@ -438,7 +438,7 @@ export default function HomePage() {
               {filteredProducts.map(product => (
                 <motion.div key={product.id} whileHover={{ y: -4 }} onClick={() => setSelectedProduct(product)}
                   className="border cursor-pointer transition-all" style={{ backgroundColor: s.cardBackground, borderColor: s.cardBorder }}>
-                  <div className="aspect-square overflow-hidden"><img src={product.img} alt={product.name} className="w-full h-full object-cover" /></div>
+                  <div className="aspect-square overflow-hidden"><img src={product.img} alt={product.name} className="w-full h-full object-cover" suppressHydrationWarning /></div>
                   <div className="p-4">
                     <p className="text-xs font-semibold uppercase tracking-wide mb-1" style={{ color: s.primary }}>{product.country}</p>
                     <h3 className="font-semibold line-clamp-1 mb-1" style={{ color: s.text }}>{product.name}</h3>
@@ -509,7 +509,7 @@ export default function HomePage() {
               className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none" style={{ zIndex: 51 }}>
               <div className="w-full max-w-3xl max-h-[90vh] overflow-hidden pointer-events-auto" style={{ backgroundColor: s.cardBackground }}>
                 <div className="grid md:grid-cols-2">
-                  <div className="aspect-square"><img src={selectedProduct.img} alt={selectedProduct.name} className="w-full h-full object-cover" /></div>
+                  <div className="aspect-square"><img src={selectedProduct.img} alt={selectedProduct.name} className="w-full h-full object-cover" suppressHydrationWarning /></div>
                   <div className="p-6 md:p-8 flex flex-col justify-center relative">
                     <button onClick={() => setSelectedProduct(null)} className="absolute top-2 right-2 md:top-4 md:right-4 p-2" style={{ backgroundColor: '#F3F4F6' }}><Icons.Close /></button>
                     <p className="text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: s.primary }}>{selectedProduct.country}</p>
@@ -543,7 +543,7 @@ export default function HomePage() {
                   <div className="space-y-4">
                     {cart.map(item => (
                       <div key={item.id} className="flex gap-4 pb-4 border-b" style={{ borderColor: s.cardBorder }}>
-                        <div className="w-20 h-20 overflow-hidden"><img src={item.img} alt={item.name} className="w-full h-full object-cover" /></div>
+                        <div className="w-20 h-20 overflow-hidden"><img src={item.img} alt={item.name} className="w-full h-full object-cover" suppressHydrationWarning /></div>
                         <div className="flex-1">
                           <h4 className="font-semibold text-sm" style={{ color: s.text }}>{item.name}</h4>
                           <p className="text-xs mb-2" style={{ color: '#6B7280' }}>${item.price} × {item.qty}</p>
