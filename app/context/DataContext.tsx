@@ -94,6 +94,11 @@ const defaultSettings: SiteSettings = {
     whiskyTypes: ['Single Malt', 'Sherry Cask', 'Peated', 'Bourbon Cask', 'Independent'],
     aboutLinks: ['Shipping', 'Privacy', 'Terms', 'Contact'],
   }
+    description: 'Premium whiskies curated from around the world.',
+    featuredLinks: ['Bars', 'The Whisky Map', 'Reviews', 'News', 'Events'],
+    whiskyTypes: ['Single Malt', 'Sherry Cask', 'Peated', 'Bourbon Cask', 'Independent'],
+    aboutLinks: ['Shipping', 'Privacy', 'Terms', 'Contact'],
+  }
 }
 
 // Load from localStorage helper
