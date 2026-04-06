@@ -9,7 +9,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { products, filters, settings } = body
+    const { products, filters, settings, assignments, blockColors, blocks } = body
 
     if (products) {
       dataStore.setProducts(products)
@@ -19,6 +19,15 @@ export async function POST(request: Request) {
     }
     if (settings) {
       dataStore.setSettings(settings)
+    }
+    if (assignments) {
+      dataStore.setAssignments(assignments)
+    }
+    if (blockColors) {
+      dataStore.setBlockColors(blockColors)
+    }
+    if (blocks) {
+      dataStore.setBlocks(blocks)
     }
 
     return NextResponse.json({ success: true, message: 'Data saved to shared store' })

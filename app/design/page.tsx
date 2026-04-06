@@ -482,11 +482,11 @@ export default function DesignPage() {
         <div className="flex items-center gap-2">
           <button onClick={() => signOut({ callbackUrl: '/' })}
             className="flex items-center gap-1.5 px-4 py-1.5 text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200">
-            登出
+            Logout
           </button>
           <button onClick={handleSave}
             className="flex items-center gap-1.5 px-4 py-1.5 text-sm font-medium bg-green-500 text-white hover:bg-green-600">
-            <Icons.Save /> 儲存
+            <Icons.Save /> Save
           </button>
         </div>
       </div>

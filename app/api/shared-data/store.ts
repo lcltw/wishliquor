@@ -46,6 +46,13 @@ export interface SiteSettings {
   }
 }
 
+// Design page types
+export interface DesignBlock {
+  id: string
+  label: string
+  labelZh: string
+}
+
 const defaultProducts: Product[] = [
   { id: 1, name: "Macallan 12Y", brand: "Macallan", country: "Scotland", category: "Single Malt", age: "12Y", volume: "700ml", price: 169, img: "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=400&h=400&fit=crop", description: "Rich sherry cask maturation with notes of dried fruits, chocolate, and oak." },
   { id: 2, name: "Macallan 18Y", brand: "Macallan", country: "Scotland", category: "Single Malt", age: "18Y", volume: "700ml", price: 499, img: "https://images.unsplash.com/photo-1527281400683-1aae777175f8?w=400&h=400&fit=crop", description: "Complex and elegant with rich dried fruits, spices, and chocolate orange." },
@@ -150,6 +157,9 @@ class DataStore {
   private products: Product[] = [...defaultProducts]
   private filters: FilterOption[] = [...defaultFilters]
   private settings: SiteSettings = { ...defaultSettings }
+  private assignments: Record<string, string> = {}
+  private blockColors: Record<string, string> = {}
+  private blocks: DesignBlock[] = []
 
   // Products
   getProducts(): Product[] {
@@ -178,15 +188,40 @@ class DataStore {
     this.settings = settings
   }
 
+  // Design data (assignments, blockColors, blocks)
+  getAssignments(): Record<string, string> {
+    return { ...this.assignments }
+  }
+
+  setAssignments(assignments: Record<string, string>): void {
+    this.assignments = assignments
+  }
+
+  getBlockColors(): Record<string, string> {
+    return { ...this.blockColors }
+  }
+
+  setBlockColors(blockColors: Record<string, string>): void {
+    this.blockColors = blockColors
+  }
+
+  getBlocks(): DesignBlock[] {
+    return [...this.blocks]
+  }
+
+  setBlocks(blocks: DesignBlock[]): void {
+    this.blocks = blocks
+  }
+
   // Get all data at once
-  getAll(): { products: Product[]; filters: FilterOption[]; settings: SiteSettings } {
-    const products = this.getProducts()
-    const filters = this.getFilters()
-    const settings = this.getSettings()
+  getAll(): { products: Product[]; filters: FilterOption[]; settings: SiteSettings; assignments: Record<string, string>; blockColors: Record<string, string>; blocks: DesignBlock[] } {
     return {
-      products: products.length > 0 ? products : [],
-      filters: filters.length > 0 ? filters : [],
-      settings: settings
+      products: this.products.length > 0 ? this.products : [],
+      filters: this.filters.length > 0 ? this.filters : [],
+      settings: this.settings,
+      assignments: this.assignments,
+      blockColors: this.blockColors,
+      blocks: this.blocks,
     }
   }
 
@@ -195,6 +230,9 @@ class DataStore {
     this.products = [...defaultProducts]
     this.filters = [...defaultFilters]
     this.settings = { ...defaultSettings }
+    this.assignments = {}
+    this.blockColors = {}
+    this.blocks = []
   }
 }
 
