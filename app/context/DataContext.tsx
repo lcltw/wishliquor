@@ -87,7 +87,13 @@ const defaultSettings: SiteSettings = {
     ctaText: 'Shop Now'
   },
   navigation: [],
-  footer: {}
+  footer: {
+    brand: 'wishliquor.co',
+    description: 'Premium whiskies curated from around the world.',
+    featuredLinks: ['Bars', 'The Whisky Map', 'Reviews', 'News', 'Events'],
+    whiskyTypes: ['Single Malt', 'Sherry Cask', 'Peated', 'Bourbon Cask', 'Independent'],
+    aboutLinks: ['Shipping', 'Privacy', 'Terms', 'Contact'],
+  }
 }
 
 // Load from localStorage helper
@@ -120,9 +126,10 @@ function loadFromStorage<T>(key: string, defaultValue: T): T {
 }
 
 export function DataProvider({ children }: { children: ReactNode }) {
-  const [products, setProductsState] = useState<Product[]>(() => loadFromStorage('wishliquor_products', defaultProducts))
-  const [filters, setFiltersState] = useState<FilterOption[]>(() => loadFromStorage('wishliquor_filters', defaultFilters))
-  const [settings, setSettingsState] = useState<SiteSettings>(() => loadFromStorage('wishliquor_site_settings', defaultSettings))
+  // Initialize with empty/default state - will be populated by useEffect from localStorage
+  const [products, setProductsState] = useState<Product[]>(defaultProducts)
+  const [filters, setFiltersState] = useState<FilterOption[]>(defaultFilters)
+  const [settings, setSettingsState] = useState<SiteSettings>(defaultSettings)
   const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
@@ -164,6 +171,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
   // Also poll for changes every second (for same-page updates)
   useEffect(() => {
+    if (!isLoaded) return
+    
     const interval = setInterval(() => {
       const savedProducts = loadFromStorage<Product[]>('wishliquor_products', [])
       const savedFilters = loadFromStorage<FilterOption[]>('wishliquor_filters', [])
@@ -182,7 +191,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
     }, 1000)
 
     return () => clearInterval(interval)
-  }, [products, filters, settings])
+  }, [products, filters, settings, isLoaded])
 
   const setProducts = (newProducts: Product[]) => {
     localStorage.setItem('wishliquor_products', JSON.stringify(newProducts))

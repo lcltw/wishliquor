@@ -588,8 +588,8 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 py-12">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div>
-              <h4 className="font-semibold mb-4" style={{ color: s.footerText }}>{siteSettings.footer.brand}</h4>
-              <p className="text-sm mb-4" style={{ color: s.footerMuted }}>{siteSettings.footer.description}</p>
+              <h4 className="font-semibold mb-4" style={{ color: s.footerText }}>{siteSettings?.footer?.brand}</h4>
+              <p className="text-sm mb-4" style={{ color: s.footerMuted }}>{siteSettings?.footer?.description}</p>
               <p className="text-sm mb-4" style={{ color: s.footerMuted }}>Your trusted online selection.</p>
               <div className="text-sm" style={{ color: s.footerMuted }}>
                 <p className="mb-1">{siteSettings.contactEmail}</p>
@@ -599,7 +599,7 @@ export default function HomePage() {
             <div>
               <h4 className="text-sm font-semibold mb-4" style={{ color: s.footerText }}>Featured</h4>
               <ul className="space-y-2">
-                {siteSettings.footer.featuredLinks.map(link => (
+                {siteSettings?.footer?.featuredLinks.map(link => (
                   <li key={link}><a href="#" className="text-sm" style={{ color: s.footerMuted }}>{link}</a></li>
                 ))}
               </ul>
@@ -607,7 +607,7 @@ export default function HomePage() {
             <div>
               <h4 className="text-sm font-semibold mb-4" style={{ color: s.footerText }}>Whisky Type</h4>
               <ul className="space-y-2">
-                {siteSettings.footer.whiskyTypes.map(link => (
+                {siteSettings?.footer?.whiskyTypes.map(link => (
                   <li key={link}><a href="#" className="text-sm" style={{ color: s.footerMuted }}>{link}</a></li>
                 ))}
               </ul>
@@ -615,7 +615,7 @@ export default function HomePage() {
             <div>
               <h4 className="text-sm font-semibold mb-4" style={{ color: s.footerText }}>About</h4>
               <ul className="space-y-2">
-                {siteSettings.footer.aboutLinks.map(link => (
+                {siteSettings?.footer?.aboutLinks.map(link => (
                   <li key={link}><a href="#" className="text-sm" style={{ color: s.footerMuted }}>{link}</a></li>
                 ))}
               </ul>

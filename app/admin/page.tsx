@@ -450,6 +450,7 @@ export default function AdminPage() {
       <AnimatePresence>
         {editingProduct && (
           <EditProductModal
+            key={editingProduct?.id}
             product={editingProduct}
             isNew={isAddingProduct}
             onSave={handleUpdateProduct}
