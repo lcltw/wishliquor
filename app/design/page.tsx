@@ -393,7 +393,7 @@ export default function DesignPage() {
       console.error('Failed to save to API:', err)
     }
 
-    showToast('✅ 已儲存！')
+    showToast('Saved')
   }
 
   // Sync with localStorage when admin saves - only update if data exists
