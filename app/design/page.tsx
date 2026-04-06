@@ -244,9 +244,16 @@ export default function DesignPage() {
   const [draggingKey, setDraggingKey] = useState<string | null>(null)
   const [dragOverBlock, setDragOverBlock] = useState<string | null>(null)
 
+  // Track if initial load is complete
+  const [initialLoadComplete, setInitialLoadComplete] = useState(false)
+
   useEffect(() => {
     // Load from localStorage first (user's saved work)
     const savedSettings = localStorage.getItem('wishliquor_site_settings')
+    const savedAssignments = localStorage.getItem('wishliquor_assignments')
+    const savedBlockColors = localStorage.getItem('wishliquor_block_colors')
+    const savedBlocks = localStorage.getItem('wishliquor_blocks')
+    
     if (savedSettings) {
       try {
         const parsed = JSON.parse(savedSettings)
@@ -260,58 +267,76 @@ export default function DesignPage() {
       }
     }
     
+    if (savedAssignments) {
+      setAssignments(JSON.parse(savedAssignments))
+    }
+    if (savedBlockColors) {
+      setBlockColors(JSON.parse(savedBlockColors))
+    }
+    if (savedBlocks) {
+      setBlocks(JSON.parse(savedBlocks))
+    }
+    
     // Also fetch from API to sync with any changes from other pages
-    fetch('/api/shared-data')
-      .then(res => res.json())
-      .then(data => {
-        if (data.settings) {
-          // Only update if we don't have localStorage data or API is newer
-          if (!savedSettings) {
+    // Only use API data if localStorage is empty
+    if (!savedSettings) {
+      fetch('/api/shared-data')
+        .then(res => res.json())
+        .then(data => {
+          if (data.settings) {
             setSettings({
               ...defaultSettings,
               ...data.settings,
               colors: { ...defaultColors, ...data.settings.colors }
             })
           }
-        }
-      })
-      .catch(err => {
-        console.error('Failed to sync from API:', err)
-      })
-
-    // Load local-only data (assignments, blockColors, blocks)
-    const savedAssignments = localStorage.getItem('wishliquor_assignments')
-    if (savedAssignments) {
-      setAssignments(JSON.parse(savedAssignments))
-    }
-    const savedBlockColors = localStorage.getItem('wishliquor_block_colors')
-    if (savedBlockColors) {
-      setBlockColors(JSON.parse(savedBlockColors))
-    }
-    const savedBlocks = localStorage.getItem('wishliquor_blocks')
-    if (savedBlocks) {
-      setBlocks(JSON.parse(savedBlocks))
+          if (data.assignments && !savedAssignments) {
+            setAssignments(data.assignments)
+          }
+          if (data.blockColors && !savedBlockColors) {
+            setBlockColors(data.blockColors)
+          }
+          if (data.blocks && !savedBlocks) {
+            setBlocks(data.blocks)
+          }
+          // Mark initial load as complete AFTER data is loaded
+          setInitialLoadComplete(true)
+        })
+        .catch(err => {
+          console.error('Failed to sync from API:', err)
+          // Still mark as complete on error
+          setInitialLoadComplete(true)
+        })
+    } else {
+      // If we loaded from localStorage, mark as complete immediately
+      setInitialLoadComplete(true)
     }
   }, [])
 
-  // Sync settings to localStorage whenever they change
+  // Sync settings to localStorage whenever they change (only after initial load)
   useEffect(() => {
-    if (settings && Object.keys(settings).length > 0) {
+    if (initialLoadComplete && settings && Object.keys(settings).length > 0) {
       localStorage.setItem('wishliquor_site_settings', JSON.stringify(settings))
     }
-  }, [settings])
+  }, [settings, initialLoadComplete])
 
   useEffect(() => {
-    localStorage.setItem('wishliquor_assignments', JSON.stringify(assignments))
-  }, [assignments])
+    if (initialLoadComplete) {
+      localStorage.setItem('wishliquor_assignments', JSON.stringify(assignments))
+    }
+  }, [assignments, initialLoadComplete])
 
   useEffect(() => {
-    localStorage.setItem('wishliquor_block_colors', JSON.stringify(blockColors))
-  }, [blockColors])
+    if (initialLoadComplete) {
+      localStorage.setItem('wishliquor_block_colors', JSON.stringify(blockColors))
+    }
+  }, [blockColors, initialLoadComplete])
 
   useEffect(() => {
-    localStorage.setItem('wishliquor_blocks', JSON.stringify(blocks))
-  }, [blocks])
+    if (initialLoadComplete) {
+      localStorage.setItem('wishliquor_blocks', JSON.stringify(blocks))
+    }
+  }, [blocks, initialLoadComplete])
 
   const showToast = (message: string) => {
     setToast(message)
@@ -371,25 +396,30 @@ export default function DesignPage() {
     showToast('✅ 已儲存！')
   }
 
-  // Sync with localStorage when admin saves (storage event from same tab)
+  // Sync with localStorage when admin saves - only update if data exists
   useEffect(() => {
     const checkForUpdates = () => {
-      // Check settings
       const savedSettings = localStorage.getItem('wishliquor_site_settings')
       if (savedSettings) {
         try {
           const parsed = JSON.parse(savedSettings)
           if (parsed && Object.keys(parsed).length > 0) {
-            setSettings({
-              ...defaultSettings,
-              ...parsed,
-              colors: { ...defaultColors, ...parsed.colors }
+            setSettings(prev => {
+              // Only update if different from current (avoid unnecessary re-renders)
+              if (JSON.stringify(prev) !== JSON.stringify(parsed)) {
+                return {
+                  ...defaultSettings,
+                  ...parsed,
+                  colors: { ...defaultColors, ...parsed.colors }
+                }
+              }
+              return prev
             })
           }
         } catch (e) {}
       }
     }
-    // Poll every 500ms for localStorage changes
+    // Poll every 500ms for localStorage changes from other sources
     const interval = setInterval(checkForUpdates, 500)
     return () => clearInterval(interval)
   }, [])
@@ -816,12 +846,12 @@ export default function DesignPage() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Brand Name</label>
-                  <input type="text" value={settings.footer.brand} onChange={(e) => { updateSettingsDeep(prev => ({ ...prev, footer: { ...prev.footer, brand: e.target.value } })); }}
+                  <input type="text" value={settings?.footer?.brand} onChange={(e) => { updateSettingsDeep(prev => ({ ...prev, footer: { ...prev.footer, brand: e.target.value } })); }}
                     className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                  <textarea value={settings.footer.description} onChange={(e) => { updateSettingsDeep(prev => ({ ...prev, footer: { ...prev.footer, description: e.target.value } })); }}
+                  <textarea value={settings?.footer?.description} onChange={(e) => { updateSettingsDeep(prev => ({ ...prev, footer: { ...prev.footer, description: e.target.value } })); }}
                     rows={3} className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500" />
                 </div>
               </div>
@@ -918,19 +948,19 @@ export default function DesignPage() {
               <div className="max-w-6xl mx-auto">
                 <div className="grid grid-cols-3 gap-8">
                   <div>
-                    <h4 title="footerText" className="font-semibold mb-2" style={{ color: s.footerText }}>{settings.footer.brand}</h4>
-                    <p title="footerMuted" className="text-sm" style={{ color: s.footerMuted }}>{settings.footer.description}</p>
+                    <h4 title="footerText" className="font-semibold mb-2" style={{ color: s.footerText }}>{settings?.footer?.brand}</h4>
+                    <p title="footerMuted" className="text-sm" style={{ color: s.footerMuted }}>{settings?.footer?.description}</p>
                     <p title="footerMuted" className="text-sm mt-2" style={{ color: s.footerMuted }}>{settings.contactEmail}</p>
                   </div>
                   <div>
                     <h4 title="footerText" className="text-sm font-semibold mb-2" style={{ color: s.footerText }}>Featured</h4>
-                    {settings.footer.featuredLinks.slice(0, 3).map((link, i) => (
+                    {settings?.footer?.featuredLinks?.slice(0, 3).map((link, i) => (
                       <p key={i} title="footerMuted" className="text-sm" style={{ color: s.footerMuted }}>{link}</p>
                     ))}
                   </div>
                   <div>
                     <h4 title="footerText" className="text-sm font-semibold mb-2" style={{ color: s.footerText }}>About</h4>
-                    {settings.footer.aboutLinks.slice(0, 3).map((link, i) => (
+                    {settings?.footer?.aboutLinks?.slice(0, 3).map((link, i) => (
                       <p key={i} title="footerMuted" className="text-sm" style={{ color: s.footerMuted }}>{link}</p>
                     ))}
                   </div>
