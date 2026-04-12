@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { signOut } from 'next-auth/react'
 import { useData } from '../context/DataContext'
@@ -152,25 +152,8 @@ function loadFiltersFromStorage(): FilterOption[] {
 }
 
 export default function AdminPage() {
-  // Use DataContext for products to ensure single source of truth
-  const { products: contextProducts, setProducts: setContextProducts, filters: contextFilters, setFilters: setContextFilters, isLoaded } = useData()
-  
+  const { products, setProducts, filters, setFilters, isLoaded } = useData()
   const [activeTab, setActiveTab] = useState<'products' | 'filters' | 'settings'>('products')
-  const [products, setProducts] = useState<Product[]>(contextProducts)
-  const [filters, setFilters] = useState<FilterOption[]>(contextFilters)
-  
-  // Sync with context when context changes
-  useEffect(() => { setProducts(contextProducts) }, [contextProducts])
-  useEffect(() => { setFilters(contextFilters) }, [contextFilters])
-  
-  // Refs to track latest state for save function
-  const productsRef = useRef(products)
-  const filtersRef = useRef(filters)
-  
-  // Keep refs updated with latest state
-  useEffect(() => { productsRef.current = products }, [products])
-  useEffect(() => { filtersRef.current = filters }, [filters])
-  
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
   const [isAddingProduct, setIsAddingProduct] = useState(false)
   const [hasChanges, setHasChanges] = useState(false)
@@ -227,7 +210,7 @@ export default function AdminPage() {
       description: ""
     }
     const newProducts = [...products, newProduct]
-    setContextProducts(newProducts)  // Use context to persist
+    setProducts(newProducts)
     setHasChanges(true)
     setEditingProduct(newProduct)
     setIsAddingProduct(true)
@@ -235,7 +218,7 @@ export default function AdminPage() {
 
   const handleUpdateProduct = (updated: Product) => {
     const newProducts = products.map(p => p.id === updated.id ? updated : p)
-    setContextProducts(newProducts)  // Use context to persist
+    setProducts(newProducts)
     setHasChanges(true)
     setEditingProduct(null)
     setIsAddingProduct(false)
@@ -244,7 +227,7 @@ export default function AdminPage() {
   const handleDeleteProduct = (id: number) => {
     if (confirm('Are you sure you want to delete this product?')) {
       const newProducts = products.filter(p => p.id !== id)
-      setContextProducts(newProducts)  // Use context to persist
+      setProducts(newProducts)
       setHasChanges(true)
     }
   }
@@ -256,7 +239,7 @@ export default function AdminPage() {
       }
       return f
     })
-    setContextFilters(newFilters)  // Use context to persist
+    setFilters(newFilters)
     setHasChanges(true)
   }
 
@@ -267,7 +250,7 @@ export default function AdminPage() {
       }
       return f
     })
-    setContextFilters(newFilters)  // Use context to persist
+    setFilters(newFilters)
     setHasChanges(true)
   }
 

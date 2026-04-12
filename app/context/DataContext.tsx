@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react'
 
 interface Product {
   id: number
@@ -30,6 +30,14 @@ interface SiteSettings {
   hero: { title: string; subtitle: string; ctaText: string }
   navigation: any[]
   footer: any
+  content: {
+    pageTitle: string
+    pageDescription: string
+    featuredTitle: string
+    featuredSubtitle: string
+    aboutTitle: string
+    aboutText: string
+  }
 }
 
 interface DataContextType {
@@ -44,7 +52,6 @@ interface DataContextType {
 
 const DataContext = createContext<DataContextType | null>(null)
 
-// Default data - using Google Drive URLs provided by user
 const defaultProducts: Product[] = [
   { id: 1, name: "Macallan 12Y", brand: "Macallan", country: "Scotland", category: "Single Malt", age: "12Y", volume: "700ml", price: 169, img: "https://lh3.googleusercontent.com/u/0/d/15ij09mVuQVvTMVEwq0eQ7-0q80VLKjTm", description: "Rich sherry cask maturation with notes of dried fruits, chocolate, and oak." },
   { id: 2, name: "Macallan 18Y", brand: "Macallan", country: "Scotland", category: "Single Malt", age: "18Y", volume: "700ml", price: 499, img: "https://lh3.googleusercontent.com/u/0/d/1MfCqLv5hzNeMNxsI95vdEw-xuYc7V3h8", description: "Complex and elegant with rich dried fruits, spices, and chocolate orange." },
@@ -76,10 +83,27 @@ const defaultSettings: SiteSettings = {
   contactEmail: 'wishliquor@outlook.com',
   ubn: '83120142',
   colors: {
-    secondary: '#DC2626',
-    accent: '#C9A227',
     background: '#FFFFFF',
-    text: '#333333',
+    text: '#0a0a0a',
+    cardBackground: '#FFFFFF',
+    cardBorder: '#6B7280',
+    primary: '#DC2626',
+    secondary: '#6B7280',
+    accent: '#C9A227',
+    navBackground: '#DC2626',
+    navText: '#FFFFFF',
+    navHover: '#DC2626',
+    navDropdownBg: '#DC2626',
+    navDropdownText: '#FFFFFF',
+    navDropdownHover: '#DC2626',
+    navDropdownLabel: '#C9A227',
+    buttonPrimary: '#C9A227',
+    footerBackground: '#FFFFFF',
+    footerText: '#0a0a0a',
+    footerMuted: '#6B7280',
+    heroBackground: '#FFFFFF',
+    heroText: '#6B7280',
+    heroAccent: '#C9A227',
   },
   hero: {
     title: 'Explore World Whiskies',
@@ -90,142 +114,159 @@ const defaultSettings: SiteSettings = {
   footer: {
     brand: 'wishliquor.co',
     description: 'Premium whiskies curated from around the world.',
+    logoUrl: '/Logo.png',
+    logoWidth: 120,
+    logoHeight: 40,
+    copyright: '© 2026 wishliquor.co All rights reserved.',
     featuredLinks: ['Bars', 'The Whisky Map', 'Reviews', 'News', 'Events'],
     whiskyTypes: ['Single Malt', 'Sherry Cask', 'Peated', 'Bourbon Cask', 'Independent'],
     aboutLinks: ['Shipping', 'Privacy', 'Terms', 'Contact'],
-  }
-    description: 'Premium whiskies curated from around the world.',
-    featuredLinks: ['Bars', 'The Whisky Map', 'Reviews', 'News', 'Events'],
-    whiskyTypes: ['Single Malt', 'Sherry Cask', 'Peated', 'Bourbon Cask', 'Independent'],
-    aboutLinks: ['Shipping', 'Privacy', 'Terms', 'Contact'],
-  }
+  },
+  content: {
+    pageTitle: 'wishliquor.co | Premium Whiskies Curated From Around The World',
+    pageDescription: "Australia's largest online whisky store with exclusive bottlings and Whisky Lover's perks.",
+    featuredTitle: 'Featured Products',
+    featuredSubtitle: 'Handpicked selections from our finest collection',
+    aboutTitle: 'About Us',
+    aboutText: 'Wishliquor.co curates the finest whiskies from Scotland, Japan, Taiwan and beyond — delivered straight to your door.',
+  },
 }
 
-// Load from localStorage helper
-function loadFromStorage<T>(key: string, defaultValue: T): T {
-  if (typeof window === 'undefined') return defaultValue
+// Read from localStorage synchronously — call this only client-side
+function readProducts(): Product[] {
+  if (typeof window === 'undefined') return defaultProducts
   try {
-    const saved = localStorage.getItem(key)
-    if (saved) {
-      const parsed = JSON.parse(saved)
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        // For products, validate that data has been properly initialized
-        // If all products have the SAME img URL, it's uninitialized (using placeholder)
-        // If products have DIFFERENT img URLs, it means user has customized them
-        if (key === 'wishliquor_products') {
-          const uniqueUrls = new Set(parsed.map((p: any) => p.img))
-          if (uniqueUrls.size > 1) {
-            // Multiple unique URLs - user has customized, use this data
-            return parsed as T
-          }
-        } else {
-          return parsed as T
-        }
-      }
-      if (!Array.isArray(parsed) && Object.keys(parsed).length > 0) return parsed as T
-    }
-  } catch (e) {}
-  // If invalid or empty, save defaults and return them
-  localStorage.setItem(key, JSON.stringify(defaultValue))
-  return defaultValue
+    const raw = localStorage.getItem('wishliquor_products')
+    if (!raw) return defaultProducts
+    const parsed = JSON.parse(raw)
+    if (Array.isArray(parsed) && parsed.length > 0) return parsed
+  } catch (_) {}
+  return defaultProducts
+}
+
+function readFilters(): FilterOption[] {
+  if (typeof window === 'undefined') return defaultFilters
+  try {
+    const raw = localStorage.getItem('wishliquor_filters')
+    if (!raw) return defaultFilters
+    const parsed = JSON.parse(raw)
+    if (Array.isArray(parsed) && parsed.length > 0) return parsed
+  } catch (_) {}
+  return defaultFilters
+}
+
+function readSettings(): SiteSettings {
+  if (typeof window === 'undefined') return defaultSettings
+  try {
+    const raw = localStorage.getItem('wishliquor_site_settings')
+    if (!raw) return defaultSettings
+    const parsed = JSON.parse(raw)
+    if (parsed && Object.keys(parsed).length > 0) return parsed
+  } catch (_) {}
+  return defaultSettings
 }
 
 export function DataProvider({ children }: { children: ReactNode }) {
-  // Initialize with empty/default state - will be populated by useEffect from localStorage
-  const [products, setProductsState] = useState<Product[]>(defaultProducts)
-  const [filters, setFiltersState] = useState<FilterOption[]>(defaultFilters)
-  const [settings, setSettingsState] = useState<SiteSettings>(defaultSettings)
+  const [products, setProducts] = useState<Product[]>(() => readProducts())
+  const [filters, setFilters] = useState<FilterOption[]>(() => readFilters())
+  const [settings, setSettings] = useState<SiteSettings>(() => readSettings())
   const [isLoaded, setIsLoaded] = useState(false)
 
+  // Always fetch latest from API and merge with localStorage; mark loaded when done
   useEffect(() => {
-    setIsLoaded(true)
+    fetch('/api/shared-data')
+      .then(r => r.json())
+      .then(data => {
+        if (!data) { setIsLoaded(true); return }
+        // Merge API data over defaults
+        const mergedSettings = { ...defaultSettings, ...(data.settings || {}),
+          colors: { ...defaultSettings.colors, ...((data.settings || {}).colors || {}) },
+          footer: (data.settings || {}).footer || defaultSettings.footer,
+          content: (data.settings || {}).content || defaultSettings.content,
+          navigation: (data.settings || {}).navigation || defaultSettings.navigation,
+          hero: (data.settings || {}).hero || defaultSettings.hero,
+        }
+        // localStorage is source of truth for products/filters; only fill if empty
+        const storedProducts = localStorage.getItem('wishliquor_products')
+        const storedFilters = localStorage.getItem('wishliquor_filters')
+        const storedSettings = localStorage.getItem('wishliquor_site_settings')
+
+        if (!storedProducts && data.products && data.products.length > 0) {
+          setProducts(data.products)
+          localStorage.setItem('wishliquor_products', JSON.stringify(data.products))
+        }
+        if (!storedFilters && data.filters && data.filters.length > 0) {
+          setFilters(data.filters)
+          localStorage.setItem('wishliquor_filters', JSON.stringify(data.filters))
+        }
+        if (!storedSettings) {
+          setSettings(mergedSettings)
+          localStorage.setItem('wishliquor_site_settings', JSON.stringify(mergedSettings))
+        } else if (data.settings && Object.keys(data.settings).length > 0) {
+          // LocalStorage has data — merge on top of API data (localStorage wins for custom colors)
+          const localParsed = JSON.parse(storedSettings)
+          const finalSettings = { ...mergedSettings, ...localParsed,
+            colors: { ...mergedSettings.colors, ...(localParsed.colors || {}) },
+          }
+          setSettings(finalSettings)
+          localStorage.setItem('wishliquor_site_settings', JSON.stringify(finalSettings))
+        }
+        setIsLoaded(true)
+      })
+      .catch(() => setIsLoaded(true))
   }, [])
 
-  // Listen for storage changes from other tabs/pages
+  // Sync across tabs via storage event
   useEffect(() => {
-    const handleStorage = (e: StorageEvent) => {
+    const handler = (e: StorageEvent) => {
       if (e.key === 'wishliquor_products' && e.newValue) {
-        try {
-          const parsed = JSON.parse(e.newValue)
-          if (Array.isArray(parsed)) {
-            setProductsState(parsed)
-          }
-        } catch (err) {}
+        try { setProducts(JSON.parse(e.newValue)) } catch (_) {}
       }
       if (e.key === 'wishliquor_filters' && e.newValue) {
-        try {
-          const parsed = JSON.parse(e.newValue)
-          if (Array.isArray(parsed)) {
-            setFiltersState(parsed)
-          }
-        } catch (err) {}
+        try { setFilters(JSON.parse(e.newValue)) } catch (_) {}
       }
       if (e.key === 'wishliquor_site_settings' && e.newValue) {
-        try {
-          const parsed = JSON.parse(e.newValue)
-          if (Object.keys(parsed).length > 0) {
-            setSettingsState(parsed)
-          }
-        } catch (err) {}
+        try { setSettings(JSON.parse(e.newValue)) } catch (_) {}
       }
     }
-
-    window.addEventListener('storage', handleStorage)
-    return () => window.removeEventListener('storage', handleStorage)
+    window.addEventListener('storage', handler)
+    return () => window.removeEventListener('storage', handler)
   }, [])
 
-  // Also poll for changes every second (for same-page updates)
-  useEffect(() => {
-    if (!isLoaded) return
-    
-    const interval = setInterval(() => {
-      const savedProducts = loadFromStorage<Product[]>('wishliquor_products', [])
-      const savedFilters = loadFromStorage<FilterOption[]>('wishliquor_filters', [])
-      const savedSettings = loadFromStorage<SiteSettings>('wishliquor_site_settings', {} as SiteSettings)
-      
-      // Check if localStorage has different data than state
-      if (savedProducts.length > 0 && JSON.stringify(savedProducts) !== JSON.stringify(products)) {
-        setProductsState(savedProducts)
-      }
-      if (savedFilters.length > 0 && JSON.stringify(savedFilters) !== JSON.stringify(filters)) {
-        setFiltersState(savedFilters)
-      }
-      if (savedSettings && Object.keys(savedSettings).length > 0 && JSON.stringify(savedSettings) !== JSON.stringify(settings)) {
-        setSettingsState(savedSettings)
-      }
-    }, 1000)
+  const saveProducts = useCallback((next: Product[]) => {
+    setProducts(next)
+    localStorage.setItem('wishliquor_products', JSON.stringify(next))
+  }, [])
 
-    return () => clearInterval(interval)
-  }, [products, filters, settings, isLoaded])
+  const saveFilters = useCallback((next: FilterOption[]) => {
+    setFilters(next)
+    localStorage.setItem('wishliquor_filters', JSON.stringify(next))
+  }, [])
 
-  const setProducts = (newProducts: Product[]) => {
-    localStorage.setItem('wishliquor_products', JSON.stringify(newProducts))
-    setProductsState(newProducts)
-  }
-
-  const setFilters = (newFilters: FilterOption[]) => {
-    localStorage.setItem('wishliquor_filters', JSON.stringify(newFilters))
-    setFiltersState(newFilters)
-  }
-
-  const setSettings = (newSettings: SiteSettings) => {
-    localStorage.setItem('wishliquor_site_settings', JSON.stringify(newSettings))
-    setSettingsState(newSettings)
-  }
+  const saveSettings = useCallback((next: SiteSettings) => {
+    setSettings(next)
+    localStorage.setItem('wishliquor_site_settings', JSON.stringify(next))
+  }, [])
 
   return (
-    <DataContext.Provider value={{ products, setProducts, filters, setFilters, settings, setSettings, isLoaded }}>
+    <DataContext.Provider value={{
+      products,
+      setProducts: saveProducts,
+      filters,
+      setFilters: saveFilters,
+      settings,
+      setSettings: saveSettings,
+      isLoaded,
+    }}>
       {children}
     </DataContext.Provider>
   )
 }
 
 export function useData() {
-  const context = useContext(DataContext)
-  if (!context) {
-    throw new Error('useData must be used within DataProvider')
-  }
-  return context
+  const ctx = useContext(DataContext)
+  if (!ctx) throw new Error('useData must be inside DataProvider')
+  return ctx
 }
 
 export { defaultProducts, defaultFilters, defaultSettings }

@@ -1,0 +1,460 @@
+{
+  "settings": {
+    "siteName": "wishliquor.co",
+    "logo": "W",
+    "logoUrl": "/Logo.png",
+    "contactEmail": "wishliquor@outlook.com",
+    "ubn": "83120142",
+    "colors": {
+      "background": "#FFFFFF",
+      "text": "#0a0a0a",
+      "cardBackground": "#FFFFFF",
+      "cardBorder": "#6B7280",
+      "primary": "#DC2626",
+      "secondary": "#6B7280",
+      "accent": "#C9A227",
+      "navBackground": "#DC2626",
+      "navText": "#FFFFFF",
+      "navHover": "#DC2626",
+      "navDropdownBg": "#6B7280",
+      "navDropdownText": "#FFFFFF",
+      "navDropdownHover": "#6B7280",
+      "navDropdownLabel": "#C9A227",
+      "buttonPrimary": "#C9A227",
+      "footerBackground": "#FFFFFF",
+      "footerText": "#C9A227",
+      "footerMuted": "#6B7280",
+      "heroBackground": "#FFFFFF",
+      "heroText": "#0a0a0a",
+      "heroAccent": "#C9A227"
+    },
+    "hero": {
+      "title": "Internal testing",
+      "subtitle": "Coming soon",
+      "ctaText": "Shop Now"
+    },
+    "navigation": [
+      {
+        "label": "Whisky",
+        "href": "/shop",
+        "sub": [
+          {
+            "label": "Scotland",
+            "sub": [
+              {
+                "label": "Macallan",
+                "href": "/shop?brand=macallan"
+              },
+              {
+                "label": "Octomore",
+                "href": "/shop?brand=octomore"
+              },
+              {
+                "label": "Johnnie Walker",
+                "href": "/shop?brand=johnnie-walker"
+              },
+              {
+                "label": "Royal Salute",
+                "href": "/shop?brand=royal-salute"
+              }
+            ]
+          },
+          {
+            "label": "Japanese",
+            "sub": [
+              {
+                "label": "Yamazaki",
+                "href": "/shop?brand=yamazaki"
+              },
+              {
+                "label": "Hakushu",
+                "href": "/shop?brand=hakushu"
+              },
+              {
+                "label": "Hibiki",
+                "href": "/shop?brand=hibiki"
+              }
+            ]
+          },
+          {
+            "label": "American",
+            "sub": [
+              {
+                "label": "W.L. Weller",
+                "href": "/shop?brand=w-l-weller"
+              },
+              {
+                "label": "Jack Daniel's",
+                "href": "/shop?brand=jack-daniels"
+              }
+            ]
+          },
+          {
+            "label": "Taiwan",
+            "sub": [
+              {
+                "label": "Kavalan",
+                "href": "/shop?brand=kavalan"
+              },
+              {
+                "label": "Omar",
+                "href": "/shop?brand=omar"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "label": "Other Drinks",
+        "href": "/shop?category=other-drinks"
+      },
+      {
+        "label": "Gin",
+        "href": "/shop?category=gin"
+      },
+      {
+        "label": "Rum",
+        "href": "/shop?category=rum"
+      },
+      {
+        "label": "Wine",
+        "href": "/shop?category=wine"
+      },
+      {
+        "label": "Baijiu",
+        "href": "/shop?category=baijiu"
+      },
+      {
+        "label": "Goods",
+        "href": "/shop?category=goods"
+      },
+      {
+        "label": "Contact",
+        "href": "/contact"
+      }
+    ],
+    "footer": {
+      "brand": "wishliquor.co",
+      "description": "Premium whiskies curated from around the world.",
+      "featuredLinks": [
+        "Bars",
+        "The Whisky Map",
+        "Reviews",
+        "News",
+        "Events"
+      ],
+      "whiskyTypes": [
+        "Single Malt",
+        "Sherry Cask",
+        "Peated",
+        "Bourbon Cask",
+        "Independent"
+      ],
+      "aboutLinks": [
+        "Shipping",
+        "Privacy",
+        "Terms",
+        "Contact"
+      ],
+      "copyright": "© 2026 wishliquor.co All rights reserved.",
+      "logoUrl": "/uploads/logo-1776018088897.png",
+      "logoWidth": 360,
+      "logoHeight": 120
+    },
+    "content": {
+      "pageTitle": "wishliquor.co | Your Whiskey Wishes",
+      "pageDescription": "Find the dram you’ve been wishing for",
+      "featuredTitle": "Featured Products",
+      "featuredSubtitle": "From your Wishlist to your Collection",
+      "aboutTitle": "About Us",
+      "aboutText": "Wishliquor.co curates the finest whiskies from Scotland, Japan, Taiwan and beyond — delivered straight to your door."
+    }
+  },
+  "assignments": {
+    "background": "general",
+    "text": "primary",
+    "cardBackground": "general",
+    "cardBorder": "secondary",
+    "primary": "nav",
+    "secondary": "secondary",
+    "accent": "buttons",
+    "navBackground": "nav",
+    "navText": "general",
+    "navHover": "nav",
+    "navDropdownBg": "secondary",
+    "navDropdownText": "general",
+    "navDropdownHover": "secondary",
+    "navDropdownLabel": "buttons",
+    "buttonPrimary": "buttons",
+    "footerBackground": "general",
+    "footerText": "buttons",
+    "footerMuted": "secondary",
+    "heroBackground": "general",
+    "heroText": "primary",
+    "heroAccent": "buttons"
+  },
+  "blockColors": {
+    "general": "#FFFFFF",
+    "primary": "#0a0a0a",
+    "secondary": "#6B7280",
+    "accent": "#C9A227",
+    "nav": "#DC2626",
+    "dropdown": "#DC2626",
+    "buttons": "#C9A227",
+    "footer": "#F9FAFB",
+    "hero": "#FFFFFF"
+  },
+  "blocks": [
+    {
+      "id": "general",
+      "label": "White",
+      "labelZh": "White"
+    },
+    {
+      "id": "primary",
+      "label": "Black",
+      "labelZh": "Black"
+    },
+    {
+      "id": "secondary",
+      "label": "Gray",
+      "labelZh": "Gray"
+    },
+    {
+      "id": "nav",
+      "label": "Visual",
+      "labelZh": "Visual"
+    },
+    {
+      "id": "buttons",
+      "label": "Buttons",
+      "labelZh": "Buttons"
+    }
+  ],
+  "products": [
+    {
+      "id": 1,
+      "name": "Macallan 12Y",
+      "brand": "Macallan",
+      "country": "Scotland",
+      "category": "Single Malt",
+      "age": "12Y",
+      "volume": "700ml",
+      "price": 169,
+      "img": "https://lh3.googleusercontent.com/u/0/d/1cJtVOMwLNNunzV7oNRq75C8ZEgJOaU_6",
+      "description": "Rich sherry cask maturation with notes of dried fruits, chocolate, and oak."
+    },
+    {
+      "id": 2,
+      "name": "Macallan 18Y",
+      "brand": "Macallan",
+      "country": "Scotland",
+      "category": "Single Malt",
+      "age": "18Y",
+      "volume": "700ml",
+      "price": 499,
+      "img": "https://lh3.googleusercontent.com/u/0/d/1cJtVOMwLNNunzV7oNRq75C8ZEgJOaU_6",
+      "description": "Complex and elegant with rich dried fruits, spices, and chocolate orange."
+    },
+    {
+      "id": 3,
+      "name": "Glenfiddich 15Y",
+      "brand": "Glenfiddich",
+      "country": "Scotland",
+      "category": "Single Malt",
+      "age": "15Y",
+      "volume": "700ml",
+      "price": 129,
+      "img": "https://lh3.googleusercontent.com/u/0/d/11z3jLyd9JwcWtSER5VZpqaN7_aGz93n9",
+      "description": "Unique Solera vatting delivers rich notes of honey, vanilla, and warm spices."
+    },
+    {
+      "id": 4,
+      "name": "Octomore 10.3",
+      "brand": "Octomore",
+      "country": "Scotland",
+      "category": "Single Malt",
+      "age": "NAS",
+      "volume": "700ml",
+      "price": 299,
+      "img": "https://lh3.googleusercontent.com/u/0/d/1cJtVOMwLNNunzV7oNRq75C8ZEgJOaU_6",
+      "description": "Heavy peat and exceptional balance. 167ppm phenol."
+    },
+    {
+      "id": 5,
+      "name": "Yamazaki 12Y",
+      "brand": "Yamazaki",
+      "country": "Japan",
+      "category": "Single Malt",
+      "age": "12Y",
+      "volume": "700ml",
+      "price": 199,
+      "img": "https://lh3.googleusercontent.com/u/0/d/1hkLPTMM91Xel_ecp7ffGFPdI-fRZqesI",
+      "description": "Delicate and complex with citrus, grapefruit, and Japanese oak notes."
+    },
+    {
+      "id": 6,
+      "name": "Yamazaki 18Y",
+      "brand": "Yamazaki",
+      "country": "Japan",
+      "category": "Single Malt",
+      "age": "18Y",
+      "volume": "700ml",
+      "price": 399,
+      "img": "https://lh3.googleusercontent.com/u/0/d/1hkLPTMM91Xel_ecp7ffGFPdI-fRZqesI",
+      "description": "Rich and graceful with dried fruit, Mizunara oak, and subtle spices."
+    },
+    {
+      "id": 7,
+      "name": "Hibiki 21Y",
+      "brand": "Hibiki",
+      "country": "Japan",
+      "category": "Blended",
+      "age": "21Y",
+      "volume": "700ml",
+      "price": 459,
+      "img": "https://lh3.googleusercontent.com/u/0/d/1TyCVq4D8dko3tZuVYcFJ6xgQdTp_7nfH",
+      "description": "Harmonious blend with aged grain and malt, offering dried fruit and honey."
+    },
+    {
+      "id": 8,
+      "name": "Hakushu 12Y",
+      "brand": "Hakushu",
+      "country": "Japan",
+      "category": "Single Malt",
+      "age": "12Y",
+      "volume": "700ml",
+      "price": 189,
+      "img": "https://lh3.googleusercontent.com/u/0/d/1U1tJkI-dyWw-yK5mJPm8oKzsRWCBI9_5",
+      "description": "Fresh and herbal with notes of grapefruit, pear, and subtle peat."
+    },
+    {
+      "id": 9,
+      "name": "Kavalan Concert",
+      "brand": "Kavalan",
+      "country": "Taiwan",
+      "category": "Single Malt",
+      "age": "NAS",
+      "volume": "700ml",
+      "price": 89,
+      "img": "https://lh3.googleusercontent.com/u/0/d/15ij09mVuQVvTMVEwq0eQ7-0q80VLKjTm",
+      "description": "Smooth and fruity with notes of tropical fruits, vanilla, and oak."
+    },
+    {
+      "id": 10,
+      "name": "Kavalan Solo",
+      "brand": "Kavalan",
+      "country": "Taiwan",
+      "category": "Single Malt",
+      "age": "NAS",
+      "volume": "700ml",
+      "price": 69,
+      "img": "https://lh3.googleusercontent.com/u/0/d/15ij09mVuQVvTMVEwq0eQ7-0q80VLKjTm",
+      "description": "Light and refreshing with citrus, honey, and gentle spices."
+    },
+    {
+      "id": 11,
+      "name": "Omar Sherry",
+      "brand": "Omar",
+      "country": "Taiwan",
+      "category": "Single Malt",
+      "age": "NAS",
+      "volume": "700ml",
+      "price": 99,
+      "img": "https://lh3.googleusercontent.com/u/0/d/15ij09mVuQVvTMVEwq0eQ7-0q80VLKjTm",
+      "description": "Rich sherry cask influence with dried fruits and spices."
+    },
+    {
+      "id": 12,
+      "name": "W.L. Weller 12Y",
+      "brand": "W.L. Weller",
+      "country": "USA",
+      "category": "Bourbon",
+      "age": "12Y",
+      "volume": "750ml",
+      "price": 79,
+      "img": "https://lh3.googleusercontent.com/u/0/d/15ij09mVuQVvTMVEwq0eQ7-0q80VLKjTm",
+      "description": "Sweet and smooth with notes of caramel, vanilla, and wheat."
+    },
+    {
+      "id": 13,
+      "name": "Jack Daniel's No.7",
+      "brand": "Jack Daniel's",
+      "country": "USA",
+      "category": "Bourbon",
+      "age": "NAS",
+      "volume": "1000ml",
+      "price": 59,
+      "img": "https://lh3.googleusercontent.com/u/0/d/15ij09mVuQVvTMVEwq0eQ7-0q80VLKjTm",
+      "description": "Classic Tennessee whiskey with charcoal mellowing, sweet oak, and vanilla."
+    },
+    {
+      "id": 14,
+      "name": "Glenlivet 15Y",
+      "brand": "Glenlivet",
+      "country": "Scotland",
+      "category": "Single Malt",
+      "age": "15Y",
+      "volume": "700ml",
+      "price": 149,
+      "img": "https://lh3.googleusercontent.com/u/0/d/15ij09mVuQVvTMVEwq0eQ7-0q80VLKjTm",
+      "description": "Rich and fruity with French oak spice and honey sweetness."
+    },
+    {
+      "id": 15,
+      "name": "Talisker 18Y",
+      "brand": "Talisker",
+      "country": "Scotland",
+      "category": "Single Malt",
+      "age": "18Y",
+      "volume": "700ml",
+      "price": 229,
+      "img": "https://lh3.googleusercontent.com/u/0/d/15ij09mVuQVvTMVEwq0eQ7-0q80VLKjTm",
+      "description": "Full-bodied with coastal smoke, pepper, and dark chocolate."
+    }
+  ],
+  "filters": [
+    {
+      "id": "country",
+      "label": "Country",
+      "values": [
+        "Scotland",
+        "Japan",
+        "Taiwan",
+        "USA"
+      ]
+    },
+    {
+      "id": "brand",
+      "label": "Brand",
+      "values": [
+        "Macallan",
+        "Glenfiddich",
+        "Yamazaki",
+        "Kavalan",
+        "Octomore",
+        "Hibiki",
+        "Hakushu",
+        "Glenlivet",
+        "Talisker",
+        "W.L. Weller",
+        "Jack Daniel's",
+        "Omar"
+      ]
+    },
+    {
+      "id": "volume",
+      "label": "Volume",
+      "values": [
+        "700ml",
+        "750ml",
+        "1000ml"
+      ]
+    },
+    {
+      "id": "price",
+      "label": "Price",
+      "values": []
+    }
+  ]
+}

@@ -1,5 +1,7 @@
-// Shared in-memory data store for all pages
-// This persists during dev server lifetime
+import fs from 'fs'
+import path from 'path'
+
+const DATA_FILE = path.join(process.cwd(), '.wishliquor-data.json')
 
 export interface Product {
   id: number
@@ -27,30 +29,20 @@ export interface SiteSettings {
   contactEmail: string
   ubn: string
   colors: Record<string, string>
-  hero: {
-    title: string
-    subtitle: string
-    ctaText: string
-  }
-  navigation: Array<{
-    label: string
-    href?: string
-    sub?: Array<{ label: string; href?: string; sub?: Array<{ label: string; href: string }> }>
-  }>
-  footer: {
-    brand: string
-    description: string
-    featuredLinks: string[]
-    whiskyTypes: string[]
-    aboutLinks: string[]
-  }
+  hero: { title: string; subtitle: string; ctaText: string }
+  navigation: Array<{ label: string; href?: string; sub?: Array<{ label: string; href?: string; sub?: Array<{ label: string; href: string }> }> }>
+  footer: { brand: string; description: string; logoUrl: string; logoWidth: number; logoHeight: number; copyright: string; featuredLinks: string[]; whiskyTypes: string[]; aboutLinks: string[] }
 }
 
-// Design page types
-export interface DesignBlock {
-  id: string
-  label: string
-  labelZh: string
+export interface DesignBlock { id: string; label: string; labelZh: string }
+
+interface DataRecord {
+  products?: Product[]
+  filters?: FilterOption[]
+  settings?: SiteSettings
+  assignments?: Record<string, string>
+  blockColors?: Record<string, string>
+  blocks?: DesignBlock[]
 }
 
 const defaultProducts: Product[] = [
@@ -79,162 +71,73 @@ const defaultFilters: FilterOption[] = [
 ]
 
 const defaultSettings: SiteSettings = {
-  siteName: 'wishliquor.co',
-  logo: 'W',
-  logoUrl: '/Logo.png',
-  contactEmail: 'wishliquor@outlook.com',
-  ubn: '83120142',
-  colors: {
-    background: '#FFFFFF',
-    text: '#333333',
-    cardBackground: '#FFFFFF',
-    cardBorder: '#E5E7EB',
-    primary: '#DC2626',
-    secondary: '#6B7280',
-    accent: '#C9A227',
-    navBackground: '#DC2626',
-    navText: '#FFFFFF',
-    navHover: '#FCD34D',
-    navDropdownBg: '#DC2626',
-    navDropdownText: '#FFFFFF',
-    navDropdownHover: '#FCD34D',
-    navDropdownLabel: '#FFFFFF',
-    buttonPrimary: '#C9A227',
-    buttonAccent: '#DC2626',
-    footerBackground: '#F9FAFB',
-    footerText: '#333333',
-    footerMuted: '#6B7280',
-    heroBackground: '#FFFFFF',
-    heroText: '#333333',
-    heroAccent: '#C9A227',
-  },
-  hero: {
-    title: 'Explore World Whiskies',
-    subtitle: 'Premium selection of fine whiskies from Scotland, Japan, Taiwan and beyond — delivered to your door',
-    ctaText: 'Shop Now',
-  },
+  siteName: 'wishliquor.co', logo: 'W', logoUrl: '/Logo.png',
+  contactEmail: 'wishliquor@outlook.com', ubn: '83120142',
+  colors: { background: '#FFFFFF', text: '#333333', cardBackground: '#FFFFFF', cardBorder: '#E5E7EB', primary: '#DC2626', secondary: '#6B7280', accent: '#C9A227', navBackground: '#DC2626', navText: '#FFFFFF', navHover: '#FCD34D', navDropdownBg: '#DC2626', navDropdownText: '#FFFFFF', navDropdownHover: '#FCD34D', navDropdownLabel: '#FFFFFF', buttonPrimary: '#C9A227', buttonAccent: '#DC2626', footerBackground: '#F9FAFB', footerText: '#333333', footerMuted: '#6B7280', heroBackground: '#FFFFFF', heroText: '#333333', heroAccent: '#C9A227' },
+  hero: { title: 'Explore World Whiskies', subtitle: 'Premium selection of fine whiskies from Scotland, Japan, Taiwan and beyond — delivered to your door', ctaText: 'Shop Now' },
   navigation: [
     { label: 'Whisky', href: '/shop', sub: [
-      { label: 'Scotland', sub: [
-        { label: 'Macallan', href: '/shop?brand=macallan' },
-        { label: 'Octomore', href: '/shop?brand=octomore' },
-        { label: 'Johnnie Walker', href: '/shop?brand=johnnie-walker' },
-        { label: 'Royal Salute', href: '/shop?brand=royal-salute' },
-      ]},
-      { label: 'Japanese', sub: [
-        { label: 'Yamazaki', href: '/shop?brand=yamazaki' },
-        { label: 'Hakushu', href: '/shop?brand=hakushu' },
-        { label: 'Hibiki', href: '/shop?brand=hibiki' },
-      ]},
-      { label: 'American', sub: [
-        { label: 'W.L. Weller', href: '/shop?brand=w-l-weller' },
-        { label: "Jack Daniel's", href: '/shop?brand=jack-daniels' },
-      ]},
-      { label: 'Taiwan', sub: [
-        { label: 'Kavalan', href: '/shop?brand=kavalan' },
-        { label: 'Omar', href: '/shop?brand=omar' },
-      ]},
+      { label: 'Scotland', sub: [{ label: 'Macallan', href: '/shop?brand=macallan' }, { label: 'Octomore', href: '/shop?brand=octomore' }, { label: 'Johnnie Walker', href: '/shop?brand=johnnie-walker' }, { label: 'Royal Salute', href: '/shop?brand=royal-salute' }] },
+      { label: 'Japanese', sub: [{ label: 'Yamazaki', href: '/shop?brand=yamazaki' }, { label: 'Hakushu', href: '/shop?brand=hakushu' }, { label: 'Hibiki', href: '/shop?brand=hibiki' }] },
+      { label: 'American', sub: [{ label: 'W.L. Weller', href: '/shop?brand=w-l-weller' }, { label: "Jack Daniel's", href: '/shop?brand=jack-daniels' }] },
+      { label: 'Taiwan', sub: [{ label: 'Kavalan', href: '/shop?brand=kavalan' }, { label: 'Omar', href: '/shop?brand=omar' }] },
     ]},
-    { label: 'Other Drinks', href: '/shop?category=other-drinks' },
-    { label: 'Gin', href: '/shop?category=gin' },
-    { label: 'Rum', href: '/shop?category=rum' },
-    { label: 'Wine', href: '/shop?category=wine' },
-    { label: 'Baijiu', href: '/shop?category=baijiu' },
-    { label: 'Goods', href: '/shop?category=goods' },
-    { label: 'Contact', href: '/contact' },
+    { label: 'Other Drinks', href: '/shop?category=other-drinks' }, { label: 'Gin', href: '/shop?category=gin' },
+    { label: 'Rum', href: '/shop?category=rum' }, { label: 'Wine', href: '/shop?category=wine' },
+    { label: 'Baijiu', href: '/shop?category=baijiu' }, { label: 'Goods', href: '/shop?category=goods' }, { label: 'Contact', href: '/contact' },
   ],
-  footer: {
-    brand: 'wishliquor.co',
-    description: 'Premium whiskies curated from around the world.',
-    featuredLinks: ['Bars', 'The Whisky Map', 'Reviews', 'News', 'Events'],
-    whiskyTypes: ['Single Malt', 'Sherry Cask', 'Peated', 'Bourbon Cask', 'Independent'],
-    aboutLinks: ['Shipping', 'Privacy', 'Terms', 'Contact'],
-  },
+  footer: { brand: 'wishliquor.co', description: 'Premium whiskies curated from around the world.', logoUrl: '/Logo.png', logoWidth: 120, logoHeight: 40, copyright: '© 2026 wishliquor.co All rights reserved.', featuredLinks: ['Bars', 'The Whisky Map', 'Reviews', 'News', 'Events'], whiskyTypes: ['Single Malt', 'Sherry Cask', 'Peated', 'Bourbon Cask', 'Independent'], aboutLinks: ['Shipping', 'Privacy', 'Terms', 'Contact'] },
 }
 
-// In-memory store (persists during dev server lifetime)
-class DataStore {
-  private products: Product[] = [...defaultProducts]
-  private filters: FilterOption[] = [...defaultFilters]
-  private settings: SiteSettings = { ...defaultSettings }
-  private assignments: Record<string, string> = {}
-  private blockColors: Record<string, string> = {}
-  private blocks: DesignBlock[] = []
+const defaultDesignData = {
+  assignments: {},
+  blockColors: {},
+  blocks: [] as DesignBlock[],
+}
 
-  // Products
-  getProducts(): Product[] {
-    return [...this.products]
+class PersistentStore {
+  private data: DataRecord = {}
+
+  constructor() {
+    this.load()
   }
 
-  setProducts(products: Product[]): void {
-    this.products = products
-  }
-
-  // Filters
-  getFilters(): FilterOption[] {
-    return [...this.filters]
-  }
-
-  setFilters(filters: FilterOption[]): void {
-    this.filters = filters
-  }
-
-  // Settings
-  getSettings(): SiteSettings {
-    return { ...this.settings }
-  }
-
-  setSettings(settings: SiteSettings): void {
-    this.settings = settings
-  }
-
-  // Design data (assignments, blockColors, blocks)
-  getAssignments(): Record<string, string> {
-    return { ...this.assignments }
-  }
-
-  setAssignments(assignments: Record<string, string>): void {
-    this.assignments = assignments
-  }
-
-  getBlockColors(): Record<string, string> {
-    return { ...this.blockColors }
-  }
-
-  setBlockColors(blockColors: Record<string, string>): void {
-    this.blockColors = blockColors
-  }
-
-  getBlocks(): DesignBlock[] {
-    return [...this.blocks]
-  }
-
-  setBlocks(blocks: DesignBlock[]): void {
-    this.blocks = blocks
-  }
-
-  // Get all data at once
-  getAll(): { products: Product[]; filters: FilterOption[]; settings: SiteSettings; assignments: Record<string, string>; blockColors: Record<string, string>; blocks: DesignBlock[] } {
-    return {
-      products: this.products.length > 0 ? this.products : [],
-      filters: this.filters.length > 0 ? this.filters : [],
-      settings: this.settings,
-      assignments: this.assignments,
-      blockColors: this.blockColors,
-      blocks: this.blocks,
+  private load() {
+    try {
+      if (fs.existsSync(DATA_FILE)) {
+        const raw = fs.readFileSync(DATA_FILE, 'utf-8')
+        this.data = JSON.parse(raw)
+      }
+    } catch (e) {
+      this.data = {}
     }
   }
 
-  // Reset to defaults
-  reset(): void {
-    this.products = [...defaultProducts]
-    this.filters = [...defaultFilters]
-    this.settings = { ...defaultSettings }
-    this.assignments = {}
-    this.blockColors = {}
-    this.blocks = []
+  private save() {
+    try {
+      fs.writeFileSync(DATA_FILE, JSON.stringify(this.data, null, 2), 'utf-8')
+    } catch (e) {
+      console.error('Failed to save data:', e)
+    }
   }
+
+  getAll() {
+    return {
+      products: this.data.products ?? defaultProducts,
+      filters: this.data.filters ?? defaultFilters,
+      settings: this.data.settings ?? defaultSettings,
+      assignments: this.data.assignments ?? defaultDesignData.assignments,
+      blockColors: this.data.blockColors ?? defaultDesignData.blockColors,
+      blocks: this.data.blocks ?? defaultDesignData.blocks,
+    }
+  }
+
+  setProducts(products: Product[]) { this.data.products = products; this.save() }
+  setFilters(filters: FilterOption[]) { this.data.filters = filters; this.save() }
+  setSettings(settings: SiteSettings) { this.data.settings = settings; this.save() }
+  setAssignments(assignments: Record<string, string>) { this.data.assignments = assignments; this.save() }
+  setBlockColors(blockColors: Record<string, string>) { this.data.blockColors = blockColors; this.save() }
+  setBlocks(blocks: DesignBlock[]) { this.data.blocks = blocks; this.save() }
 }
 
-// Singleton instance
-export const dataStore = new DataStore()
+export const dataStore = new PersistentStore()

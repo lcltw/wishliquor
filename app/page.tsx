@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useData } from './context/DataContext'
 
 // Icons
 const Icons = {
@@ -10,13 +11,9 @@ const Icons = {
   ChevronDown: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 256 256" fill="currentColor"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></svg>,
   Close: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 256 256" fill="currentColor"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg>,
   Menu: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 256 256" fill="currentColor"><path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z"/></svg>,
-  Filter: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256" fill="currentColor"><path d="M200,136a8,8,0,0,1-8,8H64a8,8,0,0,1,0-16H192A8,8,0,0,1,200,136Zm32-56H24a8,8,0,0,0-8,8v64a8,8,0,0,0,16,0V96H208v56a8,8,0,0,0,16,0V88A8,8,0,0,0,232,80Z"/></svg>,
+  Filter: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="8" cy="6" r="2" fill="currentColor" stroke="none"/><circle cx="16" cy="12" r="2" fill="currentColor" stroke="none"/><circle cx="10" cy="18" r="2" fill="currentColor" stroke="none"/></svg>,
   Check: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12"/></svg>,
 }
-
-// Product data
-// Products loaded from localStorage - no hardcoded data
-const products: any[] = []
 
 // Filter options
 const filterOptions = {
@@ -124,126 +121,39 @@ const defaultSiteSettings = {
   },
 }
 
-// Helper to load data from localStorage
-function loadFromStorage<T>(key: string, fallback: T): T {
-  if (typeof window === 'undefined') return fallback
-  try {
-    const saved = localStorage.getItem(key)
-    if (saved) return JSON.parse(saved)
-  } catch (e) {}
-  return fallback
-}
-
 export default function HomePage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [cartOpen, setCartOpen] = useState(false)
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
-  const [selectedProduct, setSelectedProduct] = useState<typeof products[0] | null>(null)
+  const [selectedProduct, setSelectedProduct] = useState<any | null>(null)
   const [toast, setToast] = useState('')
   const [cart, setCart] = useState<CartItem[]>([])
   
-  // Load initial data from localStorage (must be in useEffect to avoid SSR issues)
-  const [productList, setProductList] = useState<any[]>(products)
-  const [siteSettings, setSiteSettings] = useState(defaultSiteSettings)
+    // Use DataContext as single source of truth — no local state duplication
+  const { products: productList, settings: siteSettings, filters, isLoaded } = useData()
   const [filterOpts, setFilterOpts] = useState(filterOptions)
 
-  // Load data - localStorage first (admin saves here), then sync with API
+  // Keep filterOpts in sync when context filters change
   useEffect(() => {
-    if (typeof window === 'undefined') return
-    
-    // First, try localStorage (source of truth for admin edits)
-    const savedProducts = localStorage.getItem('wishliquor_products')
-    const savedSettings = localStorage.getItem('wishliquor_site_settings')
-    const savedFilters = localStorage.getItem('wishliquor_filters')
-    
-    if (savedProducts) {
-      try {
-        const parsed = JSON.parse(savedProducts)
-        if (parsed.length > 0) setProductList(parsed)
-      } catch (e) {}
+    if (filters && filters.length > 0) {
+      setFilterOpts({
+        country: filters.find((f: any) => f.id === 'country')?.values || ['Scotland', 'Japan', 'Taiwan', 'USA'],
+        brand: filters.find((f: any) => f.id === 'brand')?.values || ['Macallan', 'Glenfiddich'],
+        volume: filters.find((f: any) => f.id === 'volume')?.values || ['700ml', '750ml', '1000ml'],
+        price: filterOptions.price,
+      })
     }
-    if (savedSettings) {
-      try {
-        const parsed = JSON.parse(savedSettings)
-        if (parsed && Object.keys(parsed).length > 0) setSiteSettings(parsed)
-      } catch (e) {}
-    }
-    if (savedFilters) {
-      try {
-        const parsed = JSON.parse(savedFilters)
-        if (parsed.length > 0) {
-          setFilterOpts({
-            country: parsed.find((f: any) => f.id === 'country')?.values || ['Scotland', 'Japan', 'Taiwan', 'USA'],
-            brand: parsed.find((f: any) => f.id === 'brand')?.values || ['Macallan', 'Glenfiddich'],
-            volume: parsed.find((f: any) => f.id === 'volume')?.values || ['700ml', '750ml', '1000ml'],
-            price: filterOptions.price,
-          })
-        }
-      } catch (e) {}
-    }
-    
-    // Only fetch from API if localStorage is empty (fallback)
-    if (!savedProducts || JSON.parse(savedProducts || '[]').length === 0) {
-      fetch('/api/shared-data')
-        .then(res => res.json() as { products?: any[]; settings?: any })
-        .then(data => {
-          if (typeof window !== 'undefined' && data.products && data.products.length > 0) {
-            localStorage.setItem('wishliquor_products', JSON.stringify(data.products))
-            setProductList(data.products)
-          }
-          if (typeof window !== 'undefined' && data.settings && Object.keys(data.settings).length > 0) {
-            localStorage.setItem('wishliquor_site_settings', JSON.stringify(data.settings))
-            setSiteSettings(data.settings)
-          }
-        })
-        .catch(err => console.error('API sync failed:', err))
-    }
-  }, [])
-
-  // Poll localStorage for quick updates from same-browser admin tab (every 1s)
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-    
-    const checkForUpdates = () => {
-      // Quick check localStorage first (no network)
-      const savedProducts = localStorage.getItem('wishliquor_products')
-      if (savedProducts) {
-        try {
-          const parsed = JSON.parse(savedProducts)
-          if (parsed.length > 0) setProductList(parsed)
-        } catch (e) {}
-      }
-      const savedFilters = localStorage.getItem('wishliquor_filters')
-      if (savedFilters) {
-        try {
-          const parsed = JSON.parse(savedFilters)
-          if (parsed.length > 0) {
-            setFilterOpts({
-              country: parsed.find((f: any) => f.id === 'country')?.values || ['Scotland', 'Japan', 'Taiwan', 'USA'],
-              brand: parsed.find((f: any) => f.id === 'brand')?.values || ['Macallan', 'Glenfiddich'],
-              volume: parsed.find((f: any) => f.id === 'volume')?.values || ['700ml', '750ml', '1000ml'],
-              price: filterOptions.price,
-            })
-          }
-        } catch (e) {}
-      }
-      const savedSettings = localStorage.getItem('wishliquor_site_settings')
-      if (savedSettings) {
-        try {
-          const parsed = JSON.parse(savedSettings)
-          if (parsed && Object.keys(parsed).length > 0) setSiteSettings(parsed)
-        } catch (e) {}
-      }
-    }
-
-    const interval = setInterval(checkForUpdates, 1000)
-    return () => clearInterval(interval)
-  }, [])
+  }, [filters])
 
   const [expandedSections, setExpandedSections] = useState<string[]>(['Country', 'Brand'])
   const [selectedFilters, setSelectedFilters] = useState<Record<string, string[]>>({ country: [], brand: [], volume: [], price: [] })
   const [searchQuery, setSearchQuery] = useState('')
+
+  // Early return AFTER all hooks
+  if (!isLoaded) {
+    return <div style={{ minHeight: '100vh' }} />
+  }
 
   const toggleSection = (title: string) => {
     setExpandedSections(prev => prev.includes(title) ? prev.filter(s => s !== title) : [...prev, title])
@@ -276,7 +186,7 @@ export default function HomePage() {
     return true
   })
 
-  const addToCart = (product: typeof products[0]) => {
+  const addToCart = (product: any) => {
     setCart(prev => {
       const existing = prev.find(item => item.id === product.id)
       if (existing) return prev.map(item => item.id === product.id ? { ...item, qty: item.qty + 1 } : item)
@@ -510,11 +420,12 @@ export default function HomePage() {
               <div className="w-full max-w-3xl max-h-[90vh] overflow-hidden pointer-events-auto" style={{ backgroundColor: s.cardBackground }}>
                 <div className="grid md:grid-cols-2">
                   <div className="aspect-square"><img src={selectedProduct.img} alt={selectedProduct.name} className="w-full h-full object-cover" suppressHydrationWarning /></div>
-                  <div className="p-6 md:p-8 flex flex-col justify-center relative">
-                    <button onClick={() => setSelectedProduct(null)} className="absolute top-2 right-2 md:top-4 md:right-4 p-2" style={{ backgroundColor: '#F3F4F6' }}><Icons.Close /></button>
+                  <div className="p-6 md:p-8 flex flex-col justify-center relative" style={{ backgroundColor: s.cardBackground }}>
+                    <button onClick={() => setSelectedProduct(null)} className="absolute top-2 right-2 md:top-4 md:right-4 p-2" style={{ backgroundColor: s.cardBackground }}><Icons.Close /></button>
                     <p className="text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: s.primary }}>{selectedProduct.country}</p>
                     <h2 className="text-xl md:text-2xl font-bold mb-2" style={{ color: s.text }}>{selectedProduct.name}</h2>
-                    <p className="mb-4" style={{ color: '#6B7280' }}>{selectedProduct.category} • {selectedProduct.age} • {selectedProduct.volume}</p>
+                    <p className="mb-1" style={{ color: s.secondary }}>{selectedProduct.category} • {selectedProduct.age} • {selectedProduct.volume}</p>
+                    <p className="mb-4 text-sm leading-relaxed" style={{ color: s.secondary }}>{selectedProduct.description}</p>
                     <p className="text-2xl md:text-3xl font-bold mb-6" style={{ color: s.text }}>${selectedProduct.price}</p>
                     <button onClick={() => { addToCart(selectedProduct); setSelectedProduct(null); }}
                       className="w-full py-3 md:py-4 text-white font-semibold" style={{ backgroundColor: s.buttonPrimary }}>Add to Cart</button>
@@ -586,11 +497,17 @@ export default function HomePage() {
       {/* Footer */}
       <footer style={{ backgroundColor: s.footerBackground, borderTop: `1px solid ${s.cardBorder}` }} className="mt-16">
         <div className="max-w-7xl mx-auto px-4 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+            {siteSettings?.footer?.logoUrl && (
+              <div>
+                <img src={siteSettings.footer.logoUrl} alt="footer logo"
+                  style={{ width: siteSettings.footer.logoWidth || 120, height: siteSettings.footer.logoHeight || 40, objectFit: 'contain' }}
+                  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
+              </div>
+            )}
             <div>
               <h4 className="font-semibold mb-4" style={{ color: s.footerText }}>{siteSettings?.footer?.brand}</h4>
               <p className="text-sm mb-4" style={{ color: s.footerMuted }}>{siteSettings?.footer?.description}</p>
-              <p className="text-sm mb-4" style={{ color: s.footerMuted }}>Your trusted online selection.</p>
               <div className="text-sm" style={{ color: s.footerMuted }}>
                 <p className="mb-1">{siteSettings.contactEmail}</p>
                 <p>UBN: {siteSettings.ubn}</p>
