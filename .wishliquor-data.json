@@ -29,8 +29,8 @@
       "heroAccent": "#C9A227"
     },
     "hero": {
-      "title": "Internal testing",
-      "subtitle": "Coming soon",
+      "title": "Explore World Whiskies",
+      "subtitle": "Premium selection of fine whiskies from Scotland, Japan, Taiwan and beyond — delivered to your door",
       "ctaText": "Shop Now"
     },
     "navigation": [
@@ -163,7 +163,7 @@
     },
     "content": {
       "pageTitle": "wishliquor.co | Your Whiskey Wishes",
-      "pageDescription": "Find the dram you’ve been wishing for",
+      "pageDescription": "Find the dram you've been wishing for",
       "featuredTitle": "Featured Products",
       "featuredSubtitle": "From your Wishlist to your Collection",
       "aboutTitle": "About Us",
