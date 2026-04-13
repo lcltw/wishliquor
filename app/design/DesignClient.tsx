@@ -960,9 +960,10 @@ export default function DesignClient({ initialData }: DesignClientProps) {
               <div className="max-w-6xl mx-auto">
                 <div className="grid grid-cols-4 gap-8">
                   {settings?.footer?.logoUrl && (
-                    <div>
+                    <div className="text-left">
                       <img src={settings.footer.logoUrl} alt="footer logo"
-                        style={{ width: settings.footer.logoWidth || 120, height: settings.footer.logoHeight || 40, objectFit: 'contain' }}
+                        className="h-auto w-full lg:w-auto"
+                        style={{ height: settings.footer.logoHeight || 40, objectFit: 'contain' }}
                         onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
                     </div>
                   )}

@@ -499,9 +499,10 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 py-12">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
             {siteSettings?.footer?.logoUrl && (
-              <div>
+              <div className="text-left">
                 <img src={siteSettings.footer.logoUrl} alt="footer logo"
-                  style={{ width: siteSettings.footer.logoWidth || 120, height: siteSettings.footer.logoHeight || 40, objectFit: 'contain' }}
+                  className="h-auto w-full lg:w-auto"
+                  style={{ height: siteSettings.footer.logoHeight || 40, objectFit: 'contain' }}
                   onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
               </div>
             )}
