@@ -29,7 +29,7 @@ interface SiteSettings {
     aboutTitle: string
     aboutText: string
   }
-  footer: { brand: string; description: string; logoUrl: string; logoWidth: number; logoHeight: number; logoAspectLocked: boolean; copyright: string; featuredLinks: string[]; whiskyTypes: string[]; aboutLinks: string[] }
+  footer: { brand: string; description: string; logoUrl: string; logoWidth: number; logoHeight: number; logoAspectLocked: boolean; copyright: string; columns: Array<{ title: string; links: string[] }> }
 }
 
 // 每個大項的顏色 key → 區塊 id
@@ -148,9 +148,11 @@ const defaultSettings: SiteSettings = {
     logoHeight: 40,
     logoAspectLocked: true,
     copyright: '© 2026 wishliquor.co All rights reserved.',
-    featuredLinks: ['Bars', 'The Whisky Map', 'Reviews', 'News', 'Events'],
-    whiskyTypes: ['Single Malt', 'Sherry Cask', 'Peated', 'Bourbon Cask', 'Independent'],
-    aboutLinks: ['Shipping', 'Privacy', 'Terms', 'Contact'],
+    columns: [
+      { title: 'Featured', links: ['Bars', 'The Whisky Map', 'Reviews', 'News', 'Events'] },
+      { title: 'Whisky Type', links: ['Single Malt', 'Sherry Cask', 'Peated', 'Bourbon Cask', 'Independent'] },
+      { title: 'About', links: ['Shipping', 'Privacy', 'Terms', 'About Us', 'Contact Us'] },
+    ],
   },
   content: {
     pageTitle: 'wishliquor.co | Your Whiskey Wishes',
@@ -208,6 +210,9 @@ interface DesignClientProps {
 }
 
 export default function DesignClient({ initialData }: DesignClientProps) {
+  // Footer L2 links modal state
+  const [footerLinksModal, setFooterLinksModal] = useState<{ colIndex: number; linkIndex: number; colTitle: string; linkLabel: string } | null>(null)
+
   // Initial state from server-side disk read — no flash on mount
   const [settings, setSettings] = useState<SiteSettings>(() => {
     if (initialData?.settings) {
@@ -831,6 +836,60 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                   <textarea value={settings?.footer?.description} onChange={(e) => { setSettings(prev => ({ ...prev, footer: { ...prev.footer, description: e.target.value } })); }}
                     rows={3} className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500" />
                 </div>
+
+                {/* Footer Columns — L1 + L2 hierarchical editor */}
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="block text-sm font-medium text-gray-700">Footer 欄位（分層）</label>
+                    <button onClick={() => { setSettings(prev => ({ ...prev, footer: { ...prev.footer, columns: [...(prev.footer.columns || []), { title: 'New Column', links: [{ label: 'New Link', content: '' }] }] } })); showToast('已新增欄位') }}
+                      className="px-3 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded hover:bg-amber-200 transition-colors">+ 新增欄位</button>
+                  </div>
+                  <div className="space-y-4">
+                    {(settings?.footer?.columns || []).map((col, ci) => (
+                      <div key={ci} className="border border-gray-200 rounded-lg p-3 bg-gray-50">
+                        {/* L1: Column title — display only */}
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-gray-400 font-medium">L1</span>
+                            <span className="text-sm font-semibold text-gray-700">{col.title}</span>
+                          </div>
+                          <button onClick={() => { setSettings(prev => { const cols = [...(prev.footer.columns || [])]; cols.splice(ci, 1); return { ...prev, footer: { ...prev.footer, columns: cols } }; }); showToast('欄位已移除') }}
+                            className="px-2 py-1.5 text-gray-400 hover:text-red-500 transition-colors"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
+                        </div>
+                        {/* L2: Individual link buttons */}
+                        <div className="mt-2">
+                          <div className="flex items-center gap-1 mb-2">
+                            <span className="text-xs text-gray-400 font-medium">L2</span>
+                            <span className="text-xs text-gray-400">（點擊編輯）</span>
+                          </div>
+                          <div className="flex flex-wrap gap-1.5">
+                            {(col.links || []).map((linkItem: any, li: number) => (
+                              <button key={li}
+                                onClick={() => setFooterLinksModal({ colIndex: ci, linkIndex: li, colTitle: col.title, linkLabel: linkItem.label })}
+                                className="px-2.5 py-1.5 bg-white border border-gray-200 text-gray-600 text-xs rounded-lg hover:border-amber-400 hover:text-amber-600 transition-colors flex items-center gap-1.5"
+                              >
+                                <span className="max-w-20 truncate">{linkItem.label}</span>
+                                {linkItem.content && <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />}
+                                <button onClick={(e) => { e.stopPropagation(); setSettings(prev => { const cols = [...(prev.footer.columns || [])]; const newLinks = [...(cols[ci].links || [])]; newLinks.splice(li, 1); cols[ci] = { ...cols[ci], links: newLinks }; return { ...prev, footer: { ...prev.footer, columns: cols } }; }); showToast('已移除') }}
+                                  className="ml-1 text-gray-400 hover:text-red-500 transition-colors"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                              </button>
+                            ))}
+                            <button onClick={() => { setSettings(prev => { const cols = [...(prev.footer.columns || [])]; const newLinks = [...(cols[ci].links || [])]; newLinks.push({ label: 'New Link', content: '' }); cols[ci] = { ...cols[ci], links: newLinks }; return { ...prev, footer: { ...prev.footer, columns: cols } }; }); showToast('已新增連結') }}
+                              className="px-2.5 py-1.5 border border-dashed border-gray-300 text-gray-400 text-xs rounded-lg hover:border-amber-400 hover:text-amber-600 transition-colors">+</button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Copyright */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Copyright 文字</label>
+                  <input type="text" value={settings?.footer?.copyright || ''} onChange={(e) => { setSettings(prev => ({ ...prev, footer: { ...prev.footer, copyright: e.target.value } })); }}
+                    placeholder="© 2026 wishliquor.co All rights reserved."
+                    className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500" />
+                </div>
               </div>
             )}
 
@@ -959,38 +1018,92 @@ export default function DesignClient({ initialData }: DesignClientProps) {
             <footer title="footerBackground" style={{ backgroundColor: s.footerBackground, borderTop: `1px solid ${s.cardBorder || '#E5E7EB'}` }} className="px-4 py-8 mt-8">
               <div className="max-w-6xl mx-auto">
                 <div className="grid grid-cols-4 gap-8">
-                  {settings?.footer?.logoUrl && (
-                    <div className="text-left">
+                  {/* Logo + Brand Info */}
+                  <div className="text-left">
+                    {settings?.footer?.logoUrl && (
                       <img src={settings.footer.logoUrl} alt="footer logo"
-                        className="h-auto w-full lg:w-auto"
+                        className="h-auto w-full lg:w-auto mb-3"
                         style={{ height: settings.footer.logoHeight || 40, objectFit: 'contain' }}
                         onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
-                    </div>
-                  )}
-                  <div>
-                    <h4 title="footerText" className="font-semibold mb-2" style={{ color: s.footerText }}>{settings?.footer?.brand}</h4>
+                    )}
+                    <h4 title="footerText" className="font-semibold mb-1" style={{ color: s.footerText }}>{settings?.footer?.brand}</h4>
                     <p title="footerMuted" className="text-sm" style={{ color: s.footerMuted }}>{settings?.footer?.description}</p>
-                    <p title="footerMuted" className="text-sm mt-2" style={{ color: s.footerMuted }}>{settings.contactEmail}</p>
+                    <p title="footerMuted" className="text-sm mt-1" style={{ color: s.footerMuted }}>{settings.contactEmail}</p>
                   </div>
-                  <div>
-                    <h4 title="footerText" className="text-sm font-semibold mb-2" style={{ color: s.footerText }}>Featured</h4>
-                    {settings?.footer?.featuredLinks?.slice(0, 3).map((link, i) => (
-                      <p key={i} title="footerMuted" className="text-sm" style={{ color: s.footerMuted }}>{link}</p>
-                    ))}
-                  </div>
-                  <div>
-                    <h4 title="footerText" className="text-sm font-semibold mb-2" style={{ color: s.footerText }}>About</h4>
-                    {settings?.footer?.aboutLinks?.slice(0, 3).map((link, i) => (
-                      <p key={i} title="footerMuted" className="text-sm" style={{ color: s.footerMuted }}>{link}</p>
-                    ))}
-                  </div>
+                  {(settings?.footer?.columns || []).map((col, i) => (
+                    <div key={i}>
+                      <h4 title="footerText" className="text-sm font-semibold mb-2" style={{ color: s.footerText }}>{col.title}</h4>
+                      {(col.links || []).map((linkItem: any, li: number) => (
+                        <p key={li} title="footerMuted" className="text-sm" style={{ color: s.footerMuted }}>{linkItem.label}</p>
+                      ))}
+                    </div>
+                  ))}
                 </div>
-                <p title="footerMuted" className="text-center text-sm mt-8" style={{ color: s.footerMuted }}>© 2026 {settings.siteName} All rights reserved.</p>
+                <p title="footerMuted" className="text-center text-sm mt-8" style={{ color: s.footerMuted }}>{settings.footer.copyright || `© 2026 ${settings.siteName} All rights reserved.`}</p>
               </div>
             </footer>
           </div>
         </div>
       </div>
+
+      {/* Footer Links Modal */}
+      <AnimatePresence>
+        {footerLinksModal !== null && (() => {
+          const colIndex = footerLinksModal.colIndex
+          const linkIndex = footerLinksModal.linkIndex
+          const col = settings?.footer?.columns?.[colIndex]
+          const linkItem = col?.links?.[linkIndex]
+          return (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 flex items-center justify-center p-4"
+              style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
+              onClick={(e) => { if (e.target === e.currentTarget) setFooterLinksModal(null) }}
+            >
+              <motion.div
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.95, opacity: 0 }}
+                className="relative w-full max-w-md rounded-xl shadow-2xl overflow-hidden"
+                style={{ backgroundColor: s.background || '#ffffff' }}
+              >
+                {/* Close button */}
+                <button
+                  onClick={() => setFooterLinksModal(null)}
+                  className="absolute top-3 right-3 p-1.5 rounded-lg transition-colors"
+                  style={{ backgroundColor: s.cardBackground || '#ffffff' }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 256 256" fill="currentColor"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg>
+                </button>
+
+                {/* Modal body */}
+                <div className="p-6 md:p-8 flex flex-col justify-center">
+                  {/* L2 Label */}
+                  <div className="mb-4">
+                    <label className="block text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: s.primary || '#DC2626' }}>L2 標題</label>
+                    <input type="text" value={linkItem?.label || ''}
+                      onChange={(e) => { setSettings(prev => { const cols = [...(prev.footer.columns || [])]; const newLinks = [...(cols[colIndex].links || [])]; newLinks[linkIndex] = { ...newLinks[linkIndex], label: e.target.value }; cols[colIndex] = { ...cols[colIndex], links: newLinks }; return { ...prev, footer: { ...prev.footer, columns: cols } }; }); }}
+                      className="w-full px-4 py-2.5 border-2 rounded-lg text-sm font-semibold outline-none"
+                      style={{ borderColor: s.primary || '#DC2626', color: s.text }} />
+                  </div>
+
+                  {/* L2 Content */}
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: s.primary || '#DC2626' }}>內文</label>
+                    <textarea value={linkItem?.content || ''}
+                      onChange={(e) => { setSettings(prev => { const cols = [...(prev.footer.columns || [])]; const newLinks = [...(cols[colIndex].links || [])]; newLinks[linkIndex] = { ...newLinks[linkIndex], content: e.target.value }; cols[colIndex] = { ...cols[colIndex], links: newLinks }; return { ...prev, footer: { ...prev.footer, columns: cols } }; }); }}
+                      rows={12}
+                      className="w-full px-3 py-2.5 border rounded-lg text-sm outline-none resize-none leading-relaxed"
+                      style={{ borderColor: s.cardBorder || '#D1D5DB', color: s.text }} />
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )
+        })()}
+      </AnimatePresence>
 
       {/* Toast */}
       <AnimatePresence>

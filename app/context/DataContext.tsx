@@ -119,9 +119,29 @@ const defaultSettings: SiteSettings = {
     logoHeight: 40,
     logoAspectLocked: true,
     copyright: '© 2026 wishliquor.co All rights reserved.',
-    featuredLinks: ['Bars', 'The Whisky Map', 'Reviews', 'News', 'Events'],
-    whiskyTypes: ['Single Malt', 'Sherry Cask', 'Peated', 'Bourbon Cask', 'Independent'],
-    aboutLinks: ['Shipping', 'Privacy', 'Terms', 'Contact'],
+    columns: [
+      { title: 'Featured', links: [
+        { label: 'Bars', content: '' },
+        { label: 'The Whisky Map', content: '' },
+        { label: 'Reviews', content: '' },
+        { label: 'News', content: '' },
+        { label: 'Events', content: '' },
+      ]},
+      { title: 'Whisky Type', links: [
+        { label: 'Single Malt', content: '' },
+        { label: 'Sherry Cask', content: '' },
+        { label: 'Peated', content: '' },
+        { label: 'Bourbon Cask', content: '' },
+        { label: 'Independent', content: '' },
+      ]},
+      { title: 'About', links: [
+        { label: 'Shipping', content: `Shipping & Deliveries\n\nDelivery Scope & Lead Times\n\nDelivery Scope: We only accept international orders. We do not offer delivery within Taiwan.\nDispatch Time: All orders are generally dispatched within 1–2 business days, unless otherwise stated.\nInternational Rates: Shipping rates are calculated at checkout based on your delivery location and order weight.\n\nMarketplace & Partner Retailers\nSome products are shipped directly from our partner retailers.\nShipping Policies: Specific shipping policies are displayed under the "Add to Cart" button on each product page.\nSeparate Charges: Orders shipped from different retailers may incur separate shipping charges.\n\nPre-Sales & Exclusive Releases\nFor pre-sale events or exclusive bottlings, estimated dispatch dates will be clearly stated on the product page.\n\nFAQs\n\nWhere do we deliver?\nWe deliver to most residential or business addresses. If your country is not listed at checkout, please contact us at wishliquor@outlook.com for a quote.\n\nHow much is the fee and how long does it take?\nTotal delivery costs and estimated times depend on your location and weight, and will be displayed at checkout.\n\nHow do I track my order?\nYou will receive a tracking number and an email notification once your order is dispatched.\n\nWill I have to sign for my delivery?\nYes, a signature is required upon delivery. Persons ordering alcoholic beverages must be over the legal drinking age in their respective jurisdiction.\n\nContact Us\nFor any inquiries, please contact us at: wishliquor@outlook.com` },
+        { label: 'Privacy', content: '' },
+        { label: 'Terms', content: '' },
+        { label: 'About Us', content: '' },
+        { label: 'Contact Us', content: '' },
+      ]},
+    ],
   },
   content: {
     pageTitle: 'wishliquor.co | Premium Whiskies Curated From Around The World',

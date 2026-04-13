@@ -29,8 +29,8 @@
       "heroAccent": "#C9A227"
     },
     "hero": {
-      "title": "Explore World Whiskies",
-      "subtitle": "Premium selection of fine whiskies from Scotland, Japan, Taiwan and beyond — delivered to your door",
+      "title": "Internal testing",
+      "subtitle": "Coming soon",
       "ctaText": "Shop Now"
     },
     "navigation": [
@@ -154,13 +154,62 @@
         "Shipping",
         "Privacy",
         "Terms",
-        "Contact"
+        "About Us",
+        "Contact Us"
       ],
       "copyright": "© 2026 wishliquor.co All rights reserved.",
       "logoUrl": "/uploads/logo-1776018088897.png",
       "logoWidth": 360,
       "logoHeight": 120,
-      "logoAspectLocked": true
+      "logoAspectLocked": true,
+      "columns": [
+        {
+          "title": "About wishliquor",
+          "links": [
+            {
+              "0": "T",
+              "1": "e",
+              "2": "r",
+              "3": "m",
+              "4": "s",
+              "content": "Shipping & Deliveries\nDelivery Scope & Lead Times\n．Delivery Scope: We only accept international orders. We do not offer delivery within Taiwan.\n．Dispatch Time: All orders are generally dispatched within 1–2 business days, unless otherwise stated.\n．International Rates: Shipping rates are calculated at checkout based on your delivery location and order weight.\n\nMarketplace & Partner Retailers Some products are shipped directly from our partner retailers.\n．Shipping Policies: Specific shipping policies are displayed under the \"Add to Cart\" button on each product page.\n．Separate Charges: Orders shipped from different retailers may incur separate shipping charges.\n\nPre-Sales & Exclusive Releases For pre-sale events or exclusive bottlings, estimated dispatch dates will be clearly stated on the product page.\n\nFAQs\nWhere do we deliver?\nWe deliver to most residential or business addresses. If your country is not listed at checkout, please contact us at wishliquor@outlook.com for a quote.\nHow much is the fee and how long does it take?\nTotal delivery costs and estimated times depend on your location and weight, and will be displayed at checkout.\nHow do I track my order?\nYou will receive a tracking number and an email notification once your order is dispatched.\nWill I have to sign for my delivery?\nYes, a signature is required upon delivery. Persons ordering alcoholic beverages must be over the legal drinking age in their respective jurisdiction.\n\nContact Us For any inquiries, please contact us at: wishliquor@outlook.com",
+              "label": "Shipping Policy"
+            },
+            {
+              "0": "A",
+              "1": "b",
+              "2": "o",
+              "3": "u",
+              "4": "t",
+              "5": " ",
+              "6": "U",
+              "7": "s",
+              "label": "Privacy Policy"
+            },
+            {
+              "0": "C",
+              "1": "o",
+              "2": "n",
+              "3": "t",
+              "4": "a",
+              "5": "c",
+              "6": "t",
+              "7": " ",
+              "8": "U",
+              "9": "s",
+              "label": "Terms and Conditions"
+            },
+            {
+              "label": "About Us",
+              "content": "Company Name: HERO LIQUOR CO., LTD.\nUnified Business Number: 83120142\nDate of Incorporation: September 14, 2020\nRepresentative: LIN CHUANLUNG\nCompany Address: No. 72, Ln. 8, Xuetian Rd., Wuri Dist., Taichung City 414010, Taiwan\nEmail: wishliquor@outlook.com\nContact Number: +886 988 368 626"
+            },
+            {
+              "label": "Contact Us",
+              "content": ""
+            }
+          ]
+        }
+      ]
     },
     "content": {
       "pageTitle": "wishliquor.co Your Whiskey Wishes",

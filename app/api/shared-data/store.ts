@@ -31,7 +31,7 @@ export interface SiteSettings {
   colors: Record<string, string>
   hero: { title: string; subtitle: string; ctaText: string }
   navigation: Array<{ label: string; href?: string; sub?: Array<{ label: string; href?: string; sub?: Array<{ label: string; href: string }> }> }>
-  footer: { brand: string; description: string; logoUrl: string; logoWidth: number; logoHeight: number; logoAspectLocked: boolean; copyright: string; featuredLinks: string[]; whiskyTypes: string[]; aboutLinks: string[] }
+  footer: { brand: string; description: string; logoUrl: string; logoWidth: number; logoHeight: number; logoAspectLocked: boolean; copyright: string; columns: Array<{ title: string; links: Array<{ label: string; content: string }> }> }
 }
 
 export interface DesignBlock { id: string; label: string; labelZh: string }
@@ -86,7 +86,20 @@ const defaultSettings: SiteSettings = {
     { label: 'Rum', href: '/shop?category=rum' }, { label: 'Wine', href: '/shop?category=wine' },
     { label: 'Baijiu', href: '/shop?category=baijiu' }, { label: 'Goods', href: '/shop?category=goods' }, { label: 'Contact', href: '/contact' },
   ],
-  footer: { brand: 'wishliquor.co', description: 'Premium whiskies curated from around the world.', logoUrl: '/Logo.png', logoWidth: 120, logoHeight: 40, logoAspectLocked: true, copyright: '© 2026 wishliquor.co All rights reserved.', featuredLinks: ['Bars', 'The Whisky Map', 'Reviews', 'News', 'Events'], whiskyTypes: ['Single Malt', 'Sherry Cask', 'Peated', 'Bourbon Cask', 'Independent'], aboutLinks: ['Shipping', 'Privacy', 'Terms', 'Contact'] },
+  footer: {
+    brand: 'wishliquor.co',
+    description: 'Premium whiskies curated from around the world.',
+    logoUrl: '/Logo.png',
+    logoWidth: 120,
+    logoHeight: 40,
+    logoAspectLocked: true,
+    copyright: '© 2026 wishliquor.co All rights reserved.',
+    columns: [
+      { title: 'Featured', links: ['Bars', 'The Whisky Map', 'Reviews', 'News', 'Events'] },
+      { title: 'Whisky Type', links: ['Single Malt', 'Sherry Cask', 'Peated', 'Bourbon Cask', 'Independent'] },
+      { title: 'About', links: ['Shipping', 'Privacy', 'Terms', 'About Us', 'Contact Us'] },
+    ],
+  },
 }
 
 const defaultDesignData = {

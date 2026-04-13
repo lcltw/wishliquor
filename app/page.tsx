@@ -128,10 +128,11 @@ export default function HomePage() {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState<any | null>(null)
   const [toast, setToast] = useState('')
+  const [footerModalCol, setFooterModalCol] = useState<{ colIndex: number; linkIndex: number } | null>(null)
   const [cart, setCart] = useState<CartItem[]>([])
   
     // Use DataContext as single source of truth — no local state duplication
-  const { products: productList, settings: siteSettings, filters, isLoaded } = useData()
+  const { products: productList, settings: siteSettings, filters, isLoaded, setSettings: setSiteSettings } = useData()
   const [filterOpts, setFilterOpts] = useState(filterOptions)
 
   // Keep filterOpts in sync when context filters change
@@ -497,47 +498,39 @@ export default function HomePage() {
       {/* Footer */}
       <footer style={{ backgroundColor: s.footerBackground, borderTop: `1px solid ${s.cardBorder}` }} className="mt-16">
         <div className="max-w-7xl mx-auto px-4 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
-            {siteSettings?.footer?.logoUrl && (
-              <div className="text-left">
-                <img src={siteSettings.footer.logoUrl} alt="footer logo"
-                  className="h-auto w-full lg:w-auto"
-                  style={{ height: siteSettings.footer.logoHeight || 40, objectFit: 'contain' }}
-                  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
-              </div>
-            )}
-            <div>
-              <h4 className="font-semibold mb-4" style={{ color: s.footerText }}>{siteSettings?.footer?.brand}</h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* Logo + Brand Info */}
+            <div className="justify-start text-left">
+              {siteSettings?.footer?.logoUrl && (
+                <a href="/">
+                  <img src={siteSettings.footer.logoUrl} alt="footer logo"
+                    className="h-auto w-full lg:w-auto mb-4"
+                    style={{ height: siteSettings.footer.logoHeight || 40, objectFit: 'contain' }}
+                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
+                </a>
+              )}
+              <h4 className="font-semibold mb-2" style={{ color: s.footerText }}>{siteSettings?.footer?.brand}</h4>
               <p className="text-sm mb-4" style={{ color: s.footerMuted }}>{siteSettings?.footer?.description}</p>
               <div className="text-sm" style={{ color: s.footerMuted }}>
                 <p className="mb-1">{siteSettings.contactEmail}</p>
                 <p>UBN: {siteSettings.ubn}</p>
               </div>
             </div>
-            <div>
-              <h4 className="text-sm font-semibold mb-4" style={{ color: s.footerText }}>Featured</h4>
-              <ul className="space-y-2">
-                {siteSettings?.footer?.featuredLinks.map(link => (
-                  <li key={link}><a href="#" className="text-sm" style={{ color: s.footerMuted }}>{link}</a></li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-sm font-semibold mb-4" style={{ color: s.footerText }}>Whisky Type</h4>
-              <ul className="space-y-2">
-                {siteSettings?.footer?.whiskyTypes.map(link => (
-                  <li key={link}><a href="#" className="text-sm" style={{ color: s.footerMuted }}>{link}</a></li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-sm font-semibold mb-4" style={{ color: s.footerText }}>About</h4>
-              <ul className="space-y-2">
-                {siteSettings?.footer?.aboutLinks.map(link => (
-                  <li key={link}><a href="#" className="text-sm" style={{ color: s.footerMuted }}>{link}</a></li>
-                ))}
-              </ul>
-            </div>
+            {(siteSettings?.footer?.columns || []).map((col, i) => (
+              <div key={i}>
+                <p className="text-sm font-semibold mb-4" style={{ color: s.footerText }}>{col.title}</p>
+                <ul className="space-y-2">
+                  {(col.links || []).map((linkItem: any, li: number) => (
+                    <li key={li}>
+                      <button
+                        onClick={() => setFooterModalCol({ colIndex: i, linkIndex: li })}
+                        className="text-sm text-left hover:opacity-70 transition-opacity" style={{ color: s.footerMuted }}
+                      >{linkItem.label}</button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
           <div className="mt-8 pt-8 border-t flex flex-col md:flex-row items-center justify-between gap-4" style={{ borderColor: s.cardBorder }}>
             <div className="flex items-center gap-3">
@@ -545,10 +538,57 @@ export default function HomePage() {
                 <div key={pm} className="px-2 py-1 text-xs" style={{ backgroundColor: '#F3F4F6', color: '#6B7280' }}>{pm}</div>
               ))}
             </div>
-            <p className="text-sm" style={{ color: s.footerMuted }}>© 2026 {siteSettings.siteName} All rights reserved.</p>
+            <p className="text-sm" style={{ color: s.footerMuted }}>{siteSettings?.footer?.copyright || `© 2026 ${siteSettings.siteName} All rights reserved.`}</p>
           </div>
         </div>
       </footer>
+
+      {/* Footer Links Modal */}
+      <AnimatePresence>
+        {footerModalCol !== null && (() => {
+          const colIndex = footerModalCol.colIndex
+          const linkIndex = footerModalCol.linkIndex
+          const col = siteSettings?.footer?.columns?.[colIndex]
+          const linkItem = col?.links?.[linkIndex]
+          return (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 flex items-center justify-center p-4"
+              style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
+              onClick={(e) => { if (e.target === e.currentTarget) setFooterModalCol(null) }}
+            >
+              <motion.div
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.95, opacity: 0 }}
+                className="relative w-full max-w-md shadow-2xl overflow-hidden"
+                style={{ backgroundColor: s.background || '#ffffff' }}
+              >
+                {/* Close */}
+                <button
+                  onClick={() => setFooterModalCol(null)}
+                  className="absolute top-3 right-3 p-1.5 rounded-lg"
+                  style={{ backgroundColor: s.cardBackground || '#ffffff' }}
+                >
+                  <Icons.Close />
+                </button>
+
+                {/* Body — read only */}
+                <div className="p-6 md:p-10 flex flex-col justify-center max-h-[85vh] overflow-y-auto">
+                  {/* L2 Label */}
+                  <h3 className="text-base font-bold mb-4" style={{ color: s.text }}>{linkItem?.label}</h3>
+
+                  {/* L2 Content */}
+                  <div className="text-sm leading-relaxed whitespace-pre-wrap" style={{ color: s.secondary || '#6B7280' }}
+                    dangerouslySetInnerHTML={{ __html: linkItem?.content || '（無內容）' }} />
+                </div>
+              </motion.div>
+            </motion.div>
+          )
+        })()}
+      </AnimatePresence>
     </div>
   )
 }
