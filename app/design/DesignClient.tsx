@@ -21,7 +21,15 @@ interface SiteSettings {
   colors: Record<string, string>
   hero: { title: string; subtitle: string; ctaText: string }
   navigation: NavItem[]
-  footer: { brand: string; description: string; logoUrl: string; logoWidth: number; logoHeight: number; copyright: string; featuredLinks: string[]; whiskyTypes: string[]; aboutLinks: string[] }
+  content: {
+    pageTitle: string
+    pageDescription: string
+    featuredTitle: string
+    featuredSubtitle: string
+    aboutTitle: string
+    aboutText: string
+  }
+  footer: { brand: string; description: string; logoUrl: string; logoWidth: number; logoHeight: number; logoAspectLocked: boolean; copyright: string; featuredLinks: string[]; whiskyTypes: string[]; aboutLinks: string[] }
 }
 
 // 每個大項的顏色 key → 區塊 id
@@ -138,10 +146,19 @@ const defaultSettings: SiteSettings = {
     logoUrl: '/Logo.png',
     logoWidth: 120,
     logoHeight: 40,
+    logoAspectLocked: true,
     copyright: '© 2026 wishliquor.co All rights reserved.',
     featuredLinks: ['Bars', 'The Whisky Map', 'Reviews', 'News', 'Events'],
     whiskyTypes: ['Single Malt', 'Sherry Cask', 'Peated', 'Bourbon Cask', 'Independent'],
     aboutLinks: ['Shipping', 'Privacy', 'Terms', 'Contact'],
+  },
+  content: {
+    pageTitle: 'wishliquor.co | Your Whiskey Wishes',
+    pageDescription: "Find the dram you've been wishing for",
+    featuredTitle: 'Featured Products',
+    featuredSubtitle: 'From your Wishlist to your Collection',
+    aboutTitle: 'About Us',
+    aboutText: 'Wishliquor.co curates the finest whiskies from Scotland, Japan, Taiwan and beyond — delivered straight to your door.',
   },
 }
 
@@ -200,7 +217,7 @@ export default function DesignClient({ initialData }: DesignClientProps) {
     return defaultSettings
   })
 
-  const [activeTab, setActiveTab] = useState<'general' | 'colors' | 'hero' | 'navigation' | 'footer'>('colors')
+  const [activeTab, setActiveTab] = useState<'general' | 'colors' | 'hero' | 'navigation' | 'footer' | 'content'>('colors')
   const [toast, setToast] = useState('')
 
   // 動態區塊列表
@@ -419,6 +436,7 @@ export default function DesignClient({ initialData }: DesignClientProps) {
     { id: 'hero', label: 'Hero' },
     { id: 'navigation', label: 'Navigation' },
     { id: 'footer', label: 'Footer' },
+    { id: 'content', label: 'Content' },
   ]
 
   return (
@@ -738,18 +756,57 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                 {settings?.footer?.logoUrl && (
                   <>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Logo 尺寸（px）</label>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="block text-sm font-medium text-gray-700">Logo 尺寸（px）</label>
+                        <button
+                          onClick={() => { setSettings(prev => ({ ...prev, footer: { ...prev.footer, logoAspectLocked: !prev.footer.logoAspectLocked } })); }}
+                          className={`flex items-center gap-1 px-2 py-1 rounded text-xs font-medium transition-colors ${settings?.footer?.logoAspectLocked ? 'bg-amber-100 text-amber-700' : 'bg-gray-100 text-gray-500'}`}
+                          title={settings?.footer?.logoAspectLocked ? '已鎖定比例，點擊解鎖' : '未鎖定比例，點擊鎖定'}
+                        >
+                          {settings?.footer?.logoAspectLocked
+                            ? <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                            : <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
+                          }
+                          {settings?.footer?.logoAspectLocked ? '鎖定' : '解鎖'}
+                        </button>
+                      </div>
                       <div className="flex gap-3">
                         <div className="flex items-center gap-2">
                           <span className="text-xs text-gray-500">W</span>
                           <input type="number" value={settings?.footer?.logoWidth || 120} min={20} max={400}
-                            onChange={(e) => { setSettings(prev => ({ ...prev, footer: { ...prev.footer, logoWidth: Number(e.target.value) } })); }}
+                            onChange={(e) => {
+                              const newW = Number(e.target.value)
+                              setSettings(prev => {
+                                const aspectRatio = (prev.footer.logoWidth || 120) / (prev.footer.logoHeight || 40)
+                                return {
+                                  ...prev,
+                                  footer: {
+                                    ...prev.footer,
+                                    logoWidth: newW,
+                                    logoHeight: prev.footer.logoAspectLocked ? Math.round(newW / aspectRatio) : prev.footer.logoHeight,
+                                  },
+                                }
+                              })
+                            }}
                             className="w-20 px-2 py-2 border border-gray-300 focus:outline-none focus:border-amber-500 text-sm" />
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="text-xs text-gray-500">H</span>
                           <input type="number" value={settings?.footer?.logoHeight || 40} min={20} max={200}
-                            onChange={(e) => { setSettings(prev => ({ ...prev, footer: { ...prev.footer, logoHeight: Number(e.target.value) } })); }}
+                            onChange={(e) => {
+                              const newH = Number(e.target.value)
+                              setSettings(prev => {
+                                const aspectRatio = (prev.footer.logoWidth || 120) / (prev.footer.logoHeight || 40)
+                                return {
+                                  ...prev,
+                                  footer: {
+                                    ...prev.footer,
+                                    logoHeight: newH,
+                                    logoWidth: prev.footer.logoAspectLocked ? Math.round(newH * aspectRatio) : prev.footer.logoWidth,
+                                  },
+                                }
+                              })
+                            }}
                             className="w-20 px-2 py-2 border border-gray-300 focus:outline-none focus:border-amber-500 text-sm" />
                         </div>
                       </div>
@@ -776,6 +833,42 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                 </div>
               </div>
             )}
+
+            {/* Content Tab */}
+            {activeTab === 'content' && (
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Page Title（Browser Tab）</label>
+                  <input type="text" value={settings?.content?.pageTitle || ''} onChange={(e) => { setSettings(prev => ({ ...prev, content: { ...prev.content, pageTitle: e.target.value } })); }}
+                    className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Page Description（SEO Meta）</label>
+                  <textarea value={settings?.content?.pageDescription || ''} onChange={(e) => { setSettings(prev => ({ ...prev, content: { ...prev.content, pageDescription: e.target.value } })); }}
+                    rows={2} className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Featured Section Title</label>
+                  <input type="text" value={settings?.content?.featuredTitle || ''} onChange={(e) => { setSettings(prev => ({ ...prev, content: { ...prev.content, featuredTitle: e.target.value } })); }}
+                    className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Featured Section Subtitle</label>
+                  <input type="text" value={settings?.content?.featuredSubtitle || ''} onChange={(e) => { setSettings(prev => ({ ...prev, content: { ...prev.content, featuredSubtitle: e.target.value } })); }}
+                    className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">About Section Title</label>
+                  <input type="text" value={settings?.content?.aboutTitle || ''} onChange={(e) => { setSettings(prev => ({ ...prev, content: { ...prev.content, aboutTitle: e.target.value } })); }}
+                    className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">About Section Text</label>
+                  <textarea value={settings?.content?.aboutText || ''} onChange={(e) => { setSettings(prev => ({ ...prev, content: { ...prev.content, aboutText: e.target.value } })); }}
+                    rows={3} className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500" />
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -794,10 +887,10 @@ export default function DesignClient({ initialData }: DesignClientProps) {
             <header style={{ backgroundColor: s.background, borderBottom: `1px solid ${s.cardBorder || '#E5E7EB'}` }}>
               <div className="max-w-6xl mx-auto px-4 py-3">
                 <div className="flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-3">
+                  <a href="/" className="flex items-center gap-3">
                     <img src={settings.logoUrl} alt="logo" className="h-10" />
-                  </div>
-                  <div className="flex items-center gap-2">
+                  </a>
+                  <div className="flex items-center gap-2 sm:gap-4">
                     <button title="buttonPrimary" style={{ backgroundColor: s.buttonPrimary, color: '#fff' }} className="flex items-center gap-2 px-4 py-2 text-sm font-medium">Login</button>
                   </div>
                 </div>

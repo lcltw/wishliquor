@@ -159,10 +159,11 @@
       "copyright": "© 2026 wishliquor.co All rights reserved.",
       "logoUrl": "/uploads/logo-1776018088897.png",
       "logoWidth": 360,
-      "logoHeight": 120
+      "logoHeight": 120,
+      "logoAspectLocked": true
     },
     "content": {
-      "pageTitle": "wishliquor.co | Your Whiskey Wishes",
+      "pageTitle": "wishliquor.co Your Whiskey Wishes",
       "pageDescription": "Find the dram you've been wishing for",
       "featuredTitle": "Featured Products",
       "featuredSubtitle": "From your Wishlist to your Collection",

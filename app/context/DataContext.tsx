@@ -117,6 +117,7 @@ const defaultSettings: SiteSettings = {
     logoUrl: '/Logo.png',
     logoWidth: 120,
     logoHeight: 40,
+    logoAspectLocked: true,
     copyright: '© 2026 wishliquor.co All rights reserved.',
     featuredLinks: ['Bars', 'The Whisky Map', 'Reviews', 'News', 'Events'],
     whiskyTypes: ['Single Malt', 'Sherry Cask', 'Peated', 'Bourbon Cask', 'Independent'],
