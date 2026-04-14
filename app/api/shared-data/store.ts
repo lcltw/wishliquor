@@ -38,6 +38,7 @@ export interface SiteSettings {
   countries: string[]
   brands: string[]
   categories: string[]
+  volumes: string[]
 }
 
 export interface DesignBlock { id: string; label: string; labelZh: string }
@@ -109,6 +110,7 @@ const defaultSettings: SiteSettings = {
   countries: ['Scotland', 'Japan', 'Taiwan', 'USA'],
   brands: ['Macallan', 'Glenfiddich', 'Yamazaki', 'Kavalan', 'Octomore', 'Hibiki', 'Hakushu', 'Glenlivet', 'Talisker', 'W.L. Weller', "Jack Daniel's", 'Omar'],
   categories: ['Single Malt', 'Blended', 'Bourbon', 'Rye', 'Cognac', 'Gin', 'Rum', 'Wine', 'Other'],
+  volumes: ['50ml', '700ml', '750ml', '1000ml'],
 }
 
 const defaultDesignData = {
@@ -160,6 +162,8 @@ class PersistentStore {
     // Sync countries → filters whenever settings are saved
     const countries = settings.countries ?? defaultSettings.countries
     const brands = settings.brands ?? defaultSettings.brands
+    const categories = settings.categories ?? defaultSettings.categories
+    const volumes = settings.volumes ?? defaultSettings.volumes
     const existing = this.data.filters ?? defaultFilters
     if (countries && countries.length > 0) {
       const countryFilter = existing.find(f => f.id === 'country')
@@ -177,13 +181,20 @@ class PersistentStore {
         existing.push({ id: 'brand', label: 'Brand', values: brands })
       }
     }
-    const categories = settings.categories ?? defaultSettings.categories
     if (categories && categories.length > 0) {
       const categoryFilter = existing.find(f => f.id === 'category')
       if (categoryFilter) {
         categoryFilter.values = categories
       } else {
         existing.push({ id: 'category', label: 'Category', values: categories })
+      }
+    }
+    if (volumes && volumes.length > 0) {
+      const volumeFilter = existing.find(f => f.id === 'volume')
+      if (volumeFilter) {
+        volumeFilter.values = volumes
+      } else {
+        existing.push({ id: 'volume', label: 'Volume', values: volumes })
       }
     }
     this.data.filters = existing

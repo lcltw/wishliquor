@@ -21,7 +21,7 @@ const filterOptions = {
   country: ['Scotland', 'Japan', 'Taiwan', 'USA'],
   brand: ['Macallan', 'Glenfiddich', 'Yamazaki', 'Kavalan', 'Octomore', 'Hibiki', 'Hakushu', 'Glenlivet', 'Talisker', 'W.L. Weller', "Jack Daniel's", 'Omar'],
   category: ['Single Malt', 'Blended', 'Bourbon', 'Rye', 'Cognac', 'Gin', 'Rum', 'Wine', 'Other'],
-  volume: ['700ml', '750ml', '1000ml'],
+  volume: ['50ml', '700ml', '750ml', '1000ml'],
   price: [
     { label: '$0 - $150', min: 0, max: 150 },
     { label: '$150 - $300', min: 150, max: 300 },
@@ -176,7 +176,7 @@ export default function HomePage() {
       setFilterOpts({
         country: filters.find((f: any) => f.id === 'country')?.values || ['Scotland', 'Japan', 'Taiwan', 'USA'],
         brand: (siteSettings as any)?.brands || filters.find((f: any) => f.id === 'brand')?.values || ['Macallan', 'Glenfiddich'],
-        volume: filters.find((f: any) => f.id === 'volume')?.values || ['700ml', '750ml', '1000ml'],
+        volume: (siteSettings as any)?.volumes || filters.find((f: any) => f.id === 'volume')?.values || ['700ml', '750ml', '1000ml'],
         price: filterOptions.price,
       })
     }

@@ -44,6 +44,7 @@ interface SiteSettings {
   countries: string[]
   brands: string[]
   categories: string[]
+  volumes: string[]
 }
 
 interface DataContextType {
@@ -79,7 +80,7 @@ const defaultProducts: Product[] = [
 const defaultFilters: FilterOption[] = [
   { id: 'country', label: 'Country', values: ['Scotland', 'Japan', 'Taiwan', 'USA'] },
   { id: 'brand', label: 'Brand', values: ['Macallan', 'Glenfiddich', 'Yamazaki', 'Kavalan', 'Octomore', 'Hibiki', 'Hakushu', 'Glenlivet', 'Talisker', 'W.L. Weller', "Jack Daniel's", 'Omar'] },
-  { id: 'volume', label: 'Volume', values: ['700ml', '750ml', '1000ml'] },
+  { id: 'volume', label: 'Volume', values: ['50ml', '700ml', '750ml', '1000ml'] },
   { id: 'price', label: 'Price', values: [] },
   { id: 'category', label: 'Category', values: ['Single Malt', 'Blended', 'Bourbon', 'Rye', 'Cognac', 'Gin', 'Rum', 'Wine', 'Other'] },
 ]
@@ -161,6 +162,7 @@ const defaultSettings: SiteSettings = {
   countries: ['Scotland', 'Japan', 'Taiwan', 'USA'],
   brands: ['Macallan', 'Glenfiddich', 'Yamazaki', 'Kavalan', 'Octomore', 'Hibiki', 'Hakushu', 'Glenlivet', 'Talisker', 'W.L. Weller', "Jack Daniel's", 'Omar'],
   categories: ['Single Malt', 'Blended', 'Bourbon', 'Rye', 'Cognac', 'Gin', 'Rum', 'Wine', 'Other'],
+  volumes: ['50ml', '700ml', '750ml', '1000ml'],
 }
 
 // Read from localStorage synchronously — call this only client-side
@@ -219,6 +221,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
           countries: (data.settings || {}).countries || defaultSettings.countries,
           brands: (data.settings || {}).brands || defaultSettings.brands,
           categories: (data.settings || {}).categories || defaultSettings.categories,
+          volumes: (data.settings || {}).volumes || defaultSettings.volumes,
         }
         // localStorage is source of truth for products/filters; only fill if empty
         const storedProducts = localStorage.getItem('wishliquor_products')
@@ -280,6 +283,21 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const saveSettings = useCallback((next: SiteSettings) => {
     setSettings(next)
     localStorage.setItem('wishliquor_site_settings', JSON.stringify(next))
+    // Sync volumes from settings into filters
+    setFilters(prev => {
+      const updated = [...prev]
+      const updateFilter = (id: string, values: string[]) => {
+        const idx = updated.findIndex(f => f.id === id)
+        if (idx >= 0) updated[idx] = { ...updated[idx], values }
+        else updated.push({ id, label: id.charAt(0).toUpperCase() + id.slice(1), values })
+      }
+      if (next.volumes?.length) updateFilter('volume', next.volumes)
+      if (next.countries?.length) updateFilter('country', next.countries)
+      if (next.brands?.length) updateFilter('brand', next.brands)
+      if (next.categories?.length) updateFilter('category', next.categories)
+      localStorage.setItem('wishliquor_filters', JSON.stringify(updated))
+      return updated
+    })
   }, [])
 
   return (
