@@ -15,6 +15,8 @@ export interface Product {
   price: number
   img: string
   description?: string
+  barcode?: string
+  sku?: string
 }
 
 export interface FilterOption {

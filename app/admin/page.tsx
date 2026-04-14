@@ -17,6 +17,8 @@ interface Product {
   price: number
   img: string
   description?: string
+  barcode?: string
+  sku?: string
 }
 
 interface FilterOption {
@@ -623,13 +625,15 @@ function EditProductModal({
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Alc.</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Alc. (%)</label>
                 <input
-                  type="text"
+                  type="number"
                   value={form.alcohol || ''}
                   onChange={(e) => setForm({ ...form, alcohol: e.target.value })}
-                  placeholder="e.g. 46%"
+                  placeholder="e.g. 43"
                   className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500"
+                  min="0"
+                  step="0.1"
                 />
               </div>
               <div>
@@ -653,6 +657,27 @@ function EditProductModal({
                   className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500"
                   required
                   min="0"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Barcode</label>
+                <input
+                  type="text"
+                  value={form.barcode || ''}
+                  onChange={(e) => setForm({ ...form, barcode: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">SKU</label>
+                <input
+                  type="text"
+                  value={form.sku || ''}
+                  onChange={(e) => setForm({ ...form, sku: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500"
                 />
               </div>
             </div>
