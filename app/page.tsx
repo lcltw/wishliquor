@@ -479,6 +479,7 @@ export default function HomePage() {
                   <div className="aspect-square overflow-hidden"><img src={product.img} alt={product.name} className="w-full h-full object-cover" suppressHydrationWarning /></div>
                   <div className="p-4">
                     <p className="text-xs font-semibold uppercase tracking-wide mb-1" style={{ color: s.primary }}>{product.country}</p>
+                    <p className="text-sm font-semibold mb-0.5" style={{ color: s.text }}>{product.brand}</p>
                     <h3 className="font-semibold line-clamp-1 mb-1" style={{ color: s.text }}>{product.name}</h3>
                     <p className="text-xs mb-3" style={{ color: '#6B7280' }}>{product.category}{product.age ? ` ${product.age}` : ''}{product.alcohol ? ` ${product.alcohol}%` : ''}{product.volume ? ` ${product.volume}` : ''}</p>
                     <div className="flex items-center justify-between">
@@ -578,6 +579,7 @@ export default function HomePage() {
                   <div className="p-6 md:p-8 flex flex-col justify-center relative" style={{ backgroundColor: s.cardBackground }}>
                     <button onClick={() => setSelectedProduct(null)} className="absolute top-2 right-2 md:top-4 md:right-4 p-2" style={{ backgroundColor: s.cardBackground }}><Icons.Close /></button>
                     <p className="text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: s.primary }}>{selectedProduct.country}</p>
+                    <p className="text-sm font-semibold mb-1" style={{ color: s.text }}>{selectedProduct.brand}</p>
                     <h2 className="text-xl md:text-2xl font-bold mb-2" style={{ color: s.text }}>{selectedProduct.name}</h2>
                     <p className="mb-1" style={{ color: s.secondary }}>{selectedProduct.category}{selectedProduct.age ? ` ${selectedProduct.age}` : ''}{selectedProduct.alcohol ? ` ${selectedProduct.alcohol}%` : ''}{selectedProduct.volume ? ` ${selectedProduct.volume}` : ''}</p>
                     <p className="mb-4 text-sm leading-relaxed" style={{ color: s.secondary }}>{selectedProduct.description}</p>
