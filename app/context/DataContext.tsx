@@ -42,6 +42,7 @@ interface SiteSettings {
     aboutText: string
   }
   countries: string[]
+  brands: string[]
 }
 
 interface DataContextType {
@@ -156,6 +157,7 @@ const defaultSettings: SiteSettings = {
     aboutText: 'Wishliquor.co curates the finest whiskies from Scotland, Japan, Taiwan and beyond — delivered straight to your door.',
   },
   countries: ['Scotland', 'Japan', 'Taiwan', 'USA'],
+  brands: ['Macallan', 'Glenfiddich', 'Yamazaki', 'Kavalan', 'Octomore', 'Hibiki', 'Hakushu', 'Glenlivet', 'Talisker', 'W.L. Weller', "Jack Daniel's", 'Omar'],
 }
 
 // Read from localStorage synchronously — call this only client-side
@@ -212,6 +214,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
           navigation: (data.settings || {}).navigation || defaultSettings.navigation,
           hero: (data.settings || {}).hero || defaultSettings.hero,
           countries: (data.settings || {}).countries || defaultSettings.countries,
+          brands: (data.settings || {}).brands || defaultSettings.brands,
         }
         // localStorage is source of truth for products/filters; only fill if empty
         const storedProducts = localStorage.getItem('wishliquor_products')

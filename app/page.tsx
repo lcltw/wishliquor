@@ -174,7 +174,7 @@ export default function HomePage() {
     if (filters && filters.length > 0) {
       setFilterOpts({
         country: filters.find((f: any) => f.id === 'country')?.values || ['Scotland', 'Japan', 'Taiwan', 'USA'],
-        brand: filters.find((f: any) => f.id === 'brand')?.values || ['Macallan', 'Glenfiddich'],
+        brand: (siteSettings as any)?.brands || filters.find((f: any) => f.id === 'brand')?.values || ['Macallan', 'Glenfiddich'],
         volume: filters.find((f: any) => f.id === 'volume')?.values || ['700ml', '750ml', '1000ml'],
         price: filterOptions.price,
       })

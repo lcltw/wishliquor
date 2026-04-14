@@ -465,6 +465,7 @@ export default function AdminPage() {
               setIsAddingProduct(false)
             }}
             countries={settings?.countries || filters?.find(f => f.id === 'country')?.values || ['Scotland', 'Japan', 'Taiwan', 'USA']}
+            brands={settings?.brands || filters?.find(f => f.id === 'brand')?.values || ['Macallan', 'Glenfiddich', 'Yamazaki']}
           />
         )}
       </AnimatePresence>
@@ -528,12 +529,14 @@ function EditProductModal({
   onSave, 
   onClose,
   countries,
+  brands,
 }: { 
   product: Product
   isNew: boolean
   onSave: (product: Product) => void
   onClose: () => void
   countries: string[]
+  brands: string[]
 }) {
   const [form, setForm] = useState(product)
 
@@ -570,13 +573,15 @@ function EditProductModal({
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Brand</label>
-                <input
-                  type="text"
+                <select
                   value={form.brand}
                   onChange={(e) => setForm({ ...form, brand: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500"
-                  required
-                />
+                >
+                  {(brands || []).map(b => (
+                    <option key={b} value={b}>{b}</option>
+                  ))}
+                </select>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>

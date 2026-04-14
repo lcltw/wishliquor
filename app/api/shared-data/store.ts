@@ -36,6 +36,7 @@ export interface SiteSettings {
   navigation: Array<{ label: string; href?: string; enabled?: boolean; sub?: Array<{ label: string; href?: string; enabled?: boolean; sub?: Array<{ label: string; href: string; enabled?: boolean }> }> }>
   footer: { brand: string; description: string; logoUrl: string; logoWidth: number; logoHeight: number; logoAspectLocked: boolean; copyright: string; columns: Array<{ title: string; links: Array<{ label: string; content: string }> }> }
   countries: string[]
+  brands: string[]
 }
 
 export interface DesignBlock { id: string; label: string; labelZh: string }
@@ -105,6 +106,7 @@ const defaultSettings: SiteSettings = {
     ],
   },
   countries: ['Scotland', 'Japan', 'Taiwan', 'USA'],
+  brands: ['Macallan', 'Glenfiddich', 'Yamazaki', 'Kavalan', 'Octomore', 'Hibiki', 'Hakushu', 'Glenlivet', 'Talisker', 'W.L. Weller', "Jack Daniel's", 'Omar'],
 }
 
 const defaultDesignData = {
@@ -155,16 +157,25 @@ class PersistentStore {
   setSettings(settings: SiteSettings) {
     // Sync countries → filters whenever settings are saved
     const countries = settings.countries ?? defaultSettings.countries
+    const brands = settings.brands ?? defaultSettings.brands
+    const existing = this.data.filters ?? defaultFilters
     if (countries && countries.length > 0) {
-      const existing = this.data.filters ?? defaultFilters
       const countryFilter = existing.find(f => f.id === 'country')
       if (countryFilter) {
         countryFilter.values = countries
       } else {
         existing.push({ id: 'country', label: 'Country', values: countries })
       }
-      this.data.filters = existing
     }
+    if (brands && brands.length > 0) {
+      const brandFilter = existing.find(f => f.id === 'brand')
+      if (brandFilter) {
+        brandFilter.values = brands
+      } else {
+        existing.push({ id: 'brand', label: 'Brand', values: brands })
+      }
+    }
+    this.data.filters = existing
     this.data.settings = settings
     this.save()
   }

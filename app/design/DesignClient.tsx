@@ -31,6 +31,7 @@ interface SiteSettings {
   }
   footer: { brand: string; description: string; logoUrl: string; logoWidth: number; logoHeight: number; logoAspectLocked: boolean; copyright: string; columns: Array<{ title: string; links: string[] }> }
   countries: string[]
+  brands: string[]
 }
 
 // 每個大項的顏色 key → 區塊 id
@@ -164,6 +165,7 @@ const defaultSettings: SiteSettings = {
     aboutText: 'Wishliquor.co curates the finest whiskies from Scotland, Japan, Taiwan and beyond — delivered straight to your door.',
   },
   countries: ['Scotland', 'Japan', 'Taiwan', 'USA'],
+  brands: ['Macallan', 'Glenfiddich', 'Yamazaki', 'Kavalan', 'Octomore', 'Hibiki', 'Hakushu', 'Glenlivet', 'Talisker', 'W.L. Weller', "Jack Daniel's", 'Omar'],
 }
 
 const defaultBlocks: Block[] = [
@@ -710,6 +712,52 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                         }
                       }}
                       className="px-3 py-1 text-xs bg-amber-500 text-white hover:bg-amber-600 rounded"
+                    >新增</button>
+                  </div>
+                </div>
+
+                {/* Brands Editor */}
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-xs font-semibold text-blue-700">Brands（品牌選項）</p>
+                    <span className="text-xs text-blue-600">{settings.brands?.length || 0} 個</span>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5 mb-2">
+                    {(settings.brands || []).map((b: string) => (
+                      <span key={b} className="inline-flex items-center gap-1 px-2 py-0.5 bg-white border border-blue-200 text-xs text-blue-800 rounded">
+                        {b}
+                        <button
+                          onClick={() => setSettings(prev => ({ ...prev, brands: (prev.brands || []).filter(x => x !== b) }))}
+                          className="text-blue-400 hover:text-red-500 leading-none"
+                        >×</button>
+                      </span>
+                    ))}
+                  </div>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="新增品牌..."
+                      className="flex-1 px-2 py-1 text-xs border border-blue-300 focus:outline-none focus:border-blue-500 rounded"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          const val = (e.target as HTMLInputElement).value.trim()
+                          if (val && !(settings.brands || []).includes(val)) {
+                            setSettings(prev => ({ ...prev, brands: [...(prev.brands || []), val] }))
+                            ;(e.target as HTMLInputElement).value = ''
+                          }
+                        }
+                      }}
+                    />
+                    <button
+                      onClick={(e) => {
+                        const input = (e.currentTarget.previousElementSibling as HTMLInputElement)
+                        const val = input.value.trim()
+                        if (val && !(settings.brands || []).includes(val)) {
+                          setSettings(prev => ({ ...prev, brands: [...(prev.brands || []), val] }))
+                          input.value = ''
+                        }
+                      }}
+                      className="px-3 py-1 text-xs bg-blue-500 text-white hover:bg-blue-600 rounded"
                     >新增</button>
                   </div>
                 </div>
