@@ -222,7 +222,7 @@ export default function DesignClient({ initialData }: DesignClientProps) {
     return defaultSettings
   })
 
-  const [activeTab, setActiveTab] = useState<'general' | 'colors' | 'hero' | 'navigation' | 'footer' | 'content'>('colors')
+  const [activeTab, setActiveTab] = useState<'general' | 'colors' | 'hero' | 'navigation' | 'footer' | 'content'>('navigation')
   const [toast, setToast] = useState('')
 
   // 動態區塊列表
