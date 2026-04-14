@@ -179,17 +179,18 @@ export default function AdminPage() {
   const [toast, setToast] = useState('')
   const [editingCell, setEditingCell] = useState<{ productId: number; field: string } | null>(null)
 
-  // Close editing cell on outside click
+  // Close editing cell on outside click (using mousedown to avoid focus conflicts)
   useEffect(() => {
     if (!editingCell) return
+    // Use mousedown + setTimeout so the button's own click registers first
     const handler = (e: MouseEvent) => {
       const target = e.target as HTMLElement
-      if (!target.closest('[data-inline-edit]')) {
-        setEditingCell(null)
-      }
+      // Don't close if clicking inside the same editing cell
+      if (target.closest(`[data-cell="${editingCell.productId}-${editingCell.field}"]`)) return
+      setEditingCell(null)
     }
-    document.addEventListener('click', handler)
-    return () => document.removeEventListener('click', handler)
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
   }, [editingCell])
   
   // Don't render until data is loaded from context
@@ -399,7 +400,7 @@ export default function AdminPage() {
                         <td className="px-4 py-3">
                           <img src={product.img} alt={product.name} className="w-12 h-12 object-cover border border-gray-200" suppressHydrationWarning />
                         </td>
-                        <td className="px-4 py-3">
+                        <td data-cell={`${product.id}-brand`} className="px-4 py-3">
                           {editingCell?.productId === product.id && editingCell?.field === 'brand' ? (
                             <select
                               autoFocus
@@ -425,7 +426,7 @@ export default function AdminPage() {
                             >{product.brand}</button>
                           )}
                         </td>
-                        <td className="px-4 py-3">
+                        <td data-cell={`${product.id}-name`} className="px-4 py-3">
                           <div className="text-sm font-medium text-gray-800">{product.name}</div>
                           <div className="flex flex-wrap gap-1 mt-0.5">
                             {/* Category */}
@@ -482,7 +483,7 @@ export default function AdminPage() {
                             )}
                           </div>
                         </td>
-                        <td className="px-4 py-3">
+                        <td data-cell={`${product.id}-country`} className="px-4 py-3">
                           {editingCell?.productId === product.id && editingCell?.field === 'country' ? (
                             <select
                               autoFocus
@@ -508,7 +509,7 @@ export default function AdminPage() {
                             >{product.country}</button>
                           )}
                         </td>
-                        <td className="px-4 py-3">
+                        <td data-cell={`${product.id}-price`} className="px-4 py-3">
                           {editingCell?.productId === product.id && editingCell?.field === 'price' ? (
                             <input
                               autoFocus
