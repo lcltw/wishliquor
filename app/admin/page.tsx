@@ -210,7 +210,7 @@ export default function AdminPage() {
       console.error('Failed to sync to API:', err)
     }
     
-    showToast('✅ 已儲存！')
+    showToast('Saved')
     setHasChanges(false)
   }
 
