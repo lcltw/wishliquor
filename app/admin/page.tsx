@@ -400,10 +400,7 @@ export default function AdminPage() {
                       <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Country</th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Price</th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Stock</th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
-                        <div>Barcode /</div>
-                        <div>SKU</div>
-                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Barcode / SKU</th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Actions</th>
                     </tr>
                   </thead>
@@ -620,7 +617,7 @@ export default function AdminPage() {
                               const updated = products.map(p => p.id === product.id ? { ...p, barcode: e.target.value } : p)
                               setProducts(updated)
                             }}
-                            className="w-24 px-2 py-1 text-xs text-gray-600 border border-transparent hover:border-amber-300 focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-100 rounded cursor-text mb-0.5"
+                            className="w-20 px-1 py-0.5 text-xs text-gray-600 border border-transparent hover:border-amber-300 focus:border-amber-400 focus:outline-none rounded cursor-text mr-1"
                           />
                           <input
                             type="text"
@@ -630,7 +627,7 @@ export default function AdminPage() {
                               const updated = products.map(p => p.id === product.id ? { ...p, sku: e.target.value } : p)
                               setProducts(updated)
                             }}
-                            className="w-24 px-2 py-1 text-xs text-gray-600 border border-transparent hover:border-amber-300 focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-100 rounded cursor-text"
+                            className="w-20 px-1 py-0.5 text-xs text-gray-600 border border-transparent hover:border-amber-300 focus:border-amber-400 focus:outline-none rounded cursor-text"
                           />
                         </td>
                         <td className="px-4 py-3">
