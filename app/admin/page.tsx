@@ -646,6 +646,7 @@ function EditProductModal({
                   <option value="700ml">700ml</option>
                   <option value="750ml">750ml</option>
                   <option value="1000ml">1000ml</option>
+                  <option value="50ml">50ml</option>
                 </select>
               </div>
               <div>
