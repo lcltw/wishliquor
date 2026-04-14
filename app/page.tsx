@@ -227,6 +227,20 @@ export default function HomePage() {
     return map
   })()
 
+  // Build L2 label → L1 category lookup
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const l2CategoryMap: Record<string, string> = (() => {
+    const map: Record<string, string> = {}
+    for (const l1 of (siteSettings?.navigation || [])) {
+      for (const l2 of (l1.sub || [])) {
+        if (!map[l2.label]) {
+          map[l2.label] = l1.label
+        }
+      }
+    }
+    return map
+  })()
+
   // Early return AFTER all hooks
   if (!isLoaded) {
     return <div style={{ minHeight: '100vh' }} />
@@ -353,7 +367,7 @@ export default function HomePage() {
                             <div key={l2i}>
                               {/* L2 label — clickable, syncs Country filter */}
                               <button
-                                onClick={() => { setSelectedFilters(prev => ({ ...prev, country: prev.country.includes(l2.label) ? prev.country.filter(c => c !== l2.label) : [...prev.country, l2.label] })); }}
+                                onClick={() => { const cat = l2CategoryMap[l2.label]; setSelectedFilters({ category: cat ? [cat] : [], country: [l2.label], brand: [], volume: [], price: [] }); }}
                                 className="text-xs font-bold tracking-wide mb-2 text-left w-full hover:underline"
                                 style={{ color: s.navDropdownLabel }}
                               >
