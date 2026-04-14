@@ -402,7 +402,32 @@ export default function AdminPage() {
                     {products.filter(p => productMatchesNavCategory(p.category, activeCategory)).map(product => (
                       <tr key={product.id} className="hover:bg-gray-50">
                         <td className="px-4 py-3">
-                          <img src={product.img} alt={product.name} className="w-12 h-12 object-cover border border-gray-200" suppressHydrationWarning />
+                          <label className="relative cursor-pointer group block">
+                            <img src={product.img} alt={product.name} className="w-12 h-12 object-cover border border-gray-200 rounded group-hover:border-amber-400 transition-colors" suppressHydrationWarning />
+                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded flex items-center justify-center">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                            </div>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={async (e) => {
+                                const file = e.target.files?.[0]
+                                if (!file) return
+                                const fd = new FormData()
+                                fd.append('file', file)
+                                try {
+                                  const res = await fetch('/api/upload', { method: 'POST', body: fd })
+                                  const data = await res.json()
+                                  if (data.url) {
+                                    const updated = products.map(p => p.id === product.id ? { ...p, img: data.url } : p)
+                                    setProducts(updated)
+                                  }
+                                } catch (_) {}
+                                e.target.value = ''
+                              }}
+                            />
+                          </label>
                         </td>
                         <td data-cell={`${product.id}-brand`} className="px-4 py-3">
                           {editingCell?.productId === product.id && editingCell?.field === 'brand' ? (
