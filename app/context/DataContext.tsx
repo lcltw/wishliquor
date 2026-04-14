@@ -9,6 +9,7 @@ interface Product {
   country: string
   category: string
   age: string
+  alcohol?: string
   volume: string
   price: number
   img: string

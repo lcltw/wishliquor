@@ -12,6 +12,7 @@ interface Product {
   country: string
   category: string
   age: string
+  alcohol?: string
   volume: string
   price: number
   img: string
@@ -618,6 +619,16 @@ function EditProductModal({
                   type="text"
                   value={form.age}
                   onChange={(e) => setForm({ ...form, age: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Alc.</label>
+                <input
+                  type="text"
+                  value={form.alcohol || ''}
+                  onChange={(e) => setForm({ ...form, alcohol: e.target.value })}
+                  placeholder="e.g. 46%"
                   className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500"
                 />
               </div>
