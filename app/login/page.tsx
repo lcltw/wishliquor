@@ -110,9 +110,7 @@ function LoginForm() {
             {isLogin ? "Sign In" : "Create Account"}
           </h1>
           <p className="text-gray-600 mt-2">
-            {isLogin 
-              : "Sign up to get started"
-            }
+            {isLogin ? "Sign in to manage your store" : "Create an account to get started"}
           </p>
         </div>
 
