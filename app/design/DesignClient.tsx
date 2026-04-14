@@ -224,10 +224,10 @@ interface FilterEditorProps {
   section: string
   label: string
   items: string[]
-  color: string
   bg: string
   border: string
   text: string
+  focusColor: string
   draggingTag: { section: string; item: string } | null
   overTag: string | null
   onDragStart: (item: string) => void
@@ -239,7 +239,18 @@ interface FilterEditorProps {
   placeholder: string
 }
 
-function FilterEditor({ label, items, bg, border, text, draggingTag, overTag, onDragStart, onDragOver, onDrop, onDragEnd, onRemove, onAdd, placeholder }: FilterEditorProps) {
+function FilterEditor({ label, items, bg, border, text, focusColor, draggingTag, overTag, onDragStart, onDragOver, onDrop, onDragEnd, onRemove, onAdd, placeholder }: FilterEditorProps) {
+  // Tailwind JIT needs static class names; use explicit focusColor prop
+  const focusClass = focusColor === 'amber' ? 'focus:border-amber-500'
+    : focusColor === 'blue' ? 'focus:border-blue-500'
+    : focusColor === 'green' ? 'focus:border-green-500'
+    : focusColor === 'purple' ? 'focus:border-purple-500'
+    : 'focus:border-amber-500'
+  const btnClass = focusColor === 'amber' ? 'bg-amber-500 hover:bg-amber-600'
+    : focusColor === 'blue' ? 'bg-blue-500 hover:bg-blue-600'
+    : focusColor === 'green' ? 'bg-green-500 hover:bg-green-600'
+    : focusColor === 'purple' ? 'bg-purple-500 hover:bg-purple-600'
+    : 'bg-amber-500 hover:bg-amber-600'
   return (
     <div className={`${bg} border ${border} rounded-lg p-3`}>
       <div className="flex items-center justify-between mb-2">
@@ -274,7 +285,7 @@ function FilterEditor({ label, items, bg, border, text, draggingTag, overTag, on
         <input
           type="text"
           placeholder={placeholder}
-          className={`flex-1 px-2 py-1 text-xs border ${border.replace('200', '300')} focus:outline-none focus:border-${color}-500 rounded`}
+          className={`flex-1 px-2 py-1 text-xs border ${border.replace('200', '300')} focus:outline-none ${focusClass} rounded`}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
               const val = (e.target as HTMLInputElement).value.trim()
@@ -288,7 +299,7 @@ function FilterEditor({ label, items, bg, border, text, draggingTag, overTag, on
             const val = input.value.trim()
             if (val && !items.includes(val)) { onAdd(val); input.value = '' }
           }}
-          className={`px-3 py-1 text-xs bg-${color}-500 text-white hover:bg-${color}-600 rounded`}
+          className={`px-3 py-1 text-xs ${btnClass} text-white rounded`}
         >新增</button>
       </div>
     </div>
@@ -758,7 +769,8 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                 {/* Filter Section Editors — ordered by filterOrder, draggable */}
                 {/* Countries Editor */}
                 <FilterEditor section="country" label="Countries（國家選項）" items={settings.countries || []}
-                  color="amber" bg="bg-amber-50" border="border-amber-200" text="text-amber-700"
+                  bg="bg-amber-50" border="border-amber-200" text="text-amber-700"
+                  focusColor="amber"
                   draggingTag={draggingTag} overTag={overTag}
                   onDragStart={(item) => setDraggingTag({ section: 'country', item })}
                   onDragOver={(item) => setOverTag(item)}
@@ -784,7 +796,8 @@ export default function DesignClient({ initialData }: DesignClientProps) {
 
                 {/* Brands Editor */}
                 <FilterEditor section="brand" label="Brands（品牌選項）" items={settings.brands || []}
-                  color="blue" bg="bg-blue-50" border="border-blue-200" text="text-blue-700"
+                  bg="bg-blue-50" border="border-blue-200" text="text-blue-700"
+                  focusColor="blue"
                   draggingTag={draggingTag} overTag={overTag}
                   onDragStart={(item) => setDraggingTag({ section: 'brand', item })}
                   onDragOver={(item) => setOverTag(item)}
@@ -810,7 +823,8 @@ export default function DesignClient({ initialData }: DesignClientProps) {
 
                 {/* Categories Editor */}
                 <FilterEditor section="category" label="Categories（類別選項）" items={settings.categories || []}
-                  color="green" bg="bg-green-50" border="border-green-200" text="text-green-700"
+                  bg="bg-green-50" border="border-green-200" text="text-green-700"
+                  focusColor="green"
                   draggingTag={draggingTag} overTag={overTag}
                   onDragStart={(item) => setDraggingTag({ section: 'category', item })}
                   onDragOver={(item) => setOverTag(item)}
@@ -836,7 +850,8 @@ export default function DesignClient({ initialData }: DesignClientProps) {
 
                 {/* Volumes Editor */}
                 <FilterEditor section="volume" label="Volumes（容量選項）" items={settings.volumes || []}
-                  color="purple" bg="bg-purple-50" border="border-purple-200" text="text-purple-700"
+                  bg="bg-purple-50" border="border-purple-200" text="text-purple-700"
+                  focusColor="purple"
                   draggingTag={draggingTag} overTag={overTag}
                   onDragStart={(item) => setDraggingTag({ section: 'volume', item })}
                   onDragOver={(item) => setOverTag(item)}
