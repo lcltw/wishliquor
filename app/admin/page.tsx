@@ -564,21 +564,21 @@ function EditProductModal({
           <form onSubmit={handleSubmit} className="p-6 space-y-4 overflow-y-auto flex-1">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                <input
-                  type="text"
-                  value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500"
-                  required
-                />
-              </div>
-              <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Brand</label>
                 <input
                   type="text"
                   value={form.brand}
                   onChange={(e) => setForm({ ...form, brand: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                <input
+                  type="text"
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500"
                   required
                 />
