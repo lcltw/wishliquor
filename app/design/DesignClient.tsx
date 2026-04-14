@@ -33,6 +33,7 @@ interface SiteSettings {
   countries: string[]
   brands: string[]
   categories: string[]
+  volumes: string[]
 }
 
 // 每個大項的顏色 key → 區塊 id
@@ -168,6 +169,7 @@ const defaultSettings: SiteSettings = {
   countries: ['Scotland', 'Japan', 'Taiwan', 'USA'],
   brands: ['Macallan', 'Glenfiddich', 'Yamazaki', 'Kavalan', 'Octomore', 'Hibiki', 'Hakushu', 'Glenlivet', 'Talisker', 'W.L. Weller', "Jack Daniel's", 'Omar'],
   categories: ['Single Malt', 'Blended', 'Bourbon', 'Rye', 'Cognac', 'Gin', 'Rum', 'Wine', 'Other'],
+  volumes: ['50ml', '700ml', '750ml', '1000ml'],
 }
 
 const defaultBlocks: Block[] = [
@@ -806,6 +808,52 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                         }
                       }}
                       className="px-3 py-1 text-xs bg-green-500 text-white hover:bg-green-600 rounded"
+                    >新增</button>
+                  </div>
+                </div>
+
+                {/* Volumes Editor */}
+                <div className="bg-purple-50 border border-purple-200 rounded-lg p-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-xs font-semibold text-purple-700">Volumes（容量選項）</p>
+                    <span className="text-xs text-purple-600">{settings.volumes?.length || 0} 個</span>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5 mb-2">
+                    {(settings.volumes || []).map((v: string) => (
+                      <span key={v} className="inline-flex items-center gap-1 px-2 py-0.5 bg-white border border-purple-200 text-xs text-purple-800 rounded">
+                        {v}
+                        <button
+                          onClick={() => setSettings(prev => ({ ...prev, volumes: (prev.volumes || []).filter(x => x !== v) }))}
+                          className="text-purple-400 hover:text-red-500 leading-none"
+                        >×</button>
+                      </span>
+                    ))}
+                  </div>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="新增容量（如 500ml）..."
+                      className="flex-1 px-2 py-1 text-xs border border-purple-300 focus:outline-none focus:border-purple-500 rounded"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          const val = (e.target as HTMLInputElement).value.trim()
+                          if (val && !(settings.volumes || []).includes(val)) {
+                            setSettings(prev => ({ ...prev, volumes: [...(prev.volumes || []), val] }))
+                            ;(e.target as HTMLInputElement).value = ''
+                          }
+                        }
+                      }}
+                    />
+                    <button
+                      onClick={(e) => {
+                        const input = (e.currentTarget.previousElementSibling as HTMLInputElement)
+                        const val = input.value.trim()
+                        if (val && !(settings.volumes || []).includes(val)) {
+                          setSettings(prev => ({ ...prev, volumes: [...(prev.volumes || []), val] }))
+                          input.value = ''
+                        }
+                      }}
+                      className="px-3 py-1 text-xs bg-purple-500 text-white hover:bg-purple-600 rounded"
                     >新增</button>
                   </div>
                 </div>
