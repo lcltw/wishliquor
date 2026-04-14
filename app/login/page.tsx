@@ -107,11 +107,10 @@ function LoginForm() {
             onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
           />
           <h1 className="text-2xl font-bold">
-            {isLogin ? "Welcome Back" : "Create Account"}
+            {isLogin ? "Sign In" : "Create Account"}
           </h1>
           <p className="text-gray-600 mt-2">
             {isLogin 
-              ? "Sign in to manage your store" 
               : "Sign up to get started"
             }
           </p>
