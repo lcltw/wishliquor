@@ -179,14 +179,18 @@ export default function AdminPage() {
   const [toast, setToast] = useState('')
   const [editingCell, setEditingCell] = useState<{ productId: number; field: string } | null>(null)
 
-  // Close editing cell on outside click (using mousedown to avoid focus conflicts)
+  // Close editing cell on outside click
   useEffect(() => {
     if (!editingCell) return
-    // Use mousedown + setTimeout so the button's own click registers first
     const handler = (e: MouseEvent) => {
       const target = e.target as HTMLElement
       // Don't close if clicking inside the same editing cell
       if (target.closest(`[data-cell="${editingCell.productId}-${editingCell.field}"]`)) return
+      // Also don't close if clicking the Name cell while editing category/volume within it
+      if (editingCell.field === 'category' || editingCell.field === 'volume') {
+        const nameCell = target.closest(`[data-cell="${editingCell.productId}-name"]`)
+        if (nameCell && (nameCell as HTMLElement).dataset.cellFields?.includes(editingCell.field)) return
+      }
       setEditingCell(null)
     }
     document.addEventListener('mousedown', handler)
@@ -426,7 +430,7 @@ export default function AdminPage() {
                             >{product.brand}</button>
                           )}
                         </td>
-                        <td data-cell={`${product.id}-name`} className="px-4 py-3">
+                        <td data-cell={`${product.id}-name`} data-cell-fields="name category volume" className="px-4 py-3">
                           <div className="text-sm font-medium text-gray-800">{product.name}</div>
                           <div className="flex flex-wrap gap-1 mt-0.5">
                             {/* Category */}
