@@ -760,6 +760,14 @@ function EditProductModal({
                   type="text"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  onBlur={(e) => {
+                    const trimmed = e.target.value.trim()
+                    if (trimmed === '') {
+                      setForm(prev => ({ ...prev, name: '' }))
+                    } else {
+                      setForm(prev => ({ ...prev, name: trimmed }))
+                    }
+                  }}
                   className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500"
                   required
                 />
