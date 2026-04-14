@@ -106,9 +106,6 @@ function LoginForm() {
             className="h-16 mx-auto mb-4 object-contain"
             onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
           />
-          <h1 className="text-2xl font-bold">
-            {isLogin ? "Sign In" : "Create Account"}
-          </h1>
           <p className="text-gray-600 mt-2">
             {isLogin ? "Sign in to manage your store" : "Create an account to get started"}
           </p>
