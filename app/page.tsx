@@ -197,6 +197,24 @@ export default function HomePage() {
     }
   }, [siteSettings?.navigation])
 
+  // Build brand → { category, country } lookup from navigation data
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const brandCategoryCountryMap: Record<string, { category: string; country: string }> = (() => {
+    const map: Record<string, { category: string; country: string }> = {}
+    for (const l1 of (siteSettings?.navigation || [])) {
+      if (!l1.sub) continue
+      for (const l2 of l1.sub) {
+        if (!l2.sub) continue
+        for (const l3 of l2.sub) {
+          if (!map[l3.label]) {
+            map[l3.label] = { category: l1.label, country: l2.label }
+          }
+        }
+      }
+    }
+    return map
+  })()
+
   // Early return AFTER all hooks
   if (!isLoaded) {
     return <div style={{ minHeight: '100vh' }} />
@@ -331,7 +349,7 @@ export default function HomePage() {
                               </button>
                               {/* L3 brand links */}
                               {l2.sub && l2.sub.filter(l3 => l3.enabled !== false).map((l3, l3i) => (
-                                <a key={l3i} href={l3.href} onClick={() => { router.push(l3.href || '#'); setSelectedFilters(prev => ({ ...prev, brand: prev.brand.includes(l3.label) ? prev.brand.filter(b => b !== l3.label) : [...prev.brand, l3.label] })); }}
+                                <a key={l3i} href={l3.href} onClick={() => { router.push(l3.href || '#'); const lookup = brandCategoryCountryMap[l3.label]; setSelectedFilters({ category: lookup ? [lookup.category] : [], country: lookup ? [lookup.country] : [], brand: [l3.label], volume: [], price: [] }); }}
                                   className="block px-2 py-1 text-sm hover:underline" style={{ color: s.navDropdownText }}>
                                   {l3.label}
                                 </a>
