@@ -19,6 +19,7 @@ interface Product {
   description?: string
   barcode?: string
   sku?: string
+  stock?: number
 }
 
 interface FilterOption {
@@ -245,7 +246,8 @@ export default function AdminPage() {
       volume: "700ml",
       price: 99,
       img: "https://lh3.googleusercontent.com/u/0/d/15ij09mVuQVvTMVEwq0eQ7-0q80VLKjTm",
-      description: ""
+      description: "",
+      stock: 0
     }
     const newProducts = [...products, newProduct]
     setProducts(newProducts)
@@ -394,6 +396,7 @@ export default function AdminPage() {
                       <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Brand</th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Name</th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Country</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Stock</th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Price</th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Actions</th>
                     </tr>
@@ -565,6 +568,18 @@ export default function AdminPage() {
                               title="點擊編輯"
                             >{product.country}</button>
                           )}
+                        </td>
+                        <td data-cell={`${product.id}-stock`} className="px-4 py-3">
+                          <input
+                            type="number"
+                            value={product.stock ?? 0}
+                            min={0}
+                            onChange={(e) => {
+                              const updated = products.map(p => p.id === product.id ? { ...p, stock: Number(e.target.value) } : p)
+                              setProducts(updated)
+                            }}
+                            className="w-16 px-2 py-1 text-sm text-gray-800 border border-transparent hover:border-amber-300 focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-100 rounded cursor-text"
+                          />
                         </td>
                         <td data-cell={`${product.id}-price`} className="px-4 py-3">
                           {editingCell?.productId === product.id && editingCell?.field === 'price' ? (
@@ -870,6 +885,16 @@ function EditProductModal({
                   onChange={(e) => setForm({ ...form, price: Number(e.target.value) })}
                   className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500"
                   required
+                  min="0"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Stock</label>
+                <input
+                  type="number"
+                  value={form.stock ?? 0}
+                  onChange={(e) => setForm({ ...form, stock: Number(e.target.value) })}
+                  className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500"
                   min="0"
                 />
               </div>
