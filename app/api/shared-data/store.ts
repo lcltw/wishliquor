@@ -73,7 +73,7 @@ const defaultProducts: Product[] = [
 const defaultFilters: FilterOption[] = [
   { id: 'country', label: 'Country', values: ['Scotland', 'Japan', 'Taiwan', 'USA'] },
   { id: 'brand', label: 'Brand', values: ['Macallan', 'Glenfiddich', 'Yamazaki', 'Kavalan', 'Octomore', 'Hibiki', 'Hakushu', 'Glenlivet', 'Talisker', 'W.L. Weller', "Jack Daniel's", 'Omar'] },
-  { id: 'volume', label: 'Volume', values: ['700ml', '750ml', '1000ml'] },
+  { id: 'volume', label: 'Volume', values: ['50ml', '700ml', '750ml', '1000ml'] },
   { id: 'price', label: 'Price', values: [] },
 ]
 

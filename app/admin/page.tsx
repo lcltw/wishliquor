@@ -467,6 +467,7 @@ export default function AdminPage() {
             countries={settings?.countries || filters?.find(f => f.id === 'country')?.values || ['Scotland', 'Japan', 'Taiwan', 'USA']}
             brands={settings?.brands || filters?.find(f => f.id === 'brand')?.values || ['Macallan', 'Glenfiddich', 'Yamazaki']}
             categories={settings?.categories || filters?.find(f => f.id === 'category')?.values || ['Single Malt', 'Blended', 'Bourbon', 'Rye', 'Cognac']}
+            volumes={settings?.volumes || filters?.find(f => f.id === 'volume')?.values || ['50ml', '700ml', '750ml', '1000ml']}
           />
         )}
       </AnimatePresence>
@@ -532,6 +533,7 @@ function EditProductModal({
   countries,
   brands,
   categories,
+  volumes,
 }: { 
   product: Product
   isNew: boolean
@@ -540,6 +542,7 @@ function EditProductModal({
   countries: string[]
   brands: string[]
   categories: string[]
+  volumes: string[]
 }) {
   const [form, setForm] = useState(product)
 
@@ -648,10 +651,9 @@ function EditProductModal({
                   onChange={(e) => setForm({ ...form, volume: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500"
                 >
-                  <option value="700ml">700ml</option>
-                  <option value="750ml">750ml</option>
-                  <option value="1000ml">1000ml</option>
-                  <option value="50ml">50ml</option>
+                  {(volumes || ['50ml', '700ml', '750ml', '1000ml']).map(v => (
+                    <option key={v} value={v}>{v}</option>
+                  ))}
                 </select>
               </div>
               <div>
