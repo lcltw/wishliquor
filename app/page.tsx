@@ -324,7 +324,7 @@ export default function HomePage() {
                               {/* L2 label — clickable, syncs Country filter */}
                               <button
                                 onClick={() => { setSelectedFilters(prev => ({ ...prev, country: prev.country.includes(l2.label) ? prev.country.filter(c => c !== l2.label) : [...prev.country, l2.label] })); }}
-                                className="text-xs font-bold uppercase tracking-wide mb-2 text-left w-full hover:underline"
+                                className="text-xs font-bold tracking-wide mb-2 text-left w-full hover:underline"
                                 style={{ color: s.navDropdownLabel }}
                               >
                                 {l2.label}
