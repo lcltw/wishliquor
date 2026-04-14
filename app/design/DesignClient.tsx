@@ -32,6 +32,7 @@ interface SiteSettings {
   footer: { brand: string; description: string; logoUrl: string; logoWidth: number; logoHeight: number; logoAspectLocked: boolean; copyright: string; columns: Array<{ title: string; links: string[] }> }
   countries: string[]
   brands: string[]
+  categories: string[]
 }
 
 // 每個大項的顏色 key → 區塊 id
@@ -166,6 +167,7 @@ const defaultSettings: SiteSettings = {
   },
   countries: ['Scotland', 'Japan', 'Taiwan', 'USA'],
   brands: ['Macallan', 'Glenfiddich', 'Yamazaki', 'Kavalan', 'Octomore', 'Hibiki', 'Hakushu', 'Glenlivet', 'Talisker', 'W.L. Weller', "Jack Daniel's", 'Omar'],
+  categories: ['Single Malt', 'Blended', 'Bourbon', 'Rye', 'Gin', 'Rum', 'Wine', 'Other'],
 }
 
 const defaultBlocks: Block[] = [
@@ -758,6 +760,52 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                         }
                       }}
                       className="px-3 py-1 text-xs bg-blue-500 text-white hover:bg-blue-600 rounded"
+                    >新增</button>
+                  </div>
+                </div>
+
+                {/* Categories Editor */}
+                <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-xs font-semibold text-green-700">Categories（類別選項）</p>
+                    <span className="text-xs text-green-600">{settings.categories?.length || 0} 個</span>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5 mb-2">
+                    {(settings.categories || []).map((c: string) => (
+                      <span key={c} className="inline-flex items-center gap-1 px-2 py-0.5 bg-white border border-green-200 text-xs text-green-800 rounded">
+                        {c}
+                        <button
+                          onClick={() => setSettings(prev => ({ ...prev, categories: (prev.categories || []).filter(x => x !== c) }))}
+                          className="text-green-400 hover:text-red-500 leading-none"
+                        >×</button>
+                      </span>
+                    ))}
+                  </div>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="新增類別..."
+                      className="flex-1 px-2 py-1 text-xs border border-green-300 focus:outline-none focus:border-green-500 rounded"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          const val = (e.target as HTMLInputElement).value.trim()
+                          if (val && !(settings.categories || []).includes(val)) {
+                            setSettings(prev => ({ ...prev, categories: [...(prev.categories || []), val] }))
+                            ;(e.target as HTMLInputElement).value = ''
+                          }
+                        }
+                      }}
+                    />
+                    <button
+                      onClick={(e) => {
+                        const input = (e.currentTarget.previousElementSibling as HTMLInputElement)
+                        const val = input.value.trim()
+                        if (val && !(settings.categories || []).includes(val)) {
+                          setSettings(prev => ({ ...prev, categories: [...(prev.categories || []), val] }))
+                          input.value = ''
+                        }
+                      }}
+                      className="px-3 py-1 text-xs bg-green-500 text-white hover:bg-green-600 rounded"
                     >新增</button>
                   </div>
                 </div>

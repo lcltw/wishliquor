@@ -466,6 +466,7 @@ export default function AdminPage() {
             }}
             countries={settings?.countries || filters?.find(f => f.id === 'country')?.values || ['Scotland', 'Japan', 'Taiwan', 'USA']}
             brands={settings?.brands || filters?.find(f => f.id === 'brand')?.values || ['Macallan', 'Glenfiddich', 'Yamazaki']}
+            categories={settings?.categories || filters?.find(f => f.id === 'category')?.values || ['Single Malt', 'Blended', 'Bourbon', 'Rye']}
           />
         )}
       </AnimatePresence>
@@ -530,6 +531,7 @@ function EditProductModal({
   onClose,
   countries,
   brands,
+  categories,
 }: { 
   product: Product
   isNew: boolean
@@ -537,6 +539,7 @@ function EditProductModal({
   onClose: () => void
   countries: string[]
   brands: string[]
+  categories: string[]
 }) {
   const [form, setForm] = useState(product)
 
@@ -612,10 +615,9 @@ function EditProductModal({
                   onChange={(e) => setForm({ ...form, category: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500"
                 >
-                  <option value="Single Malt">Single Malt</option>
-                  <option value="Blended">Blended</option>
-                  <option value="Bourbon">Bourbon</option>
-                  <option value="Rye">Rye</option>
+                  {(categories || ['Single Malt', 'Blended', 'Bourbon', 'Rye', 'Gin', 'Rum', 'Wine', 'Other']).map(c => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
                 </select>
               </div>
               <div>

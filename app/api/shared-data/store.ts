@@ -37,6 +37,7 @@ export interface SiteSettings {
   footer: { brand: string; description: string; logoUrl: string; logoWidth: number; logoHeight: number; logoAspectLocked: boolean; copyright: string; columns: Array<{ title: string; links: Array<{ label: string; content: string }> }> }
   countries: string[]
   brands: string[]
+  categories: string[]
 }
 
 export interface DesignBlock { id: string; label: string; labelZh: string }
@@ -107,6 +108,7 @@ const defaultSettings: SiteSettings = {
   },
   countries: ['Scotland', 'Japan', 'Taiwan', 'USA'],
   brands: ['Macallan', 'Glenfiddich', 'Yamazaki', 'Kavalan', 'Octomore', 'Hibiki', 'Hakushu', 'Glenlivet', 'Talisker', 'W.L. Weller', "Jack Daniel's", 'Omar'],
+  categories: ['Single Malt', 'Blended', 'Bourbon', 'Rye', 'Gin', 'Rum', 'Wine', 'Other'],
 }
 
 const defaultDesignData = {
@@ -173,6 +175,15 @@ class PersistentStore {
         brandFilter.values = brands
       } else {
         existing.push({ id: 'brand', label: 'Brand', values: brands })
+      }
+    }
+    const categories = settings.categories ?? defaultSettings.categories
+    if (categories && categories.length > 0) {
+      const categoryFilter = existing.find(f => f.id === 'category')
+      if (categoryFilter) {
+        categoryFilter.values = categories
+      } else {
+        existing.push({ id: 'category', label: 'Category', values: categories })
       }
     }
     this.data.filters = existing

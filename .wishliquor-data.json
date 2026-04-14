@@ -302,7 +302,29 @@
       "featuredSubtitle": "From your Wishlist to your Collection",
       "aboutTitle": "About Us",
       "aboutText": "Wishliquor.co curates the finest whiskies from Scotland, Japan, Taiwan and beyond — delivered straight to your door."
-    }
+    },
+    "countries": [
+      "Scotland",
+      "Japan",
+      "Taiwan",
+      "USA",
+      "France"
+    ],
+    "brands": [
+      "Macallan",
+      "Glenfiddich",
+      "Yamazaki",
+      "Kavalan",
+      "Octomore",
+      "Hibiki",
+      "Hakushu",
+      "Glenlivet",
+      "Talisker",
+      "W.L. Weller",
+      "Jack Daniel's",
+      "Omar",
+      "Hennessy"
+    ]
   },
   "assignments": {
     "background": "general",
@@ -651,15 +673,16 @@
     },
     {
       "id": 24,
-      "name": "New Product",
-      "brand": "Brand",
-      "country": "Scotland",
+      "name": "XO Spirit of Travel Taipei Edition Cognac",
+      "brand": "Hennessy",
+      "country": "France",
       "category": "Brandy",
-      "age": "NAS",
-      "volume": "700ml",
-      "price": 99,
+      "age": "",
+      "volume": "1000ml",
+      "price": 399,
       "img": "https://lh3.googleusercontent.com/u/0/d/15ij09mVuQVvTMVEwq0eQ7-0q80VLKjTm",
-      "description": ""
+      "description": "",
+      "barcode": "3245990780816"
     }
   ],
   "filters": [

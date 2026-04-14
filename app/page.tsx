@@ -423,12 +423,12 @@ export default function HomePage() {
                   {expandedSections.includes(section) && (
                     <div className="px-4 pb-3 space-y-2">
                       {section === 'Category'
-                        ? siteSettings?.navigation?.filter((n: any) => n.enabled !== false).map((navItem: any) => (
-                            <label key={navItem.label} className="flex items-center gap-2 cursor-pointer">
-                              <input type="checkbox" checked={selectedFilters.category.includes(navItem.label)}
-                                onChange={() => toggleFilter('category', navItem.label)}
+                        ? ((siteSettings as any)?.categories || filters.find((f: any) => f.id === 'category')?.values || []).map((option: string) => (
+                            <label key={option} className="flex items-center gap-2 cursor-pointer">
+                              <input type="checkbox" checked={selectedFilters.category.includes(option)}
+                                onChange={() => toggleFilter('category', option)}
                                 className="w-4 h-4" style={{ accentColor: s.primary }} />
-                              <span className="text-sm" style={{ color: s.footerMuted }}>{navItem.label}</span>
+                              <span className="text-sm" style={{ color: s.footerMuted }}>{option}</span>
                             </label>
                           ))
                         : section === 'Country'
