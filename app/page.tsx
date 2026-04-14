@@ -440,6 +440,14 @@ export default function HomePage() {
                               <span className="text-sm" style={{ color: s.footerMuted }}>{option}</span>
                             </label>
                           ))
+                        : section === 'Price'
+                          ? filterOpts.price.map((p: any) => (
+                            <label key={p.label} className="flex items-center gap-2 cursor-pointer">
+                              <input type="checkbox" checked={selectedFilters.price.includes(p.label)} onChange={() => toggleFilter('price', p.label)}
+                                className="w-4 h-4" style={{ accentColor: s.primary }} />
+                              <span className="text-sm" style={{ color: s.footerMuted }}>{p.label}</span>
+                            </label>
+                          ))
                         : (filterOpts[section.toLowerCase() as keyof typeof filterOpts] as string[])?.map((option: string) => (
                           <label key={option} className="flex items-center gap-2 cursor-pointer">
                             <input type="checkbox" checked={selectedFilters[section.toLowerCase()].includes(option)} onChange={() => toggleFilter(section.toLowerCase(), option)}
@@ -528,6 +536,14 @@ export default function HomePage() {
                                   onChange={() => toggleFilter('country', option)}
                                   className="w-4 h-4" style={{ accentColor: s.primary }} />
                                 <span className="text-sm" style={{ color: s.footerMuted }}>{option}</span>
+                              </label>
+                            ))
+                          : section === 'Price'
+                            ? filterOpts.price.map((p: any) => (
+                              <label key={p.label} className="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" checked={selectedFilters.price.includes(p.label)} onChange={() => toggleFilter('price', p.label)}
+                                  className="w-4 h-4" style={{ accentColor: s.primary }} />
+                                <span className="text-sm" style={{ color: s.footerMuted }}>{p.label}</span>
                               </label>
                             ))
                           : (filterOpts[section.toLowerCase() as keyof typeof filterOpts] as string[])?.map((option: string) => (
