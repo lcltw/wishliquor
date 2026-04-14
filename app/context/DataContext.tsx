@@ -81,6 +81,7 @@ const defaultFilters: FilterOption[] = [
   { id: 'brand', label: 'Brand', values: ['Macallan', 'Glenfiddich', 'Yamazaki', 'Kavalan', 'Octomore', 'Hibiki', 'Hakushu', 'Glenlivet', 'Talisker', 'W.L. Weller', "Jack Daniel's", 'Omar'] },
   { id: 'volume', label: 'Volume', values: ['700ml', '750ml', '1000ml'] },
   { id: 'price', label: 'Price', values: [] },
+  { id: 'category', label: 'Category', values: ['Single Malt', 'Blended', 'Bourbon', 'Rye', 'Cognac', 'Gin', 'Rum', 'Wine', 'Other'] },
 ]
 
 const defaultSettings: SiteSettings = {
@@ -159,7 +160,7 @@ const defaultSettings: SiteSettings = {
   },
   countries: ['Scotland', 'Japan', 'Taiwan', 'USA'],
   brands: ['Macallan', 'Glenfiddich', 'Yamazaki', 'Kavalan', 'Octomore', 'Hibiki', 'Hakushu', 'Glenlivet', 'Talisker', 'W.L. Weller', "Jack Daniel's", 'Omar'],
-  categories: ['Single Malt', 'Blended', 'Bourbon', 'Rye', 'Gin', 'Rum', 'Wine', 'Other'],
+  categories: ['Single Malt', 'Blended', 'Bourbon', 'Rye', 'Cognac', 'Gin', 'Rum', 'Wine', 'Other'],
 }
 
 // Read from localStorage synchronously — call this only client-side

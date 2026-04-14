@@ -324,6 +324,17 @@
       "Jack Daniel's",
       "Omar",
       "Hennessy"
+    ],
+    "categories": [
+      "Single Malt",
+      "Blended",
+      "Bourbon",
+      "Rye",
+      "Gin",
+      "Rum",
+      "Wine",
+      "Cognac",
+      "Other"
     ]
   },
   "assignments": {
@@ -693,7 +704,8 @@
         "Scotland",
         "Japan",
         "Taiwan",
-        "USA"
+        "USA",
+        "France"
       ]
     },
     {
@@ -711,7 +723,8 @@
         "Talisker",
         "W.L. Weller",
         "Jack Daniel's",
-        "Omar"
+        "Omar",
+        "Hennessy"
       ]
     },
     {
@@ -727,6 +740,21 @@
       "id": "price",
       "label": "Price",
       "values": []
+    },
+    {
+      "id": "category",
+      "label": "Category",
+      "values": [
+        "Single Malt",
+        "Blended",
+        "Bourbon",
+        "Rye",
+        "Gin",
+        "Rum",
+        "Wine",
+        "Cognac",
+        "Other"
+      ]
     }
   ]
 }

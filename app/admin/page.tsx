@@ -466,7 +466,7 @@ export default function AdminPage() {
             }}
             countries={settings?.countries || filters?.find(f => f.id === 'country')?.values || ['Scotland', 'Japan', 'Taiwan', 'USA']}
             brands={settings?.brands || filters?.find(f => f.id === 'brand')?.values || ['Macallan', 'Glenfiddich', 'Yamazaki']}
-            categories={settings?.categories || filters?.find(f => f.id === 'category')?.values || ['Single Malt', 'Blended', 'Bourbon', 'Rye']}
+            categories={settings?.categories || filters?.find(f => f.id === 'category')?.values || ['Single Malt', 'Blended', 'Bourbon', 'Rye', 'Cognac']}
           />
         )}
       </AnimatePresence>
@@ -615,7 +615,7 @@ function EditProductModal({
                   onChange={(e) => setForm({ ...form, category: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500"
                 >
-                  {(categories || ['Single Malt', 'Blended', 'Bourbon', 'Rye', 'Gin', 'Rum', 'Wine', 'Other']).map(c => (
+                  {(categories || ['Single Malt', 'Blended', 'Bourbon', 'Rye', 'Cognac', 'Gin', 'Rum', 'Wine', 'Other']).map(c => (
                     <option key={c} value={c}>{c}</option>
                   ))}
                 </select>

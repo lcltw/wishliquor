@@ -108,7 +108,7 @@ const defaultSettings: SiteSettings = {
   },
   countries: ['Scotland', 'Japan', 'Taiwan', 'USA'],
   brands: ['Macallan', 'Glenfiddich', 'Yamazaki', 'Kavalan', 'Octomore', 'Hibiki', 'Hakushu', 'Glenlivet', 'Talisker', 'W.L. Weller', "Jack Daniel's", 'Omar'],
-  categories: ['Single Malt', 'Blended', 'Bourbon', 'Rye', 'Gin', 'Rum', 'Wine', 'Other'],
+  categories: ['Single Malt', 'Blended', 'Bourbon', 'Rye', 'Cognac', 'Gin', 'Rum', 'Wine', 'Other'],
 }
 
 const defaultDesignData = {
