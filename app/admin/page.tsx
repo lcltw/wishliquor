@@ -186,8 +186,8 @@ export default function AdminPage() {
       const target = e.target as HTMLElement
       // Don't close if clicking inside the same editing cell
       if (target.closest(`[data-cell="${editingCell.productId}-${editingCell.field}"]`)) return
-      // Also don't close if clicking the Name cell while editing sub-fields within it
-      if (['category', 'volume', 'name'].includes(editingCell.field)) {
+      // Also don't close if clicking category/volume sub-fields inside the Name cell
+      if (['category', 'volume'].includes(editingCell.field)) {
         const nameCell = target.closest(`[data-cell="${editingCell.productId}-name"]`)
         if (nameCell && (nameCell as HTMLElement).dataset.cellFields?.includes(editingCell.field)) return
       }
@@ -430,28 +430,16 @@ export default function AdminPage() {
                             >{product.brand}</button>
                           )}
                         </td>
-                        <td data-cell={`${product.id}-name`} data-cell-fields="name category volume" className="px-4 py-3">
-                          {editingCell?.productId === product.id && editingCell?.field === 'name' ? (
-                            <input
-                              autoFocus
-                              type="text"
-                              value={product.name}
-                              onChange={(e) => {
-                                const updated = products.map(p => p.id === product.id ? { ...p, name: e.target.value } : p)
-                                setProducts(updated)
-                                setEditingCell(null)
-                              }}
-                              onBlur={() => setEditingCell(null)}
-                              onKeyDown={(e) => { if (e.key === 'Escape') setEditingCell(null) }}
-                              className="w-full px-2 py-1 text-sm border border-amber-400 rounded focus:outline-none focus:ring-1 focus:ring-amber-500"
-                            />
-                          ) : (
-                            <button
-                              onClick={() => setEditingCell({ productId: product.id, field: 'name' })}
-                              className="text-sm font-medium text-gray-800 hover:text-amber-600 hover:underline cursor-pointer text-left w-full"
-                              title="點擊編輯名稱"
-                            >{product.name}</button>
-                          )}
+                        <td data-cell={`${product.id}-name`} className="px-4 py-3">
+                          <input
+                            type="text"
+                            value={product.name}
+                            onChange={(e) => {
+                              const updated = products.map(p => p.id === product.id ? { ...p, name: e.target.value } : p)
+                              setProducts(updated)
+                            }}
+                            className="w-full px-2 py-1 text-sm font-medium text-gray-800 border border-transparent hover:border-amber-300 focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-100 rounded cursor-text"
+                          />
                           <div className="flex flex-wrap gap-1 mt-0.5">
                             {/* Category */}
                             {editingCell?.productId === product.id && editingCell?.field === 'category' ? (
