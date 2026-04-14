@@ -61,7 +61,7 @@ function countryMatchesL2Label(productCountry: string, l2Label: string): boolean
 }
 
 interface CartItem {
-  id: number; name: string; brand: string; country: string; category: string; age: string; volume: string; price: number; img: string; qty: number; description?: string;
+  id: number; name: string; brand: string; country: string; category: string; age: string; alcohol?: string; volume: string; price: number; img: string; qty: number; description?: string; barcode?: string; sku?: string;
 }
 
 interface FilterOption {
@@ -480,7 +480,7 @@ export default function HomePage() {
                   <div className="p-4">
                     <p className="text-xs font-semibold uppercase tracking-wide mb-1" style={{ color: s.primary }}>{product.country}</p>
                     <h3 className="font-semibold line-clamp-1 mb-1" style={{ color: s.text }}>{product.name}</h3>
-                    <p className="text-xs mb-3" style={{ color: '#6B7280' }}>{product.category} {product.age} {product.volume}</p>
+                    <p className="text-xs mb-3" style={{ color: '#6B7280' }}>{product.category}{product.age ? ` ${product.age}` : ''}{product.alcohol ? ` ${product.alcohol}%` : ''}{product.volume ? ` ${product.volume}` : ''}</p>
                     <div className="flex items-center justify-between">
                       <span className="text-lg font-bold" style={{ color: s.text }}>${product.price}</span>
                       <button onClick={(e) => { e.stopPropagation(); addToCart(product); }}
@@ -579,7 +579,7 @@ export default function HomePage() {
                     <button onClick={() => setSelectedProduct(null)} className="absolute top-2 right-2 md:top-4 md:right-4 p-2" style={{ backgroundColor: s.cardBackground }}><Icons.Close /></button>
                     <p className="text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: s.primary }}>{selectedProduct.country}</p>
                     <h2 className="text-xl md:text-2xl font-bold mb-2" style={{ color: s.text }}>{selectedProduct.name}</h2>
-                    <p className="mb-1" style={{ color: s.secondary }}>{selectedProduct.category} {selectedProduct.age} {selectedProduct.volume}</p>
+                    <p className="mb-1" style={{ color: s.secondary }}>{selectedProduct.category}{selectedProduct.age ? ` ${selectedProduct.age}` : ''}{selectedProduct.alcohol ? ` ${selectedProduct.alcohol}%` : ''}{selectedProduct.volume ? ` ${selectedProduct.volume}` : ''}</p>
                     <p className="mb-4 text-sm leading-relaxed" style={{ color: s.secondary }}>{selectedProduct.description}</p>
                     <p className="text-2xl md:text-3xl font-bold mb-6" style={{ color: s.text }}>${selectedProduct.price}</p>
                     <button onClick={() => { addToCart(selectedProduct); setSelectedProduct(null); }}
