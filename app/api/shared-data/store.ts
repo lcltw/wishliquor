@@ -35,6 +35,7 @@ export interface SiteSettings {
   hero: { title: string; subtitle: string; ctaText: string }
   navigation: Array<{ label: string; href?: string; enabled?: boolean; sub?: Array<{ label: string; href?: string; enabled?: boolean; sub?: Array<{ label: string; href: string; enabled?: boolean }> }> }>
   footer: { brand: string; description: string; logoUrl: string; logoWidth: number; logoHeight: number; logoAspectLocked: boolean; copyright: string; columns: Array<{ title: string; links: Array<{ label: string; content: string }> }> }
+  countries: string[]
 }
 
 export interface DesignBlock { id: string; label: string; labelZh: string }
@@ -103,6 +104,7 @@ const defaultSettings: SiteSettings = {
       { title: 'About', links: ['Shipping', 'Privacy', 'Terms', 'About Us', 'Contact Us'] },
     ],
   },
+  countries: ['Scotland', 'Japan', 'Taiwan', 'USA'],
 }
 
 const defaultDesignData = {
@@ -150,7 +152,34 @@ class PersistentStore {
 
   setProducts(products: Product[]) { this.data.products = products; this.save() }
   setFilters(filters: FilterOption[]) { this.data.filters = filters; this.save() }
-  setSettings(settings: SiteSettings) { this.data.settings = settings; this.save() }
+  setSettings(settings: SiteSettings) {
+    // Sync countries → filters whenever settings are saved
+    const countries = settings.countries ?? defaultSettings.countries
+    if (countries && countries.length > 0) {
+      const existing = this.data.filters ?? defaultFilters
+      const countryFilter = existing.find(f => f.id === 'country')
+      if (countryFilter) {
+        countryFilter.values = countries
+      } else {
+        existing.push({ id: 'country', label: 'Country', values: countries })
+      }
+      this.data.filters = existing
+    }
+    this.data.settings = settings
+    this.save()
+  }
+  setCountries(countries: string[]) {
+    this.data.settings = { ...(this.data.settings ?? defaultSettings), countries }
+    const existing = this.data.filters ?? defaultFilters
+    const countryFilter = existing.find(f => f.id === 'country')
+    if (countryFilter) {
+      countryFilter.values = countries
+    } else {
+      existing.push({ id: 'country', label: 'Country', values: countries })
+    }
+    this.data.filters = existing
+    this.save()
+  }
   setAssignments(assignments: Record<string, string>) { this.data.assignments = assignments; this.save() }
   setBlockColors(blockColors: Record<string, string>) { this.data.blockColors = blockColors; this.save() }
   setBlocks(blocks: DesignBlock[]) { this.data.blocks = blocks; this.save() }

@@ -432,7 +432,7 @@ export default function HomePage() {
                             </label>
                           ))
                         : section === 'Country'
-                          ? (siteSettings?.navigation?.[0]?.sub?.filter((l2: any) => l2.enabled !== false).map((l2: any) => l2.label) || []).map((option: string) => (
+                          ? ((siteSettings as any)?.countries || filters.find((f: any) => f.id === 'country')?.values || []).map((option: string) => (
                             <label key={option} className="flex items-center gap-2 cursor-pointer">
                               <input type="checkbox" checked={selectedFilters.country.includes(option)}
                                 onChange={() => toggleFilter('country', option)}

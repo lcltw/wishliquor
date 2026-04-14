@@ -30,6 +30,7 @@ interface SiteSettings {
     aboutText: string
   }
   footer: { brand: string; description: string; logoUrl: string; logoWidth: number; logoHeight: number; logoAspectLocked: boolean; copyright: string; columns: Array<{ title: string; links: string[] }> }
+  countries: string[]
 }
 
 // 每個大項的顏色 key → 區塊 id
@@ -162,6 +163,7 @@ const defaultSettings: SiteSettings = {
     aboutTitle: 'About Us',
     aboutText: 'Wishliquor.co curates the finest whiskies from Scotland, Japan, Taiwan and beyond — delivered straight to your door.',
   },
+  countries: ['Scotland', 'Japan', 'Taiwan', 'USA'],
 }
 
 const defaultBlocks: Block[] = [
@@ -665,6 +667,52 @@ export default function DesignClient({ initialData }: DesignClientProps) {
             {activeTab === 'navigation' && (
               <div className="space-y-3">
                 <p className="text-xs text-gray-500">Layer 1 / 2 / 3 三層導航編輯器</p>
+
+                {/* Countries Editor */}
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-xs font-semibold text-amber-700">Countries（國家選項）</p>
+                    <span className="text-xs text-amber-600">{settings.countries?.length || 0} 個</span>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5 mb-2">
+                    {(settings.countries || []).map((c: string) => (
+                      <span key={c} className="inline-flex items-center gap-1 px-2 py-0.5 bg-white border border-amber-200 text-xs text-amber-800 rounded">
+                        {c}
+                        <button
+                          onClick={() => setSettings(prev => ({ ...prev, countries: (prev.countries || []).filter(x => x !== c) }))}
+                          className="text-amber-400 hover:text-red-500 leading-none"
+                        >×</button>
+                      </span>
+                    ))}
+                  </div>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="新增國家..."
+                      className="flex-1 px-2 py-1 text-xs border border-amber-300 focus:outline-none focus:border-amber-500 rounded"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          const val = (e.target as HTMLInputElement).value.trim()
+                          if (val && !(settings.countries || []).includes(val)) {
+                            setSettings(prev => ({ ...prev, countries: [...(prev.countries || []), val] }))
+                            ;(e.target as HTMLInputElement).value = ''
+                          }
+                        }
+                      }}
+                    />
+                    <button
+                      onClick={(e) => {
+                        const input = (e.currentTarget.previousElementSibling as HTMLInputElement)
+                        const val = input.value.trim()
+                        if (val && !(settings.countries || []).includes(val)) {
+                          setSettings(prev => ({ ...prev, countries: [...(prev.countries || []), val] }))
+                          input.value = ''
+                        }
+                      }}
+                      className="px-3 py-1 text-xs bg-amber-500 text-white hover:bg-amber-600 rounded"
+                    >新增</button>
+                  </div>
+                </div>
 
                 {settings.navigation.map((item, l1Index) => (
                   <div key={l1Index} className="border border-gray-200 rounded-lg overflow-hidden">

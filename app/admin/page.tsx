@@ -464,6 +464,7 @@ export default function AdminPage() {
               setEditingProduct(null)
               setIsAddingProduct(false)
             }}
+            countries={settings?.countries || filters?.find(f => f.id === 'country')?.values || ['Scotland', 'Japan', 'Taiwan', 'USA']}
           />
         )}
       </AnimatePresence>
@@ -525,12 +526,14 @@ function EditProductModal({
   product, 
   isNew, 
   onSave, 
-  onClose 
+  onClose,
+  countries,
 }: { 
   product: Product
   isNew: boolean
   onSave: (product: Product) => void
   onClose: () => void
+  countries: string[]
 }) {
   const [form, setForm] = useState(product)
 
@@ -592,13 +595,9 @@ function EditProductModal({
                   onChange={(e) => setForm({ ...form, country: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500"
                 >
-                  <option value="Scotland">Scotland</option>
-                  <option value="Japan">Japan</option>
-                  <option value="Taiwan">Taiwan</option>
-                  <option value="USA">USA</option>
-                  <option value="Australia">Australia</option>
-                  <option value="Ireland">Ireland</option>
-                  <option value="India">India</option>
+                  {(countries || ['Scotland', 'Japan', 'Taiwan', 'USA']).map(c => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
                 </select>
               </div>
               <div>

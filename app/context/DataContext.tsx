@@ -41,6 +41,7 @@ interface SiteSettings {
     aboutTitle: string
     aboutText: string
   }
+  countries: string[]
 }
 
 interface DataContextType {
@@ -154,6 +155,7 @@ const defaultSettings: SiteSettings = {
     aboutTitle: 'About Us',
     aboutText: 'Wishliquor.co curates the finest whiskies from Scotland, Japan, Taiwan and beyond — delivered straight to your door.',
   },
+  countries: ['Scotland', 'Japan', 'Taiwan', 'USA'],
 }
 
 // Read from localStorage synchronously — call this only client-side
@@ -209,6 +211,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
           content: (data.settings || {}).content || defaultSettings.content,
           navigation: (data.settings || {}).navigation || defaultSettings.navigation,
           hero: (data.settings || {}).hero || defaultSettings.hero,
+          countries: (data.settings || {}).countries || defaultSettings.countries,
         }
         // localStorage is source of truth for products/filters; only fill if empty
         const storedProducts = localStorage.getItem('wishliquor_products')
