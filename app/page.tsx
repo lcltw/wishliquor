@@ -182,7 +182,7 @@ export default function HomePage() {
   }, [filters])
 
   const [expandedSections, setExpandedSections] = useState<string[]>(['Category', 'Country', 'Brand'])
-  const [selectedFilters, setSelectedFilters] = useState<Record<string, string[]>>({ category: [siteSettings?.navigation?.[0]?.label || 'Whisky'], country: [], brand: [], volume: [], price: [] })
+  const [selectedFilters, setSelectedFilters] = useState<Record<string, string[]>>({ category: [], country: [], brand: [], volume: [], price: [] })
   const [searchQuery, setSearchQuery] = useState('')
 
   // Sync URL ?category= param with selectedFilters.category (client-side only)
@@ -258,7 +258,7 @@ export default function HomePage() {
   }
 
   const clearFilters = () => {
-    setSelectedFilters({ category: [siteSettings?.navigation?.[0]?.label || 'Whisky'], country: [], brand: [], volume: [], price: [] })
+    setSelectedFilters({ category: [], country: [], brand: [], volume: [], price: [] })
     setSearchQuery('')
   }
 
