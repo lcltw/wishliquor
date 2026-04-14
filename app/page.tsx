@@ -377,10 +377,11 @@ export default function HomePage() {
                               </button>
                               {/* L3 brand links */}
                               {l2.sub && l2.sub.filter(l3 => l3.enabled !== false).map((l3, l3i) => (
-                                <a key={l3i} href={l3.href} onClick={(e) => { if (l3.enabled === false) { e.preventDefault(); return; } const lookup = brandCategoryCountryMap[l3.label]; setSelectedFilters({ category: lookup?.category ? [lookup.category] : [], country: lookup?.country ? [lookup.country] : [], brand: [l3.label], volume: [], price: [] }); }}
-                                  className="block px-2 py-1 text-sm hover:underline" style={{ color: s.navDropdownText }}>
+                                <button key={l3i}
+                                  onClick={() => { if (l3.enabled === false) return; const lookup = brandCategoryCountryMap[l3.label]; const params = new URLSearchParams(); if (lookup?.category) params.set('category', lookup.category.toLowerCase().replace(/\s+/g, '-')); if (lookup?.country) params.set('country', (lookup.country || '').toLowerCase().replace(/\s+/g, '-')); params.set('brand', l3.label); window.history.pushState({}, '', `/shop?${params.toString()}`); setSelectedFilters({ category: lookup?.category ? [lookup.category] : [], country: lookup?.country ? [lookup.country] : [], brand: [l3.label], volume: [], price: [] }); }}
+                                  className="block px-2 py-1 text-sm hover:underline text-left w-full" style={{ color: s.navDropdownText }}>
                                   {l3.label}
-                                </a>
+                                </button>
                               ))}
                             </div>
                           ))}
