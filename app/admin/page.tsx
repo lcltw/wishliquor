@@ -369,8 +369,8 @@ export default function AdminPage() {
                   <thead className="bg-gray-50 border-b border-gray-200">
                     <tr>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Image</th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Name</th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Brand</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Name</th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Country</th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Price</th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Actions</th>
@@ -382,11 +382,11 @@ export default function AdminPage() {
                         <td className="px-4 py-3">
                           <img src={product.img} alt={product.name} className="w-12 h-12 object-cover border border-gray-200" suppressHydrationWarning />
                         </td>
+                        <td className="px-4 py-3 text-sm text-gray-600">{product.brand}</td>
                         <td className="px-4 py-3">
                           <div className="text-sm font-medium text-gray-800">{product.name}</div>
                           <div className="text-xs text-gray-500">{product.category} {product.age} {product.volume}</div>
                         </td>
-                        <td className="px-4 py-3 text-sm text-gray-600">{product.brand}</td>
                         <td className="px-4 py-3 text-sm text-gray-600">{product.country}</td>
                         <td className="px-4 py-3 text-sm font-semibold text-gray-800">${product.price}</td>
                         <td className="px-4 py-3">
