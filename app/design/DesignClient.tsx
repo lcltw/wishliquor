@@ -34,6 +34,7 @@ interface SiteSettings {
   brands: string[]
   categories: string[]
   volumes: string[]
+  filterOrder: string[]
 }
 
 // 每個大項的顏色 key → 區塊 id
@@ -170,6 +171,7 @@ const defaultSettings: SiteSettings = {
   brands: ['Macallan', 'Glenfiddich', 'Yamazaki', 'Kavalan', 'Octomore', 'Hibiki', 'Hakushu', 'Glenlivet', 'Talisker', 'W.L. Weller', "Jack Daniel's", 'Omar'],
   categories: ['Single Malt', 'Blended', 'Bourbon', 'Rye', 'Cognac', 'Gin', 'Rum', 'Wine', 'Other'],
   volumes: ['50ml', '700ml', '750ml', '1000ml'],
+  filterOrder: ['category', 'country', 'brand', 'volume'],
 }
 
 const defaultBlocks: Block[] = [
@@ -264,6 +266,8 @@ export default function DesignClient({ initialData }: DesignClientProps) {
 
   const [draggingKey, setDraggingKey] = useState<string | null>(null)
   const [dragOverBlock, setDragOverBlock] = useState<string | null>(null)
+  const [draggingFilter, setDraggingFilter] = useState<string | null>(null)
+  const [dragOverFilter, setDragOverFilter] = useState<string | null>(null)
 
   // Track if initial load from localStorage is complete
   const [initialLoadComplete, setInitialLoadComplete] = useState(false)
@@ -674,189 +678,93 @@ export default function DesignClient({ initialData }: DesignClientProps) {
               <div className="space-y-3">
                 <p className="text-xs text-gray-500">Layer 1 / 2 / 3 三層導航編輯器</p>
 
-                {/* Countries Editor */}
-                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-xs font-semibold text-amber-700">Countries（國家選項）</p>
-                    <span className="text-xs text-amber-600">{settings.countries?.length || 0} 個</span>
-                  </div>
-                  <div className="flex flex-wrap gap-1.5 mb-2">
-                    {(settings.countries || []).map((c: string) => (
-                      <span key={c} className="inline-flex items-center gap-1 px-2 py-0.5 bg-white border border-amber-200 text-xs text-amber-800 rounded">
-                        {c}
-                        <button
-                          onClick={() => setSettings(prev => ({ ...prev, countries: (prev.countries || []).filter(x => x !== c) }))}
-                          className="text-amber-400 hover:text-red-500 leading-none"
-                        >×</button>
-                      </span>
-                    ))}
-                  </div>
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      placeholder="新增國家..."
-                      className="flex-1 px-2 py-1 text-xs border border-amber-300 focus:outline-none focus:border-amber-500 rounded"
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                          const val = (e.target as HTMLInputElement).value.trim()
-                          if (val && !(settings.countries || []).includes(val)) {
-                            setSettings(prev => ({ ...prev, countries: [...(prev.countries || []), val] }))
-                            ;(e.target as HTMLInputElement).value = ''
+                {/* Filter Section Editors — ordered by filterOrder, draggable */}
+                {(settings.filterOrder || ['category', 'country', 'brand', 'volume']).map((sectionKey) => {
+                  const sectionMap: Record<string, { label: string; color: string; bg: string; border: string; text: string; data: string[] }> = {
+                    country: { label: 'Countries（國家選項）', color: 'amber', bg: 'bg-amber-50', border: 'border-amber-200', text: 'text-amber-700', data: settings.countries || [] },
+                    brand: { label: 'Brands（品牌選項）', color: 'blue', bg: 'bg-blue-50', border: 'border-blue-200', text: 'text-blue-700', data: settings.brands || [] },
+                    category: { label: 'Categories（類別選項）', color: 'green', bg: 'bg-green-50', border: 'border-green-200', text: 'text-green-700', data: settings.categories || [] },
+                    volume: { label: 'Volumes（容量選項）', color: 'purple', bg: 'bg-purple-50', border: 'border-purple-200', text: 'text-purple-700', data: settings.volumes || [] },
+                  }
+                  const section = sectionMap[sectionKey]
+                  if (!section) return null
+                  const isDragging = draggingFilter === sectionKey
+                  const isOver = dragOverFilter === sectionKey
+                  return (
+                    <div
+                      key={sectionKey}
+                      draggable
+                      onDragStart={() => setDraggingFilter(sectionKey)}
+                      onDragOver={(e) => { e.preventDefault(); setDragOverFilter(sectionKey) }}
+                      onDrop={(e) => {
+                        e.preventDefault()
+                        if (draggingFilter && draggingFilter !== sectionKey) {
+                          const order = [...(settings.filterOrder || ['category', 'country', 'brand', 'volume'])]
+                          const fromIdx = order.indexOf(draggingFilter)
+                          const toIdx = order.indexOf(sectionKey)
+                          if (fromIdx !== -1 && toIdx !== -1) {
+                            order.splice(fromIdx, 1)
+                            order.splice(toIdx, 0, draggingFilter)
+                            setSettings(prev => ({ ...prev, filterOrder: order }))
                           }
                         }
+                        setDraggingFilter(null)
+                        setDragOverFilter(null)
                       }}
-                    />
-                    <button
-                      onClick={(e) => {
-                        const input = (e.currentTarget.previousElementSibling as HTMLInputElement)
-                        const val = input.value.trim()
-                        if (val && !(settings.countries || []).includes(val)) {
-                          setSettings(prev => ({ ...prev, countries: [...(prev.countries || []), val] }))
-                          input.value = ''
-                        }
-                      }}
-                      className="px-3 py-1 text-xs bg-amber-500 text-white hover:bg-amber-600 rounded"
-                    >新增</button>
-                  </div>
-                </div>
-
-                {/* Brands Editor */}
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-xs font-semibold text-blue-700">Brands（品牌選項）</p>
-                    <span className="text-xs text-blue-600">{settings.brands?.length || 0} 個</span>
-                  </div>
-                  <div className="flex flex-wrap gap-1.5 mb-2">
-                    {(settings.brands || []).map((b: string) => (
-                      <span key={b} className="inline-flex items-center gap-1 px-2 py-0.5 bg-white border border-blue-200 text-xs text-blue-800 rounded">
-                        {b}
+                      onDragEnd={() => { setDraggingFilter(null); setDragOverFilter(null) }}
+                      className={`${section.bg} border ${section.border} rounded-lg p-3 transition-all cursor-grab select-none ${isDragging ? 'opacity-40' : ''} ${isOver ? 'ring-2 ring-amber-400 ring-offset-1' : ''}`}
+                    >
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-gray-400 hover:text-gray-600 cursor-grab">⠿</span>
+                        <p className={`text-xs font-semibold ${section.text}`}>{section.label}</p>
+                        <span className={`text-xs ${section.text.replace('700', '600')}`}>{section.data.length} 個</span>
+                      </div>
+                      <div className="flex flex-wrap gap-1.5 mb-2">
+                        {section.data.map((item: string) => (
+                          <span key={item} className={`inline-flex items-center gap-1 px-2 py-0.5 bg-white border ${section.border.replace('200', '200')} text-xs ${section.text.replace('700', '800')} rounded`}>
+                            {item}
+                            <button
+                              onClick={() => {
+                                const key = sectionKey === 'country' ? 'countries' : sectionKey === 'brand' ? 'brands' : sectionKey === 'category' ? 'categories' : 'volumes'
+                                setSettings(prev => ({ ...prev, [key]: (prev as any)[key].filter((x: string) => x !== item) }))
+                              }}
+                              className={`${section.text.replace('700', '400')} hover:text-red-500 leading-none`}
+                            >×</button>
+                          </span>
+                        ))}
+                      </div>
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          placeholder={`新增${sectionKey === 'country' ? '國家' : sectionKey === 'brand' ? '品牌' : sectionKey === 'category' ? '類別' : '容量'}...`}
+                          className={`flex-1 px-2 py-1 text-xs border ${section.border.replace('200', '300')} focus:outline-none focus:border-${section.color}-500 rounded`}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              const val = (e.target as HTMLInputElement).value.trim()
+                              if (val && !section.data.includes(val)) {
+                                const key = sectionKey === 'country' ? 'countries' : sectionKey === 'brand' ? 'brands' : sectionKey === 'category' ? 'categories' : 'volumes'
+                                setSettings(prev => ({ ...prev, [key]: [...((prev as any)[key] || []), val] }))
+                                ;(e.target as HTMLInputElement).value = ''
+                              }
+                            }
+                          }}
+                        />
                         <button
-                          onClick={() => setSettings(prev => ({ ...prev, brands: (prev.brands || []).filter(x => x !== b) }))}
-                          className="text-blue-400 hover:text-red-500 leading-none"
-                        >×</button>
-                      </span>
-                    ))}
-                  </div>
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      placeholder="新增品牌..."
-                      className="flex-1 px-2 py-1 text-xs border border-blue-300 focus:outline-none focus:border-blue-500 rounded"
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                          const val = (e.target as HTMLInputElement).value.trim()
-                          if (val && !(settings.brands || []).includes(val)) {
-                            setSettings(prev => ({ ...prev, brands: [...(prev.brands || []), val] }))
-                            ;(e.target as HTMLInputElement).value = ''
-                          }
-                        }
-                      }}
-                    />
-                    <button
-                      onClick={(e) => {
-                        const input = (e.currentTarget.previousElementSibling as HTMLInputElement)
-                        const val = input.value.trim()
-                        if (val && !(settings.brands || []).includes(val)) {
-                          setSettings(prev => ({ ...prev, brands: [...(prev.brands || []), val] }))
-                          input.value = ''
-                        }
-                      }}
-                      className="px-3 py-1 text-xs bg-blue-500 text-white hover:bg-blue-600 rounded"
-                    >新增</button>
-                  </div>
-                </div>
-
-                {/* Categories Editor */}
-                <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-xs font-semibold text-green-700">Categories（類別選項）</p>
-                    <span className="text-xs text-green-600">{settings.categories?.length || 0} 個</span>
-                  </div>
-                  <div className="flex flex-wrap gap-1.5 mb-2">
-                    {(settings.categories || []).map((c: string) => (
-                      <span key={c} className="inline-flex items-center gap-1 px-2 py-0.5 bg-white border border-green-200 text-xs text-green-800 rounded">
-                        {c}
-                        <button
-                          onClick={() => setSettings(prev => ({ ...prev, categories: (prev.categories || []).filter(x => x !== c) }))}
-                          className="text-green-400 hover:text-red-500 leading-none"
-                        >×</button>
-                      </span>
-                    ))}
-                  </div>
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      placeholder="新增類別..."
-                      className="flex-1 px-2 py-1 text-xs border border-green-300 focus:outline-none focus:border-green-500 rounded"
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                          const val = (e.target as HTMLInputElement).value.trim()
-                          if (val && !(settings.categories || []).includes(val)) {
-                            setSettings(prev => ({ ...prev, categories: [...(prev.categories || []), val] }))
-                            ;(e.target as HTMLInputElement).value = ''
-                          }
-                        }
-                      }}
-                    />
-                    <button
-                      onClick={(e) => {
-                        const input = (e.currentTarget.previousElementSibling as HTMLInputElement)
-                        const val = input.value.trim()
-                        if (val && !(settings.categories || []).includes(val)) {
-                          setSettings(prev => ({ ...prev, categories: [...(prev.categories || []), val] }))
-                          input.value = ''
-                        }
-                      }}
-                      className="px-3 py-1 text-xs bg-green-500 text-white hover:bg-green-600 rounded"
-                    >新增</button>
-                  </div>
-                </div>
-
-                {/* Volumes Editor */}
-                <div className="bg-purple-50 border border-purple-200 rounded-lg p-3">
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-xs font-semibold text-purple-700">Volumes（容量選項）</p>
-                    <span className="text-xs text-purple-600">{settings.volumes?.length || 0} 個</span>
-                  </div>
-                  <div className="flex flex-wrap gap-1.5 mb-2">
-                    {(settings.volumes || []).map((v: string) => (
-                      <span key={v} className="inline-flex items-center gap-1 px-2 py-0.5 bg-white border border-purple-200 text-xs text-purple-800 rounded">
-                        {v}
-                        <button
-                          onClick={() => setSettings(prev => ({ ...prev, volumes: (prev.volumes || []).filter(x => x !== v) }))}
-                          className="text-purple-400 hover:text-red-500 leading-none"
-                        >×</button>
-                      </span>
-                    ))}
-                  </div>
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      placeholder="新增容量（如 500ml）..."
-                      className="flex-1 px-2 py-1 text-xs border border-purple-300 focus:outline-none focus:border-purple-500 rounded"
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                          const val = (e.target as HTMLInputElement).value.trim()
-                          if (val && !(settings.volumes || []).includes(val)) {
-                            setSettings(prev => ({ ...prev, volumes: [...(prev.volumes || []), val] }))
-                            ;(e.target as HTMLInputElement).value = ''
-                          }
-                        }
-                      }}
-                    />
-                    <button
-                      onClick={(e) => {
-                        const input = (e.currentTarget.previousElementSibling as HTMLInputElement)
-                        const val = input.value.trim()
-                        if (val && !(settings.volumes || []).includes(val)) {
-                          setSettings(prev => ({ ...prev, volumes: [...(prev.volumes || []), val] }))
-                          input.value = ''
-                        }
-                      }}
-                      className="px-3 py-1 text-xs bg-purple-500 text-white hover:bg-purple-600 rounded"
-                    >新增</button>
-                  </div>
-                </div>
+                          onClick={(e) => {
+                            const input = (e.currentTarget.previousElementSibling as HTMLInputElement)
+                            const val = input.value.trim()
+                            if (val && !section.data.includes(val)) {
+                              const key = sectionKey === 'country' ? 'countries' : sectionKey === 'brand' ? 'brands' : sectionKey === 'category' ? 'categories' : 'volumes'
+                              setSettings(prev => ({ ...prev, [key]: [...((prev as any)[key] || []), val] }))
+                              input.value = ''
+                            }
+                          }}
+                          className={`px-3 py-1 text-xs bg-${section.color}-500 text-white hover:bg-${section.color}-600 rounded`}
+                        >新增</button>
+                      </div>
+                    </div>
+                  )
+                })}
 
                 {settings.navigation.map((item, l1Index) => (
                   <div key={l1Index} className="border border-gray-200 rounded-lg overflow-hidden">

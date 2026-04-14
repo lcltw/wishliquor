@@ -39,6 +39,7 @@ export interface SiteSettings {
   brands: string[]
   categories: string[]
   volumes: string[]
+  filterOrder: string[]
 }
 
 export interface DesignBlock { id: string; label: string; labelZh: string }
@@ -111,6 +112,7 @@ const defaultSettings: SiteSettings = {
   brands: ['Macallan', 'Glenfiddich', 'Yamazaki', 'Kavalan', 'Octomore', 'Hibiki', 'Hakushu', 'Glenlivet', 'Talisker', 'W.L. Weller', "Jack Daniel's", 'Omar'],
   categories: ['Single Malt', 'Blended', 'Bourbon', 'Rye', 'Cognac', 'Gin', 'Rum', 'Wine', 'Other'],
   volumes: ['50ml', '700ml', '750ml', '1000ml'],
+  filterOrder: ['category', 'country', 'brand', 'volume'],
 }
 
 const defaultDesignData = {
