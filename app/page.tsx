@@ -195,6 +195,18 @@ export default function HomePage() {
         setSelectedFilters(prev => ({ ...prev, category: [label] }))
       }
     }
+    const countryParam = params.get('country')
+    if (countryParam) {
+      // Map URL slug back to L2 label (e.g. "scotland" -> "Scotland")
+      const countryLabel = siteSettings?.navigation?.[0]?.sub?.find((l2: any) => l2.label.toLowerCase().replace(/\s+/g, '-') === countryParam)?.label
+      if (countryLabel) {
+        setSelectedFilters(prev => ({ ...prev, country: [countryLabel] }))
+      }
+    }
+    const brandParam = params.get('brand')
+    if (brandParam) {
+      setSelectedFilters(prev => ({ ...prev, brand: [brandParam] }))
+    }
   }, [siteSettings?.navigation])
 
   // Build brand → { category, country } lookup from navigation data
@@ -349,7 +361,7 @@ export default function HomePage() {
                               </button>
                               {/* L3 brand links */}
                               {l2.sub && l2.sub.filter(l3 => l3.enabled !== false).map((l3, l3i) => (
-                                <a key={l3i} href={l3.href} onClick={() => { router.push(l3.href || '#'); const lookup = brandCategoryCountryMap[l3.label]; setSelectedFilters({ category: lookup ? [lookup.category] : [], country: lookup ? [lookup.country] : [], brand: [l3.label], volume: [], price: [] }); }}
+                                <a key={l3i} href={l3.href} onClick={(e) => { e.preventDefault(); const lookup = brandCategoryCountryMap[l3.label]; const params = new URLSearchParams(); if (lookup?.category) params.set('category', lookup.category.toLowerCase().replace(/\s+/g, '-')); if (lookup?.country) params.set('country', (lookup.country || '').toLowerCase().replace(/\s+/g, '-')); params.set('brand', l3.label); router.push(`/shop?${params.toString()}`); }}
                                   className="block px-2 py-1 text-sm hover:underline" style={{ color: s.navDropdownText }}>
                                   {l3.label}
                                 </a>
