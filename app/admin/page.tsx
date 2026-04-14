@@ -612,22 +612,22 @@ export default function AdminPage() {
                           <input
                             type="text"
                             value={product.barcode || ''}
-                            placeholder="—"
+                            placeholder="BC"
                             onChange={(e) => {
                               const updated = products.map(p => p.id === product.id ? { ...p, barcode: e.target.value } : p)
                               setProducts(updated)
                             }}
-                            className="w-20 px-1 py-0.5 text-xs text-gray-600 border border-transparent hover:border-amber-300 focus:border-amber-400 focus:outline-none rounded cursor-text mr-1"
+                            className="block w-full px-1 py-0.5 text-xs text-gray-600 border border-transparent hover:border-amber-300 focus:border-amber-400 focus:outline-none rounded cursor-text mb-0.5"
                           />
                           <input
                             type="text"
                             value={product.sku || ''}
-                            placeholder="—"
+                            placeholder="SKU"
                             onChange={(e) => {
                               const updated = products.map(p => p.id === product.id ? { ...p, sku: e.target.value } : p)
                               setProducts(updated)
                             }}
-                            className="w-20 px-1 py-0.5 text-xs text-gray-600 border border-transparent hover:border-amber-300 focus:border-amber-400 focus:outline-none rounded cursor-text"
+                            className="block w-full px-1 py-0.5 text-xs text-gray-600 border border-transparent hover:border-amber-300 focus:border-amber-400 focus:outline-none rounded cursor-text"
                           />
                         </td>
                         <td className="px-4 py-3">
