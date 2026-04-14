@@ -100,9 +100,12 @@ function LoginForm() {
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md max-w-md w-full">
         <div className="text-center mb-6">
-          <div className="w-16 h-16 bg-amber-500 text-white rounded-lg flex items-center justify-center text-2xl font-bold mx-auto mb-4">
-            W
-          </div>
+          <img
+            src="/Logo.png"
+            alt="logo"
+            className="h-16 mx-auto mb-4 object-contain"
+            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+          />
           <h1 className="text-2xl font-bold">
             {isLogin ? "Welcome Back" : "Create Account"}
           </h1>

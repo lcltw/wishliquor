@@ -8,9 +8,9 @@ import { signOut, useSession } from 'next-auth/react'
 // Layer 1: 最上層導航（Whisky, Other Drinks, Gin...）
 // Layer 2: 國家/類別分組（Scotland, Japanese...），無分組則為直接連結
 // Layer 3: 品牌連結（Macallan, Yamazaki...），掛在 Layer 2 底下
-interface NavLayer3 { label: string; href: string }
-interface NavLayer2 { label: string; href?: string; sub?: NavLayer3[] }
-interface NavItem { label: string; href: string; sub?: NavLayer2[] }
+interface NavLayer3 { label: string; href: string; enabled?: boolean }
+interface NavLayer2 { label: string; href?: string; enabled?: boolean; sub?: NavLayer3[] }
+interface NavItem { label: string; href: string; enabled?: boolean; sub?: NavLayer2[] }
 
 interface SiteSettings {
   siteName: string
@@ -127,10 +127,10 @@ const defaultSettings: SiteSettings = {
   hero: { title: 'Explore World Whiskies', subtitle: 'Premium selection of fine whiskies from Scotland, Japan, Taiwan and beyond — delivered to your door', ctaText: 'Shop Now' },
   navigation: [
     { label: 'Whisky', href: '/shop', sub: [
-      { label: 'Scotland', sub: [{ label: 'Macallan', href: '/shop?brand=macallan' }, { label: 'Octomore', href: '/shop?brand=octomore' }, { label: 'Johnnie Walker', href: '/shop?brand=johnnie-walker' }, { label: 'Royal Salute', href: '/shop?brand=royal-salute' }] },
-      { label: 'Japanese', sub: [{ label: 'Yamazaki', href: '/shop?brand=yamazaki' }, { label: 'Hakushu', href: '/shop?brand=hakushu' }, { label: 'Hibiki', href: '/shop?brand=hibiki' }] },
-      { label: 'American', sub: [{ label: 'W.L. Weller', href: '/shop?brand=w-l-weller' }, { label: "Jack Daniel's", href: '/shop?brand=jack-daniels' }] },
-      { label: 'Taiwan', sub: [{ label: 'Kavalan', href: '/shop?brand=kavalan' }, { label: 'Omar', href: '/shop?brand=omar' }] },
+      { label: 'Scotland', sub: [{ label: 'Macallan', href: '/shop?brand=macallan', enabled: true }, { label: 'Octomore', href: '/shop?brand=octomore', enabled: true }, { label: 'Johnnie Walker', href: '/shop?brand=johnnie-walker', enabled: true }, { label: 'Royal Salute', href: '/shop?brand=royal-salute', enabled: true }] },
+      { label: 'Japanese', sub: [{ label: 'Yamazaki', href: '/shop?brand=yamazaki', enabled: true }, { label: 'Hakushu', href: '/shop?brand=hakushu', enabled: true }, { label: 'Hibiki', href: '/shop?brand=hibiki', enabled: true }] },
+      { label: 'American', sub: [{ label: 'W.L. Weller', href: '/shop?brand=w-l-weller', enabled: true }, { label: "Jack Daniel's", href: '/shop?brand=jack-daniels', enabled: true }] },
+      { label: 'Taiwan', sub: [{ label: 'Kavalan', href: '/shop?brand=kavalan', enabled: true }, { label: 'Omar', href: '/shop?brand=omar', enabled: true }] },
     ] },
     { label: 'Other Drinks', href: '/shop?category=other-drinks' },
     { label: 'Gin', href: '/shop?category=gin' },
@@ -670,38 +670,59 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                   <div key={l1Index} className="border border-gray-200 rounded-lg overflow-hidden">
                     {/* Layer 1 */}
                     <div className="flex items-center gap-2 px-3 py-2 bg-gray-50">
-                      <span className="text-xs font-bold text-gray-400 w-12 flex-shrink-0">L1</span>
+                      <span className="text-xs font-bold text-gray-400 w-8 flex-shrink-0">L1</span>
+                      <button onClick={() => { const n = settings.navigation.filter((_, i) => i !== l1Index); setSettings(prev => ({ ...prev, navigation: n })); }} className="p-0.5 text-gray-400 hover:text-red-500 shrink-0"><Icons.Trash /></button>
+                      <button
+                        onClick={() => { const n = [...settings.navigation]; n[l1Index].enabled = !(n[l1Index].enabled); setSettings(prev => ({ ...prev, navigation: n })); }}
+                        className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors shrink-0 ${item.enabled !== false ? 'bg-amber-500' : 'bg-gray-300'}`}
+                      >
+                        <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform ${item.enabled !== false ? 'translate-x-4' : 'translate-x-1'}`} />
+                      </button>
                       <input type="text" value={item.label}
                         onChange={(e) => { const n = [...settings.navigation]; n[l1Index].label = e.target.value; setSettings(prev => ({ ...prev, navigation: n })); }}
-                        className="flex-1 px-2 py-1 border border-gray-300 text-sm font-medium focus:outline-none focus:border-amber-500 rounded" />
+                        className={`flex-1 px-2 py-1 border text-sm font-medium focus:outline-none focus:border-amber-500 rounded ${item.enabled !== false ? 'border-gray-300' : 'border-gray-200 bg-gray-50 opacity-50'}`} />
                       <input type="text" value={item.href}
                         onChange={(e) => { const n = [...settings.navigation]; n[l1Index].href = e.target.value; setSettings(prev => ({ ...prev, navigation: n })); }}
-                        className="w-40 px-2 py-1 border border-gray-300 text-xs focus:outline-none focus:border-amber-500 rounded" />
-                      <button onClick={() => { const n = settings.navigation.filter((_, i) => i !== l1Index); setSettings(prev => ({ ...prev, navigation: n })); }} className="p-1 text-gray-400 hover:text-red-500"><Icons.Trash /></button>
+                        className={`w-40 px-2 py-1 border text-xs focus:outline-none focus:border-amber-500 rounded ${item.enabled !== false ? 'border-gray-300' : 'border-gray-200 bg-gray-50 opacity-50'}`} />
                     </div>
 
                     {/* Layer 2 */}
                     {item.sub && item.sub.map((l2, l2Index) => (
                       <div key={l2Index} className="border-t border-gray-100">
                         <div className="flex items-center gap-2 px-3 py-1.5 pl-8 bg-gray-25">
-                          <span className="text-xs font-bold text-gray-400 w-12 flex-shrink-0">L2</span>
+                          <span className="text-xs font-bold text-gray-400 w-8 flex-shrink-0">L2</span>
+                          <button onClick={() => { const n = [...settings.navigation]; n[l1Index].sub = n[l1Index].sub!.filter((_, i) => i !== l2Index); setSettings(prev => ({ ...prev, navigation: n })); }} className="p-0.5 text-gray-400 hover:text-red-500 shrink-0"><Icons.Trash /></button>
+                          <button
+                            onClick={() => { const n = [...settings.navigation]; n[l1Index].sub![l2Index].enabled = !(n[l1Index].sub![l2Index].enabled); setSettings(prev => ({ ...prev, navigation: n })); }}
+                            className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors shrink-0 ${l2.enabled !== false ? 'bg-amber-500' : 'bg-gray-300'}`}
+                          >
+                            <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform ${l2.enabled !== false ? 'translate-x-4' : 'translate-x-1'}`} />
+                          </button>
                           <input type="text" value={l2.label}
                             onChange={(e) => { const n = [...settings.navigation]; n[l1Index].sub![l2Index].label = e.target.value; setSettings(prev => ({ ...prev, navigation: n })); }}
-                            className="flex-1 px-2 py-1 border border-gray-200 text-xs font-medium focus:outline-none focus:border-amber-500 rounded" />
-                          <button onClick={() => { const n = [...settings.navigation]; n[l1Index].sub = n[l1Index].sub!.filter((_, i) => i !== l2Index); setSettings(prev => ({ ...prev, navigation: n })); }} className="p-0.5 text-gray-400 hover:text-red-500"><Icons.Trash /></button>
+                            className={`flex-1 px-2 py-1 border text-xs font-medium focus:outline-none focus:border-amber-500 rounded ${l2.enabled !== false ? 'border-gray-200' : 'border-gray-200 bg-gray-50 opacity-50'}`} />
+                          <input type="text" value={l2.href || ''}
+                            onChange={(e) => { const n = [...settings.navigation]; n[l1Index].sub![l2Index].href = e.target.value; setSettings(prev => ({ ...prev, navigation: n })); }}
+                            className={`w-40 px-2 py-1 border text-xs focus:outline-none focus:border-amber-500 rounded ${l2.enabled !== false ? 'border-gray-200' : 'border-gray-200 bg-gray-50 opacity-50'}`} />
                         </div>
 
                         {/* Layer 3 */}
                         {l2.sub && l2.sub.map((l3, l3Index) => (
                           <div key={l3Index} className="flex items-center gap-2 px-3 py-1 pl-16 border-t border-gray-50">
-                            <span className="text-xs font-bold text-gray-400 w-12 flex-shrink-0">L3</span>
+                            <span className="text-xs font-bold text-gray-400 w-8 flex-shrink-0">L3</span>
+                            <button onClick={() => { const n = [...settings.navigation]; n[l1Index].sub![l2Index].sub = n[l1Index].sub![l2Index].sub!.filter((_, i) => i !== l3Index); setSettings(prev => ({ ...prev, navigation: n })); }} className="p-0.5 text-gray-400 hover:text-red-500 shrink-0"><Icons.Trash /></button>
+                            <button
+                              onClick={() => { const n = [...settings.navigation]; n[l1Index].sub![l2Index].sub![l3Index].enabled = !(n[l1Index].sub![l2Index].sub![l3Index].enabled); setSettings(prev => ({ ...prev, navigation: n })); }}
+                              className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors shrink-0 ${l3.enabled !== false ? 'bg-amber-500' : 'bg-gray-300'}`}
+                            >
+                              <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform ${l3.enabled !== false ? 'translate-x-4' : 'translate-x-1'}`} />
+                            </button>
                             <input type="text" value={l3.label}
                               onChange={(e) => { const n = [...settings.navigation]; n[l1Index].sub![l2Index].sub![l3Index].label = e.target.value; setSettings(prev => ({ ...prev, navigation: n })); }}
-                              className="flex-1 px-2 py-0.5 border border-gray-200 text-xs focus:outline-none focus:border-amber-500 rounded" />
+                              className={`flex-1 px-2 py-0.5 border text-xs focus:outline-none focus:border-amber-500 rounded ${l3.enabled !== false ? 'border-gray-200' : 'border-gray-200 bg-gray-50 opacity-50'}`} />
                             <input type="text" value={l3.href}
                               onChange={(e) => { const n = [...settings.navigation]; n[l1Index].sub![l2Index].sub![l3Index].href = e.target.value; setSettings(prev => ({ ...prev, navigation: n })); }}
-                              className="w-40 px-2 py-0.5 border border-gray-200 text-xs focus:outline-none focus:border-amber-500 rounded" />
-                            <button onClick={() => { const n = [...settings.navigation]; n[l1Index].sub![l2Index].sub = n[l1Index].sub![l2Index].sub!.filter((_, i) => i !== l3Index); setSettings(prev => ({ ...prev, navigation: n })); }} className="p-0.5 text-gray-400 hover:text-red-500"><Icons.Trash /></button>
+                              className={`w-40 px-2 py-0.5 border text-xs focus:outline-none focus:border-amber-500 rounded ${l3.enabled !== false ? 'border-gray-200' : 'border-gray-200 bg-gray-50 opacity-50'}`} />
                           </div>
                         ))}
                         <div className="px-3 pl-16 py-1 border-t border-gray-50">
@@ -712,7 +733,7 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                     ))}
 
                     <div className="px-3 py-1.5 pl-8 border-t border-gray-100">
-                      <button onClick={() => { const n = [...settings.navigation]; if (!n[l1Index].sub) n[l1Index].sub = []; n[l1Index].sub!.push({ label: 'New Group', sub: [] }); setSettings(prev => ({ ...prev, navigation: n })); }}
+                      <button onClick={() => { const n = [...settings.navigation]; if (!n[l1Index].sub) n[l1Index].sub = []; n[l1Index].sub!.push({ label: 'New Group', href: '', sub: [] }); setSettings(prev => ({ ...prev, navigation: n })); }}
                         className="text-xs text-amber-600 hover:text-amber-700 flex items-center gap-1"><Icons.Plus /> 新增 L2 分組</button>
                     </div>
                   </div>

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useData } from './context/DataContext'
 
@@ -26,6 +27,37 @@ const filterOptions = {
     { label: '$300 - $500', min: 300, max: 500 },
     { label: '$500+', min: 500, max: 99999 },
   ],
+}
+
+// Maps each Navigation L1 label to the product category values it represents
+const categoryMap: Record<string, string[]> = {
+  Whisky: ['Single Malt', 'Blended', 'Bourbon'],
+  Brandy: ['Brandy'],
+  Rum: ['Rum'],
+  Gin: ['Gin'],
+  Baijiu: ['Baijiu'],
+  Wine: ['Wine'],
+  Goods: ['Goods'],
+  Contact: ['Contact'],
+}
+
+function productMatchesNavCategory(productCategory: string, navLabel: string): boolean {
+  const mapped = categoryMap[navLabel]
+  if (!mapped) return false
+  return mapped.includes(productCategory)
+}
+
+// Maps Navigation L2 labels to actual product country values
+const countryMap: Record<string, string> = {
+  Scotland: 'Scotland',
+  Japanese: 'Japan',
+  American: 'USA',
+  Taiwan: 'Taiwan',
+}
+
+function countryMatchesL2Label(productCountry: string, l2Label: string): boolean {
+  const mapped = countryMap[l2Label]
+  return mapped ? productCountry === mapped : false
 }
 
 interface CartItem {
@@ -74,7 +106,7 @@ const defaultSiteSettings = {
   },
   navigation: [
     {
-      label: 'Whisky', href: '/shop', sub: [
+      label: 'Whisky', href: '/shop?category=whisky', sub: [
         {
           label: 'Scotland', sub: [
             { label: 'Macallan', href: '/shop?brand=macallan' },
@@ -104,11 +136,11 @@ const defaultSiteSettings = {
         },
       ],
     },
-    { label: 'Other Drinks', href: '/shop?category=other-drinks' },
-    { label: 'Gin', href: '/shop?category=gin' },
+    { label: 'Brandy', href: '/shop?category=brandy' },
     { label: 'Rum', href: '/shop?category=rum' },
-    { label: 'Wine', href: '/shop?category=wine' },
+    { label: 'Gin', href: '/shop?category=gin' },
     { label: 'Baijiu', href: '/shop?category=baijiu' },
+    { label: 'Wine', href: '/shop?category=wine' },
     { label: 'Goods', href: '/shop?category=goods' },
     { label: 'Contact', href: '/contact' },
   ],
@@ -133,7 +165,9 @@ export default function HomePage() {
   
     // Use DataContext as single source of truth — no local state duplication
   const { products: productList, settings: siteSettings, filters, isLoaded, setSettings: setSiteSettings } = useData()
+  const router = useRouter()
   const [filterOpts, setFilterOpts] = useState(filterOptions)
+
 
   // Keep filterOpts in sync when context filters change
   useEffect(() => {
@@ -147,9 +181,21 @@ export default function HomePage() {
     }
   }, [filters])
 
-  const [expandedSections, setExpandedSections] = useState<string[]>(['Country', 'Brand'])
-  const [selectedFilters, setSelectedFilters] = useState<Record<string, string[]>>({ country: [], brand: [], volume: [], price: [] })
+  const [expandedSections, setExpandedSections] = useState<string[]>(['Category', 'Country', 'Brand'])
+  const [selectedFilters, setSelectedFilters] = useState<Record<string, string[]>>({ category: [siteSettings?.navigation?.[0]?.label || 'Whisky'], country: [], brand: [], volume: [], price: [] })
   const [searchQuery, setSearchQuery] = useState('')
+
+  // Sync URL ?category= param with selectedFilters.category (client-side only)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const cat = params.get('category')
+    if (cat) {
+      const label = siteSettings?.navigation?.find((n: any) => n.href?.includes(`category=${cat}`))?.label
+      if (label) {
+        setSelectedFilters(prev => ({ ...prev, category: [label] }))
+      }
+    }
+  }, [siteSettings?.navigation])
 
   // Early return AFTER all hooks
   if (!isLoaded) {
@@ -168,13 +214,14 @@ export default function HomePage() {
   }
 
   const clearFilters = () => {
-    setSelectedFilters({ country: [], brand: [], volume: [], price: [] })
+    setSelectedFilters({ category: [siteSettings?.navigation?.[0]?.label || 'Whisky'], country: [], brand: [], volume: [], price: [] })
     setSearchQuery('')
   }
 
   const filteredProducts = productList.filter(p => {
     if (searchQuery && !p.name.toLowerCase().includes(searchQuery.toLowerCase()) && !p.brand.toLowerCase().includes(searchQuery.toLowerCase())) return false
-    if (selectedFilters.country.length > 0 && !selectedFilters.country.includes(p.country)) return false
+    if (selectedFilters.category.length > 0 && !selectedFilters.category.some(cat => productMatchesNavCategory(p.category, cat))) return false
+    if (selectedFilters.country.length > 0 && !selectedFilters.country.some(l2Label => countryMatchesL2Label(p.country, l2Label))) return false
     if (selectedFilters.brand.length > 0 && !selectedFilters.brand.includes(p.brand)) return false
     if (selectedFilters.volume.length > 0 && !selectedFilters.volume.includes(p.volume)) return false
     if (selectedFilters.price.length > 0) {
@@ -260,26 +307,32 @@ export default function HomePage() {
         <nav style={{ backgroundColor: s.navBackground }} className={`${mobileMenuOpen ? 'block' : 'hidden'} md:block`}>
           <div className="max-w-7xl mx-auto px-4">
             <ul className="flex flex-col md:flex-row md:items-center md:gap-1 py-2">
-              {siteSettings.navigation.map((item, i) => (
+              {siteSettings.navigation.filter(item => item.enabled !== false).map((item, i) => (
                 <li key={i} className="relative group">
                   {/* Layer 1 — top level */}
-                  {item.sub && item.sub.length > 0 ? (
+                  {item.sub && item.sub.filter(l2 => l2.enabled !== false).length > 0 ? (
                     <>
-                      <button className="flex items-center justify-between w-full md:w-auto px-4 py-2 text-sm md:pr-2" style={{ color: s.navText }}>
+                      <a href={item.href || '#'} onClick={(e) => { router.push(item.href || '#'); setSelectedFilters({ category: [item.label], country: [], brand: [], volume: [], price: [] }); }}
+                        className="flex items-center justify-between w-full md:w-auto px-4 py-2 text-sm md:pr-2" style={{ color: s.navText }}>
                         {item.label}<span className="md:hidden ml-2">›</span>
-                      </button>
+                      </a>
                       {/* Dropdown: 3-layer mega menu */}
                       <div className="absolute left-0 top-full shadow-xl min-w-[640px] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-40" style={{ backgroundColor: s.navDropdownBg }}>
                         <div className="grid grid-cols-5 gap-4 px-4 py-3">
-                          {item.sub.map((l2, l2i) => (
+                          {item.sub.filter(l2 => l2.enabled !== false).map((l2, l2i) => (
                             <div key={l2i}>
-                              {/* L2 label (always shown as section header) */}
-                              <h4 className="text-xs font-bold uppercase tracking-wide mb-2" style={{ color: s.navDropdownLabel }}>
+                              {/* L2 label — clickable, syncs Country filter */}
+                              <button
+                                onClick={() => { setSelectedFilters(prev => ({ ...prev, country: prev.country.includes(l2.label) ? prev.country.filter(c => c !== l2.label) : [...prev.country, l2.label] })); }}
+                                className="text-xs font-bold uppercase tracking-wide mb-2 text-left w-full hover:underline"
+                                style={{ color: s.navDropdownLabel }}
+                              >
                                 {l2.label}
-                              </h4>
+                              </button>
                               {/* L3 brand links */}
-                              {l2.sub && l2.sub.map((l3, l3i) => (
-                                <a key={l3i} href={l3.href} className="block px-2 py-1 text-sm hover:underline" style={{ color: s.navDropdownText }}>
+                              {l2.sub && l2.sub.filter(l3 => l3.enabled !== false).map((l3, l3i) => (
+                                <a key={l3i} href={l3.href} onClick={() => { router.push(l3.href || '#'); setSelectedFilters(prev => ({ ...prev, brand: prev.brand.includes(l3.label) ? prev.brand.filter(b => b !== l3.label) : [...prev.brand, l3.label] })); }}
+                                  className="block px-2 py-1 text-sm hover:underline" style={{ color: s.navDropdownText }}>
                                   {l3.label}
                                 </a>
                               ))}
@@ -289,7 +342,7 @@ export default function HomePage() {
                       </div>
                     </>
                   ) : (
-                    <a href={item.href} className="block px-4 py-2 text-sm" style={{ color: s.navText }}>{item.label}</a>
+                    <a href={item.href} onClick={() => { setSelectedFilters({ category: [item.label], country: [], brand: [], volume: [], price: [] }); }} className="block px-4 py-2 text-sm" style={{ color: s.navText }}>{item.label}</a>
                   )}
                 </li>
               ))}
@@ -314,7 +367,7 @@ export default function HomePage() {
                 <h3 className="font-semibold" style={{ color: s.text }}>Filters</h3>
                 <button onClick={clearFilters} className="text-sm" style={{ color: s.secondary }}>Clear All</button>
               </div>
-              {['Country', 'Brand', 'Volume', 'Price'].map(section => (
+              {['Category', 'Country', 'Brand', 'Volume', 'Price'].map(section => (
                 <div key={section} className="border" style={{ borderColor: s.cardBorder }}>
                   <button onClick={() => toggleSection(section)} className="w-full flex items-center justify-between px-4 py-3 text-left font-medium" style={{ color: s.text }}>
                     {section}
@@ -322,13 +375,32 @@ export default function HomePage() {
                   </button>
                   {expandedSections.includes(section) && (
                     <div className="px-4 pb-3 space-y-2">
-                      {(filterOpts[section.toLowerCase() as keyof typeof filterOpts] as string[])?.map((option: string) => (
-                        <label key={option} className="flex items-center gap-2 cursor-pointer">
-                          <input type="checkbox" checked={selectedFilters[section.toLowerCase()].includes(option)} onChange={() => toggleFilter(section.toLowerCase(), option)}
-                            className="w-4 h-4" style={{ accentColor: s.primary }} />
-                          <span className="text-sm" style={{ color: s.footerMuted }}>{option}</span>
-                        </label>
-                      ))}
+                      {section === 'Category'
+                        ? siteSettings?.navigation?.filter((n: any) => n.enabled !== false).map((navItem: any) => (
+                            <label key={navItem.label} className="flex items-center gap-2 cursor-pointer">
+                              <input type="checkbox" checked={selectedFilters.category.includes(navItem.label)}
+                                onChange={() => toggleFilter('category', navItem.label)}
+                                className="w-4 h-4" style={{ accentColor: s.primary }} />
+                              <span className="text-sm" style={{ color: s.footerMuted }}>{navItem.label}</span>
+                            </label>
+                          ))
+                        : section === 'Country'
+                          ? (siteSettings?.navigation?.[0]?.sub?.filter((l2: any) => l2.enabled !== false).map((l2: any) => l2.label) || []).map((option: string) => (
+                            <label key={option} className="flex items-center gap-2 cursor-pointer">
+                              <input type="checkbox" checked={selectedFilters.country.includes(option)}
+                                onChange={() => toggleFilter('country', option)}
+                                className="w-4 h-4" style={{ accentColor: s.primary }} />
+                              <span className="text-sm" style={{ color: s.footerMuted }}>{option}</span>
+                            </label>
+                          ))
+                        : (filterOpts[section.toLowerCase() as keyof typeof filterOpts] as string[])?.map((option: string) => (
+                          <label key={option} className="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" checked={selectedFilters[section.toLowerCase()].includes(option)} onChange={() => toggleFilter(section.toLowerCase(), option)}
+                              className="w-4 h-4" style={{ accentColor: s.primary }} />
+                            <span className="text-sm" style={{ color: s.footerMuted }}>{option}</span>
+                          </label>
+                        ))
+                      }
                     </div>
                   )}
                 </div>
@@ -353,7 +425,7 @@ export default function HomePage() {
                   <div className="p-4">
                     <p className="text-xs font-semibold uppercase tracking-wide mb-1" style={{ color: s.primary }}>{product.country}</p>
                     <h3 className="font-semibold line-clamp-1 mb-1" style={{ color: s.text }}>{product.name}</h3>
-                    <p className="text-xs mb-3" style={{ color: '#6B7280' }}>{product.category} • {product.age} • {product.volume}</p>
+                    <p className="text-xs mb-3" style={{ color: '#6B7280' }}>{product.category} {product.age} {product.volume}</p>
                     <div className="flex items-center justify-between">
                       <span className="text-lg font-bold" style={{ color: s.text }}>${product.price}</span>
                       <button onClick={(e) => { e.stopPropagation(); addToCart(product); }}
@@ -385,7 +457,7 @@ export default function HomePage() {
                   <h2 className="text-lg font-bold" style={{ color: s.text }}>Filters</h2>
                   <button onClick={() => setMobileFiltersOpen(false)} className="p-2" style={{ color: s.text }}><Icons.Close /></button>
                 </div>
-                {['Country', 'Brand', 'Volume', 'Price'].map(section => (
+                {['Category', 'Country', 'Brand', 'Volume', 'Price'].map(section => (
                   <div key={section} className="border mb-4" style={{ borderColor: s.cardBorder }}>
                     <button onClick={() => toggleSection(section)} className="w-full flex items-center justify-between px-4 py-3 text-left font-medium" style={{ color: s.text }}>
                       {section}
@@ -393,13 +465,32 @@ export default function HomePage() {
                     </button>
                     {expandedSections.includes(section) && (
                       <div className="px-4 pb-3 space-y-2">
-                        {(filterOpts[section.toLowerCase() as keyof typeof filterOpts] as string[])?.map((option: string) => (
-                          <label key={option} className="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" checked={selectedFilters[section.toLowerCase()].includes(option)} onChange={() => toggleFilter(section.toLowerCase(), option)}
-                              className="w-4 h-4" style={{ accentColor: s.primary }} />
-                            <span className="text-sm" style={{ color: s.footerMuted }}>{option}</span>
-                          </label>
-                        ))}
+                        {section === 'Category'
+                          ? siteSettings?.navigation?.filter((n: any) => n.enabled !== false).map((navItem: any) => (
+                              <label key={navItem.label} className="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" checked={selectedFilters.category.includes(navItem.label)}
+                                  onChange={() => toggleFilter('category', navItem.label)}
+                                  className="w-4 h-4" style={{ accentColor: s.primary }} />
+                                <span className="text-sm" style={{ color: s.footerMuted }}>{navItem.label}</span>
+                              </label>
+                            ))
+                          : section === 'Country'
+                            ? (siteSettings?.navigation?.[0]?.sub?.filter((l2: any) => l2.enabled !== false).map((l2: any) => l2.label) || []).map((option: string) => (
+                              <label key={option} className="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" checked={selectedFilters.country.includes(option)}
+                                  onChange={() => toggleFilter('country', option)}
+                                  className="w-4 h-4" style={{ accentColor: s.primary }} />
+                                <span className="text-sm" style={{ color: s.footerMuted }}>{option}</span>
+                              </label>
+                            ))
+                          : (filterOpts[section.toLowerCase() as keyof typeof filterOpts] as string[])?.map((option: string) => (
+                            <label key={option} className="flex items-center gap-2 cursor-pointer">
+                              <input type="checkbox" checked={selectedFilters[section.toLowerCase()].includes(option)} onChange={() => toggleFilter(section.toLowerCase(), option)}
+                                className="w-4 h-4" style={{ accentColor: s.primary }} />
+                              <span className="text-sm" style={{ color: s.footerMuted }}>{option}</span>
+                            </label>
+                          ))
+                        }
                       </div>
                     )}
                   </div>
@@ -425,7 +516,7 @@ export default function HomePage() {
                     <button onClick={() => setSelectedProduct(null)} className="absolute top-2 right-2 md:top-4 md:right-4 p-2" style={{ backgroundColor: s.cardBackground }}><Icons.Close /></button>
                     <p className="text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: s.primary }}>{selectedProduct.country}</p>
                     <h2 className="text-xl md:text-2xl font-bold mb-2" style={{ color: s.text }}>{selectedProduct.name}</h2>
-                    <p className="mb-1" style={{ color: s.secondary }}>{selectedProduct.category} • {selectedProduct.age} • {selectedProduct.volume}</p>
+                    <p className="mb-1" style={{ color: s.secondary }}>{selectedProduct.category} {selectedProduct.age} {selectedProduct.volume}</p>
                     <p className="mb-4 text-sm leading-relaxed" style={{ color: s.secondary }}>{selectedProduct.description}</p>
                     <p className="text-2xl md:text-3xl font-bold mb-6" style={{ color: s.text }}>${selectedProduct.price}</p>
                     <button onClick={() => { addToCart(selectedProduct); setSelectedProduct(null); }}

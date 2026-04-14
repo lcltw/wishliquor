@@ -36,26 +36,26 @@
     "navigation": [
       {
         "label": "Whisky",
-        "href": "/shop",
+        "href": "",
         "sub": [
           {
             "label": "Scotland",
             "sub": [
               {
                 "label": "Macallan",
-                "href": "/shop?brand=macallan"
+                "href": ""
               },
               {
                 "label": "Octomore",
-                "href": "/shop?brand=octomore"
+                "href": ""
               },
               {
                 "label": "Johnnie Walker",
-                "href": "/shop?brand=johnnie-walker"
+                "href": ""
               },
               {
                 "label": "Royal Salute",
-                "href": "/shop?brand=royal-salute"
+                "href": ""
               }
             ]
           },
@@ -64,15 +64,15 @@
             "sub": [
               {
                 "label": "Yamazaki",
-                "href": "/shop?brand=yamazaki"
+                "href": ""
               },
               {
                 "label": "Hakushu",
-                "href": "/shop?brand=hakushu"
+                "href": ""
               },
               {
                 "label": "Hibiki",
-                "href": "/shop?brand=hibiki"
+                "href": ""
               }
             ]
           },
@@ -81,11 +81,11 @@
             "sub": [
               {
                 "label": "W.L. Weller",
-                "href": "/shop?brand=w-l-weller"
+                "href": ""
               },
               {
                 "label": "Jack Daniel's",
-                "href": "/shop?brand=jack-daniels"
+                "href": ""
               }
             ]
           },
@@ -94,43 +94,122 @@
             "sub": [
               {
                 "label": "Kavalan",
-                "href": "/shop?brand=kavalan"
+                "href": ""
               },
               {
                 "label": "Omar",
-                "href": "/shop?brand=omar"
+                "href": ""
+              },
+              {
+                "label": "Grainvest",
+                "href": ""
               }
             ]
           }
         ]
       },
       {
-        "label": "Other Drinks",
-        "href": "/shop?category=other-drinks"
-      },
-      {
-        "label": "Gin",
-        "href": "/shop?category=gin"
+        "label": "Brandy",
+        "href": "",
+        "sub": [
+          {
+            "label": "France",
+            "sub": [
+              {
+                "label": "Hennessy",
+                "href": ""
+              }
+            ]
+          }
+        ]
       },
       {
         "label": "Rum",
-        "href": "/shop?category=rum"
+        "href": "",
+        "sub": [
+          {
+            "label": "Taiwan",
+            "sub": [
+              {
+                "label": "TTL",
+                "href": ""
+              }
+            ]
+          }
+        ]
       },
       {
-        "label": "Wine",
-        "href": "/shop?category=wine"
+        "label": "Gin",
+        "href": "",
+        "sub": [
+          {
+            "label": "Japanese",
+            "sub": [
+              {
+                "label": "Ki No Bi",
+                "href": ""
+              }
+            ]
+          }
+        ]
       },
       {
         "label": "Baijiu",
-        "href": "/shop?category=baijiu"
+        "href": "",
+        "sub": [
+          {
+            "label": "Taiwan",
+            "sub": [
+              {
+                "label": "Kinmen",
+                "href": ""
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "label": "Wine",
+        "href": "",
+        "sub": [
+          {
+            "label": "Taiwan",
+            "sub": [
+              {
+                "label": "Shu Sheug",
+                "href": ""
+              }
+            ]
+          }
+        ]
       },
       {
         "label": "Goods",
-        "href": "/shop?category=goods"
+        "href": "",
+        "sub": [
+          {
+            "label": "Drinkware",
+            "sub": [
+              {
+                "label": "Glass",
+                "href": ""
+              }
+            ]
+          },
+          {
+            "label": "Other",
+            "sub": [
+              {
+                "label": "Gifts",
+                "href": ""
+              }
+            ]
+          }
+        ]
       },
       {
         "label": "Contact",
-        "href": "/contact"
+        "href": ""
       }
     ],
     "footer": {
@@ -172,7 +251,7 @@
               "2": "r",
               "3": "m",
               "4": "s",
-              "content": "Shipping & Deliveries\nDelivery Scope & Lead Times\n．Delivery Scope: We only accept international orders. We do not offer delivery within Taiwan.\n．Dispatch Time: All orders are generally dispatched within 1–2 business days, unless otherwise stated.\n．International Rates: Shipping rates are calculated at checkout based on your delivery location and order weight.\n\nMarketplace & Partner Retailers Some products are shipped directly from our partner retailers.\n．Shipping Policies: Specific shipping policies are displayed under the \"Add to Cart\" button on each product page.\n．Separate Charges: Orders shipped from different retailers may incur separate shipping charges.\n\nPre-Sales & Exclusive Releases For pre-sale events or exclusive bottlings, estimated dispatch dates will be clearly stated on the product page.\n\nFAQs\nWhere do we deliver?\nWe deliver to most residential or business addresses. If your country is not listed at checkout, please contact us at wishliquor@outlook.com for a quote.\nHow much is the fee and how long does it take?\nTotal delivery costs and estimated times depend on your location and weight, and will be displayed at checkout.\nHow do I track my order?\nYou will receive a tracking number and an email notification once your order is dispatched.\nWill I have to sign for my delivery?\nYes, a signature is required upon delivery. Persons ordering alcoholic beverages must be over the legal drinking age in their respective jurisdiction.\n\nContact Us For any inquiries, please contact us at: wishliquor@outlook.com",
+              "content": "Shipping & Deliveries\nDelivery Scope & Lead Times\nDelivery Scope: We only accept international orders. We do not offer delivery within Taiwan.\nDispatch Time: All orders are generally dispatched within 1-3 business days, unless otherwise stated.\nShipping Terms (DAP): All international orders are shipped under DAP (Delivered At Place) terms. Wish Liquor is responsible for the delivery of the goods to your specified address; however, the buyer is responsible for all import clearance, local taxes, and customs duties incurred in the destination country.\nMarketplace & Partner Retailers Some products are shipped directly from our partner retailers.\nShipping Policies: Specific shipping policies are displayed under the \"Add to Cart\" button on each product page.\nSeparate Charges: Orders shipped from different retailers may incur separate shipping charges.\nPre-Sales & Exclusive Releases For pre-sale events or exclusive bottlings, estimated dispatch dates will be clearly stated on the product page.\nFAQs\nWhere do we deliver? We deliver to most residential or business addresses. If your country is not listed at checkout, please contact us at wishliquor@outlook.com for a quote.\nHow much is the fee and how long does it take? Total delivery costs and estimated times depend on your location and weight, and will be displayed at checkout.\nHow do I track my order? You will receive a tracking number and an email notification once your order is dispatched.\nWill I have to sign for my delivery? Yes, a signature is required upon delivery. Persons ordering alcoholic beverages must be over the legal drinking age in their respective jurisdiction.\nContact Us For any inquiries, please contact us at: wishliquor@outlook.com",
               "label": "Shipping Policy"
             },
             {
@@ -201,7 +280,7 @@
             },
             {
               "label": "About Us",
-              "content": "Company Name: HERO LIQUOR CO., LTD.\nUnified Business Number: 83120142\nDate of Incorporation: September 14, 2020\nRepresentative: LIN CHUANLUNG\nCompany Address: No. 72, Ln. 8, Xuetian Rd., Wuri Dist., Taichung City 414010, Taiwan\nEmail: wishliquor@outlook.com\nContact Number: +886 988 368 626"
+              "content": "Trading Name\n\"wishliquor.co\" and \"HERO LIQUOR\" are trading names of HERO LIQUOR CO., LTD.\n\nCompany Information\n\nCompany Name: HERO LIQUOR CO., LTD.\n\nUnified Business Number: 83120142\n\nDate of Incorporation: September 14, 2020\n\nRepresentative: LIN CHUANLUNG\n\nCompany Address: 1F., No. 72, Ln. 8, Xuetian Rd., Sanhe Vil., Wuri Dist., Taichung City 414010, Taiwan (R.O.C.)\n\nEmail: wishliquor@outlook.com\n\nContact Number: +886 988 368 626"
             },
             {
               "label": "Contact Us",
@@ -461,6 +540,114 @@
       "price": 229,
       "img": "https://lh3.googleusercontent.com/u/0/d/15ij09mVuQVvTMVEwq0eQ7-0q80VLKjTm",
       "description": "Full-bodied with coastal smoke, pepper, and dark chocolate."
+    },
+    {
+      "id": 16,
+      "name": "New Product",
+      "brand": "Brand",
+      "country": "Scotland",
+      "category": "Single Malt",
+      "age": "NAS",
+      "volume": "700ml",
+      "price": 99,
+      "img": "https://lh3.googleusercontent.com/u/0/d/15ij09mVuQVvTMVEwq0eQ7-0q80VLKjTm",
+      "description": ""
+    },
+    {
+      "id": 17,
+      "name": "New Product",
+      "brand": "Brand",
+      "country": "Scotland",
+      "category": "Single Malt",
+      "age": "NAS",
+      "volume": "700ml",
+      "price": 99,
+      "img": "https://lh3.googleusercontent.com/u/0/d/15ij09mVuQVvTMVEwq0eQ7-0q80VLKjTm",
+      "description": ""
+    },
+    {
+      "id": 18,
+      "name": "New Product",
+      "brand": "Brand",
+      "country": "Scotland",
+      "category": "Single Malt",
+      "age": "NAS",
+      "volume": "700ml",
+      "price": 99,
+      "img": "https://lh3.googleusercontent.com/u/0/d/15ij09mVuQVvTMVEwq0eQ7-0q80VLKjTm",
+      "description": ""
+    },
+    {
+      "id": 19,
+      "name": "New Product",
+      "brand": "Brand",
+      "country": "Scotland",
+      "category": "Single Malt",
+      "age": "NAS",
+      "volume": "700ml",
+      "price": 99,
+      "img": "https://lh3.googleusercontent.com/u/0/d/15ij09mVuQVvTMVEwq0eQ7-0q80VLKjTm",
+      "description": ""
+    },
+    {
+      "id": 20,
+      "name": "New Product",
+      "brand": "Brand",
+      "country": "Scotland",
+      "category": "Whisky",
+      "age": "NAS",
+      "volume": "700ml",
+      "price": 99,
+      "img": "https://lh3.googleusercontent.com/u/0/d/15ij09mVuQVvTMVEwq0eQ7-0q80VLKjTm",
+      "description": "Test"
+    },
+    {
+      "id": 21,
+      "name": "New Product",
+      "brand": "Brand",
+      "country": "Scotland",
+      "category": "Whisky",
+      "age": "NAS",
+      "volume": "700ml",
+      "price": 99,
+      "img": "https://lh3.googleusercontent.com/u/0/d/15ij09mVuQVvTMVEwq0eQ7-0q80VLKjTm",
+      "description": "Test"
+    },
+    {
+      "id": 22,
+      "name": "New Product",
+      "brand": "Brand",
+      "country": "Scotland",
+      "category": "Whisky",
+      "age": "NAS",
+      "volume": "700ml",
+      "price": 99,
+      "img": "https://lh3.googleusercontent.com/u/0/d/15ij09mVuQVvTMVEwq0eQ7-0q80VLKjTm",
+      "description": "Test"
+    },
+    {
+      "id": 23,
+      "name": "New Product",
+      "brand": "Brand",
+      "country": "Scotland",
+      "category": "Whisky",
+      "age": "NAS",
+      "volume": "700ml",
+      "price": 99,
+      "img": "https://lh3.googleusercontent.com/u/0/d/15ij09mVuQVvTMVEwq0eQ7-0q80VLKjTm",
+      "description": "Test"
+    },
+    {
+      "id": 24,
+      "name": "New Product",
+      "brand": "Brand",
+      "country": "Scotland",
+      "category": "Brandy",
+      "age": "NAS",
+      "volume": "700ml",
+      "price": 99,
+      "img": "https://lh3.googleusercontent.com/u/0/d/15ij09mVuQVvTMVEwq0eQ7-0q80VLKjTm",
+      "description": ""
     }
   ],
   "filters": [

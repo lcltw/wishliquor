@@ -30,7 +30,7 @@ export interface SiteSettings {
   ubn: string
   colors: Record<string, string>
   hero: { title: string; subtitle: string; ctaText: string }
-  navigation: Array<{ label: string; href?: string; sub?: Array<{ label: string; href?: string; sub?: Array<{ label: string; href: string }> }> }>
+  navigation: Array<{ label: string; href?: string; enabled?: boolean; sub?: Array<{ label: string; href?: string; enabled?: boolean; sub?: Array<{ label: string; href: string; enabled?: boolean }> }> }>
   footer: { brand: string; description: string; logoUrl: string; logoWidth: number; logoHeight: number; logoAspectLocked: boolean; copyright: string; columns: Array<{ title: string; links: Array<{ label: string; content: string }> }> }
 }
 

@@ -91,6 +91,21 @@ const Icons = {
 }
 
 // Default data
+const categoryMap: Record<string, string[]> = {
+  Whisky: ['Single Malt', 'Blended', 'Bourbon'],
+  Brandy: ['Brandy'],
+  Rum: ['Rum'],
+  Gin: ['Gin'],
+  Baijiu: ['Baijiu'],
+  Wine: ['Wine'],
+  Goods: ['Goods'],
+  Contact: ['Contact'],
+}
+function productMatchesNavCategory(productCategory: string, navLabel: string): boolean {
+  const mapped = categoryMap[navLabel]
+  if (!mapped) return false
+  return mapped.includes(productCategory)
+}
 const defaultProducts: Product[] = [
   { id: 1, name: "Macallan 12Y", brand: "Macallan", country: "Scotland", category: "Single Malt", age: "12Y", volume: "700ml", price: 169, img: "https://lh3.googleusercontent.com/u/0/d/15ij09mVuQVvTMVEwq0eQ7-0q80VLKjTm", description: "Rich sherry cask maturation with notes of dried fruits, chocolate, and oak." },
   { id: 2, name: "Macallan 18Y", brand: "Macallan", country: "Scotland", category: "Single Malt", age: "18Y", volume: "700ml", price: 499, img: "https://lh3.googleusercontent.com/u/0/d/1MfCqLv5hzNeMNxsI95vdEw-xuYc7V3h8", description: "Complex and elegant with rich dried fruits, spices, and chocolate orange." },
@@ -152,8 +167,9 @@ function loadFiltersFromStorage(): FilterOption[] {
 }
 
 export default function AdminPage() {
-  const { products, setProducts, filters, setFilters, isLoaded } = useData()
+  const { products, setProducts, filters, setFilters, isLoaded, settings } = useData()
   const [activeTab, setActiveTab] = useState<'products' | 'filters' | 'settings'>('products')
+  const [activeCategory, setActiveCategory] = useState<string>(settings?.navigation?.[0]?.label || '')
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
   const [isAddingProduct, setIsAddingProduct] = useState(false)
   const [hasChanges, setHasChanges] = useState(false)
@@ -202,7 +218,7 @@ export default function AdminPage() {
       name: "New Product",
       brand: "Brand",
       country: "Scotland",
-      category: "Single Malt",
+      category: categoryMap[activeCategory]?.[0] || 'Single Malt',
       age: "NAS",
       volume: "700ml",
       price: 99,
@@ -261,10 +277,8 @@ export default function AdminPage() {
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="bg-amber-500 text-white font-bold px-3 py-1.5">
-                W
-              </div>
-              <h1 className="text-xl font-bold text-gray-800">wishliquor.co Admin</h1>
+              <img src="/Logo.png" alt="logo" className="h-8" />
+              <h1 className="text-xl font-bold text-gray-800">Admin</h1>
             </div>
             <div className="flex items-center gap-4">
               {hasChanges && (
@@ -274,7 +288,7 @@ export default function AdminPage() {
                 onClick={() => signOut({ callbackUrl: '/' })}
                 className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200"
               >
-                登出
+                Logout
               </button>
               <button
                 onClick={handleSave}
@@ -286,7 +300,7 @@ export default function AdminPage() {
                 }`}
               >
                 <Icons.Save />
-                Save Changes
+                Save
               </button>
               <a href="/" className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800">
                 View Site
@@ -299,18 +313,24 @@ export default function AdminPage() {
       {/* Tabs */}
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="flex gap-1">
-            <button
-              onClick={() => setActiveTab('products')}
-              className={`flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
-                activeTab === 'products'
-                  ? 'border-amber-500 text-amber-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              <Icons.Package />
-              Products ({products.length})
-            </button>
+          <div className="flex gap-1 overflow-x-auto">
+            {(settings?.navigation || []).map((navItem) => {
+              const count = products.filter(p => productMatchesNavCategory(p.category, navItem.label)).length
+              return (
+                <button
+                  key={navItem.label}
+                  onClick={() => { setActiveTab('products'); setActiveCategory(navItem.label); }}
+                  className={`flex items-center gap-2 px-4 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
+                    activeTab === 'products' && activeCategory === navItem.label
+                      ? 'border-amber-500 text-amber-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700'
+                  }`}
+                >
+                  <Icons.Package />
+                  {navItem.label} ({count})
+                </button>
+              )
+            })}
             <button
               onClick={() => setActiveTab('filters')}
               className={`flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
@@ -357,14 +377,14 @@ export default function AdminPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
-                    {products.map(product => (
+                    {products.filter(p => productMatchesNavCategory(p.category, activeCategory)).map(product => (
                       <tr key={product.id} className="hover:bg-gray-50">
                         <td className="px-4 py-3">
                           <img src={product.img} alt={product.name} className="w-12 h-12 object-cover border border-gray-200" suppressHydrationWarning />
                         </td>
                         <td className="px-4 py-3">
                           <div className="text-sm font-medium text-gray-800">{product.name}</div>
-                          <div className="text-xs text-gray-500">{product.category} • {product.age} • {product.volume}</div>
+                          <div className="text-xs text-gray-500">{product.category} {product.age} {product.volume}</div>
                         </td>
                         <td className="px-4 py-3 text-sm text-gray-600">{product.brand}</td>
                         <td className="px-4 py-3 text-sm text-gray-600">{product.country}</td>
@@ -627,14 +647,35 @@ function EditProductModal({
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
-              <input
-                type="url"
-                value={form.img}
-                onChange={(e) => setForm({ ...form, img: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500"
-                required
-              />
+              <label className="block text-sm font-medium text-gray-700 mb-1">Image</label>
+              <div className="flex gap-2">
+                <input
+                  type="url"
+                  value={form.img}
+                  onChange={(e) => setForm({ ...form, img: e.target.value })}
+                  placeholder="https://..."
+                  className="flex-1 px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500"
+                />
+                <label className="px-4 py-2 bg-amber-500 text-white text-sm rounded-lg cursor-pointer hover:bg-amber-600 transition-colors">
+                  Upload
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0]
+                      if (!file) return
+                      const fd = new FormData()
+                      fd.append('file', file)
+                      try {
+                        const res = await fetch('/api/upload', { method: 'POST', body: fd })
+                        const data = await res.json()
+                        if (data.url) setForm({ ...form, img: data.url })
+                      } catch (_) {}
+                    }}
+                  />
+                </label>
+              </div>
             </div>
 
             {form.img && (
@@ -667,7 +708,7 @@ function EditProductModal({
                 type="submit"
                 className="px-4 py-2 bg-amber-500 text-white text-sm font-medium hover:bg-amber-600"
               >
-                {isNew ? 'Add Product' : 'Save Changes'}
+                {isNew ? 'Add Product' : 'Save'}
               </button>
             </div>
           </form>
