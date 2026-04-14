@@ -415,7 +415,7 @@ export default function HomePage() {
                 <h3 className="font-semibold" style={{ color: s.text }}>Filters</h3>
                 <button onClick={clearFilters} className="text-sm" style={{ color: s.secondary }}>Clear All</button>
               </div>
-              {(siteSettings?.filterOrder ? [...siteSettings.filterOrder.map(s => s.charAt(0).toUpperCase() + s.slice(1)), 'Price'] : ['Category', 'Country', 'Brand', 'Volume', 'Price']).map(section => (
+              {['Category', 'Country', 'Brand', 'Volume', 'Price'].map(section => (
                 <div key={section} className="border" style={{ borderColor: s.cardBorder }}>
                   <button onClick={() => toggleSection(section)} className="w-full flex items-center justify-between px-4 py-3 text-left font-medium" style={{ color: s.text }}>
                     {section}
@@ -514,7 +514,7 @@ export default function HomePage() {
                   <h2 className="text-lg font-bold" style={{ color: s.text }}>Filters</h2>
                   <button onClick={() => setMobileFiltersOpen(false)} className="p-2" style={{ color: s.text }}><Icons.Close /></button>
                 </div>
-                {(siteSettings?.filterOrder ? [...siteSettings.filterOrder.map(s => s.charAt(0).toUpperCase() + s.slice(1)), 'Price'] : ['Category', 'Country', 'Brand', 'Volume', 'Price']).map(section => (
+                {['Category', 'Country', 'Brand', 'Volume', 'Price'].map(section => (
                   <div key={section} className="border mb-4" style={{ borderColor: s.cardBorder }}>
                     <button onClick={() => toggleSection(section)} className="w-full flex items-center justify-between px-4 py-3 text-left font-medium" style={{ color: s.text }}>
                       {section}

@@ -219,6 +219,82 @@ interface DesignClientProps {
   } | null
 }
 
+// FilterEditor: a single editor with draggable items inside
+interface FilterEditorProps {
+  section: string
+  label: string
+  items: string[]
+  color: string
+  bg: string
+  border: string
+  text: string
+  draggingTag: { section: string; item: string } | null
+  overTag: string | null
+  onDragStart: (item: string) => void
+  onDragOver: (item: string) => void
+  onDrop: (item: string) => void
+  onDragEnd: () => void
+  onRemove: (item: string) => void
+  onAdd: (val: string) => void
+  placeholder: string
+}
+
+function FilterEditor({ label, items, bg, border, text, draggingTag, overTag, onDragStart, onDragOver, onDrop, onDragEnd, onRemove, onAdd, placeholder }: FilterEditorProps) {
+  return (
+    <div className={`${bg} border ${border} rounded-lg p-3`}>
+      <div className="flex items-center justify-between mb-2">
+        <p className={`text-xs font-semibold ${text}`}>{label}</p>
+        <span className={`text-xs ${text.replace('700', '600')}`}>{items.length} 個</span>
+      </div>
+      <div className="flex flex-wrap gap-1.5 mb-2">
+        {items.map((item) => {
+          const isDraggingThis = draggingTag?.item === item
+          const isOverThis = overTag === item && draggingTag?.item !== item
+          return (
+            <span
+              key={item}
+              draggable
+              onDragStart={() => onDragStart(item)}
+              onDragOver={(e) => { e.preventDefault(); onDragOver(item) }}
+              onDrop={(e) => { e.preventDefault(); onDrop(item) }}
+              onDragEnd={onDragEnd}
+              className={`inline-flex items-center gap-1 px-2 py-0.5 bg-white border ${border} text-xs ${text.replace('700', '800')} rounded cursor-grab select-none transition-all ${isDraggingThis ? 'opacity-30' : ''} ${isOverThis ? 'ring-2 ring-amber-400' : ''}`}
+            >
+              <span className="text-gray-300 text-xs">⠿</span>
+              {item}
+              <button
+                onClick={() => onRemove(item)}
+                className={`${text.replace('700', '400')} hover:text-red-500 leading-none ml-0.5`}
+              >×</button>
+            </span>
+          )
+        })}
+      </div>
+      <div className="flex gap-2">
+        <input
+          type="text"
+          placeholder={placeholder}
+          className={`flex-1 px-2 py-1 text-xs border ${border.replace('200', '300')} focus:outline-none focus:border-${color}-500 rounded`}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              const val = (e.target as HTMLInputElement).value.trim()
+              if (val && !items.includes(val)) { onAdd(val); (e.target as HTMLInputElement).value = '' }
+            }
+          }}
+        />
+        <button
+          onClick={(e) => {
+            const input = (e.currentTarget.previousElementSibling as HTMLInputElement)
+            const val = input.value.trim()
+            if (val && !items.includes(val)) { onAdd(val); input.value = '' }
+          }}
+          className={`px-3 py-1 text-xs bg-${color}-500 text-white hover:bg-${color}-600 rounded`}
+        >新增</button>
+      </div>
+    </div>
+  )
+}
+
 export default function DesignClient({ initialData }: DesignClientProps) {
   // Footer L2 links modal state
   const [footerLinksModal, setFooterLinksModal] = useState<{ colIndex: number; linkIndex: number; colTitle: string; linkLabel: string } | null>(null)
@@ -266,8 +342,9 @@ export default function DesignClient({ initialData }: DesignClientProps) {
 
   const [draggingKey, setDraggingKey] = useState<string | null>(null)
   const [dragOverBlock, setDragOverBlock] = useState<string | null>(null)
-  const [draggingFilter, setDraggingFilter] = useState<string | null>(null)
-  const [dragOverFilter, setDragOverFilter] = useState<string | null>(null)
+  // Drag state for filter tag items within each editor
+  const [draggingTag, setDraggingTag] = useState<{section: string, item: string} | null>(null)
+  const [overTag, setOverTag] = useState<string | null>(null)
 
   // Track if initial load from localStorage is complete
   const [initialLoadComplete, setInitialLoadComplete] = useState(false)
@@ -679,92 +756,109 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                 <p className="text-xs text-gray-500">Layer 1 / 2 / 3 三層導航編輯器</p>
 
                 {/* Filter Section Editors — ordered by filterOrder, draggable */}
-                {(settings.filterOrder || ['category', 'country', 'brand', 'volume']).map((sectionKey) => {
-                  const sectionMap: Record<string, { label: string; color: string; bg: string; border: string; text: string; data: string[] }> = {
-                    country: { label: 'Countries（國家選項）', color: 'amber', bg: 'bg-amber-50', border: 'border-amber-200', text: 'text-amber-700', data: settings.countries || [] },
-                    brand: { label: 'Brands（品牌選項）', color: 'blue', bg: 'bg-blue-50', border: 'border-blue-200', text: 'text-blue-700', data: settings.brands || [] },
-                    category: { label: 'Categories（類別選項）', color: 'green', bg: 'bg-green-50', border: 'border-green-200', text: 'text-green-700', data: settings.categories || [] },
-                    volume: { label: 'Volumes（容量選項）', color: 'purple', bg: 'bg-purple-50', border: 'border-purple-200', text: 'text-purple-700', data: settings.volumes || [] },
-                  }
-                  const section = sectionMap[sectionKey]
-                  if (!section) return null
-                  const isDragging = draggingFilter === sectionKey
-                  const isOver = dragOverFilter === sectionKey
-                  return (
-                    <div
-                      key={sectionKey}
-                      draggable
-                      onDragStart={() => setDraggingFilter(sectionKey)}
-                      onDragOver={(e) => { e.preventDefault(); setDragOverFilter(sectionKey) }}
-                      onDrop={(e) => {
-                        e.preventDefault()
-                        if (draggingFilter && draggingFilter !== sectionKey) {
-                          const order = [...(settings.filterOrder || ['category', 'country', 'brand', 'volume'])]
-                          const fromIdx = order.indexOf(draggingFilter)
-                          const toIdx = order.indexOf(sectionKey)
-                          if (fromIdx !== -1 && toIdx !== -1) {
-                            order.splice(fromIdx, 1)
-                            order.splice(toIdx, 0, draggingFilter)
-                            setSettings(prev => ({ ...prev, filterOrder: order }))
-                          }
-                        }
-                        setDraggingFilter(null)
-                        setDragOverFilter(null)
-                      }}
-                      onDragEnd={() => { setDraggingFilter(null); setDragOverFilter(null) }}
-                      className={`${section.bg} border ${section.border} rounded-lg p-3 transition-all cursor-grab select-none ${isDragging ? 'opacity-40' : ''} ${isOver ? 'ring-2 ring-amber-400 ring-offset-1' : ''}`}
-                    >
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="text-gray-400 hover:text-gray-600 cursor-grab">⠿</span>
-                        <p className={`text-xs font-semibold ${section.text}`}>{section.label}</p>
-                        <span className={`text-xs ${section.text.replace('700', '600')}`}>{section.data.length} 個</span>
-                      </div>
-                      <div className="flex flex-wrap gap-1.5 mb-2">
-                        {section.data.map((item: string) => (
-                          <span key={item} className={`inline-flex items-center gap-1 px-2 py-0.5 bg-white border ${section.border.replace('200', '200')} text-xs ${section.text.replace('700', '800')} rounded`}>
-                            {item}
-                            <button
-                              onClick={() => {
-                                const key = sectionKey === 'country' ? 'countries' : sectionKey === 'brand' ? 'brands' : sectionKey === 'category' ? 'categories' : 'volumes'
-                                setSettings(prev => ({ ...prev, [key]: (prev as any)[key].filter((x: string) => x !== item) }))
-                              }}
-                              className={`${section.text.replace('700', '400')} hover:text-red-500 leading-none`}
-                            >×</button>
-                          </span>
-                        ))}
-                      </div>
-                      <div className="flex gap-2">
-                        <input
-                          type="text"
-                          placeholder={`新增${sectionKey === 'country' ? '國家' : sectionKey === 'brand' ? '品牌' : sectionKey === 'category' ? '類別' : '容量'}...`}
-                          className={`flex-1 px-2 py-1 text-xs border ${section.border.replace('200', '300')} focus:outline-none focus:border-${section.color}-500 rounded`}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter') {
-                              const val = (e.target as HTMLInputElement).value.trim()
-                              if (val && !section.data.includes(val)) {
-                                const key = sectionKey === 'country' ? 'countries' : sectionKey === 'brand' ? 'brands' : sectionKey === 'category' ? 'categories' : 'volumes'
-                                setSettings(prev => ({ ...prev, [key]: [...((prev as any)[key] || []), val] }))
-                                ;(e.target as HTMLInputElement).value = ''
-                              }
-                            }
-                          }}
-                        />
-                        <button
-                          onClick={(e) => {
-                            const input = (e.currentTarget.previousElementSibling as HTMLInputElement)
-                            const val = input.value.trim()
-                            if (val && !section.data.includes(val)) {
-                              const key = sectionKey === 'country' ? 'countries' : sectionKey === 'brand' ? 'brands' : sectionKey === 'category' ? 'categories' : 'volumes'
-                              setSettings(prev => ({ ...prev, [key]: [...((prev as any)[key] || []), val] }))
-                              input.value = ''
-                            }
-                          }}
-                          className={`px-3 py-1 text-xs bg-${section.color}-500 text-white hover:bg-${section.color}-600 rounded`}
-                        >新增</button>
-                      </div>
-                    </div>
-                  )
-                })}
+                {/* Countries Editor */}
+                <FilterEditor section="country" label="Countries（國家選項）" items={settings.countries || []}
+                  color="amber" bg="bg-amber-50" border="border-amber-200" text="text-amber-700"
+                  draggingTag={draggingTag} overTag={overTag}
+                  onDragStart={(item) => setDraggingTag({ section: 'country', item })}
+                  onDragOver={(item) => setOverTag(item)}
+                  onDrop={(item) => {
+                    if (draggingTag && draggingTag.item !== item) {
+                      const arr = [...(settings.countries || [])]
+                      const fromIdx = arr.indexOf(draggingTag.item)
+                      const toIdx = arr.indexOf(item)
+                      if (fromIdx !== -1 && toIdx !== -1) {
+                        arr.splice(fromIdx, 1)
+                        arr.splice(toIdx, 0, draggingTag.item)
+                        setSettings(prev => ({ ...prev, countries: arr }))
+                      }
+                    }
+                    setDraggingTag(null)
+                    setOverTag(null)
+                  }}
+                  onDragEnd={() => { setDraggingTag(null); setOverTag(null) }}
+                  onRemove={(item) => setSettings(prev => ({ ...prev, countries: (prev.countries || []).filter(x => x !== item) }))}
+                  onAdd={(val) => setSettings(prev => ({ ...prev, countries: [...(prev.countries || []), val] }))}
+                  placeholder="新增國家..."
+                />
+
+                {/* Brands Editor */}
+                <FilterEditor section="brand" label="Brands（品牌選項）" items={settings.brands || []}
+                  color="blue" bg="bg-blue-50" border="border-blue-200" text="text-blue-700"
+                  draggingTag={draggingTag} overTag={overTag}
+                  onDragStart={(item) => setDraggingTag({ section: 'brand', item })}
+                  onDragOver={(item) => setOverTag(item)}
+                  onDrop={(item) => {
+                    if (draggingTag && draggingTag.item !== item) {
+                      const arr = [...(settings.brands || [])]
+                      const fromIdx = arr.indexOf(draggingTag.item)
+                      const toIdx = arr.indexOf(item)
+                      if (fromIdx !== -1 && toIdx !== -1) {
+                        arr.splice(fromIdx, 1)
+                        arr.splice(toIdx, 0, draggingTag.item)
+                        setSettings(prev => ({ ...prev, brands: arr }))
+                      }
+                    }
+                    setDraggingTag(null)
+                    setOverTag(null)
+                  }}
+                  onDragEnd={() => { setDraggingTag(null); setOverTag(null) }}
+                  onRemove={(item) => setSettings(prev => ({ ...prev, brands: (prev.brands || []).filter(x => x !== item) }))}
+                  onAdd={(val) => setSettings(prev => ({ ...prev, brands: [...(prev.brands || []), val] }))}
+                  placeholder="新增品牌..."
+                />
+
+                {/* Categories Editor */}
+                <FilterEditor section="category" label="Categories（類別選項）" items={settings.categories || []}
+                  color="green" bg="bg-green-50" border="border-green-200" text="text-green-700"
+                  draggingTag={draggingTag} overTag={overTag}
+                  onDragStart={(item) => setDraggingTag({ section: 'category', item })}
+                  onDragOver={(item) => setOverTag(item)}
+                  onDrop={(item) => {
+                    if (draggingTag && draggingTag.item !== item) {
+                      const arr = [...(settings.categories || [])]
+                      const fromIdx = arr.indexOf(draggingTag.item)
+                      const toIdx = arr.indexOf(item)
+                      if (fromIdx !== -1 && toIdx !== -1) {
+                        arr.splice(fromIdx, 1)
+                        arr.splice(toIdx, 0, draggingTag.item)
+                        setSettings(prev => ({ ...prev, categories: arr }))
+                      }
+                    }
+                    setDraggingTag(null)
+                    setOverTag(null)
+                  }}
+                  onDragEnd={() => { setDraggingTag(null); setOverTag(null) }}
+                  onRemove={(item) => setSettings(prev => ({ ...prev, categories: (prev.categories || []).filter(x => x !== item) }))}
+                  onAdd={(val) => setSettings(prev => ({ ...prev, categories: [...(prev.categories || []), val] }))}
+                  placeholder="新增類別..."
+                />
+
+                {/* Volumes Editor */}
+                <FilterEditor section="volume" label="Volumes（容量選項）" items={settings.volumes || []}
+                  color="purple" bg="bg-purple-50" border="border-purple-200" text="text-purple-700"
+                  draggingTag={draggingTag} overTag={overTag}
+                  onDragStart={(item) => setDraggingTag({ section: 'volume', item })}
+                  onDragOver={(item) => setOverTag(item)}
+                  onDrop={(item) => {
+                    if (draggingTag && draggingTag.item !== item) {
+                      const arr = [...(settings.volumes || [])]
+                      const fromIdx = arr.indexOf(draggingTag.item)
+                      const toIdx = arr.indexOf(item)
+                      if (fromIdx !== -1 && toIdx !== -1) {
+                        arr.splice(fromIdx, 1)
+                        arr.splice(toIdx, 0, draggingTag.item)
+                        setSettings(prev => ({ ...prev, volumes: arr }))
+                      }
+                    }
+                    setDraggingTag(null)
+                    setOverTag(null)
+                  }}
+                  onDragEnd={() => { setDraggingTag(null); setOverTag(null) }}
+                  onRemove={(item) => setSettings(prev => ({ ...prev, volumes: (prev.volumes || []).filter(x => x !== item) }))}
+                  onAdd={(val) => setSettings(prev => ({ ...prev, volumes: [...(prev.volumes || []), val] }))}
+                  placeholder="新增容量..."
+                />
 
                 {settings.navigation.map((item, l1Index) => (
                   <div key={l1Index} className="border border-gray-200 rounded-lg overflow-hidden">
