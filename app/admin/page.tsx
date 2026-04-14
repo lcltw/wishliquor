@@ -398,9 +398,12 @@ export default function AdminPage() {
                       <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Brand</th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Name</th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Country</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Price</th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Stock</th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Barcode</th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">SKU</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
+                        <div>Barcode /</div>
+                        <div>SKU</div>
+                      </th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Actions</th>
                     </tr>
                   </thead>
@@ -572,18 +575,6 @@ export default function AdminPage() {
                             >{product.country}</button>
                           )}
                         </td>
-                        <td data-cell={`${product.id}-stock`} className="px-4 py-3">
-                          <input
-                            type="number"
-                            value={product.stock ?? 0}
-                            min={0}
-                            onChange={(e) => {
-                              const updated = products.map(p => p.id === product.id ? { ...p, stock: Number(e.target.value) } : p)
-                              setProducts(updated)
-                            }}
-                            className="w-16 px-2 py-1 text-sm text-gray-800 border border-transparent hover:border-amber-300 focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-100 rounded cursor-text"
-                          />
-                        </td>
                         <td data-cell={`${product.id}-price`} className="px-4 py-3">
                           {editingCell?.productId === product.id && editingCell?.field === 'price' ? (
                             <input
@@ -608,6 +599,18 @@ export default function AdminPage() {
                             >${product.price}</button>
                           )}
                         </td>
+                        <td data-cell={`${product.id}-stock`} className="px-4 py-3">
+                          <input
+                            type="number"
+                            value={product.stock ?? 0}
+                            min={0}
+                            onChange={(e) => {
+                              const updated = products.map(p => p.id === product.id ? { ...p, stock: Number(e.target.value) } : p)
+                              setProducts(updated)
+                            }}
+                            className="w-16 px-2 py-1 text-sm text-gray-800 border border-transparent hover:border-amber-300 focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-100 rounded cursor-text"
+                          />
+                        </td>
                         <td className="px-4 py-3">
                           <input
                             type="text"
@@ -617,10 +620,8 @@ export default function AdminPage() {
                               const updated = products.map(p => p.id === product.id ? { ...p, barcode: e.target.value } : p)
                               setProducts(updated)
                             }}
-                            className="w-24 px-2 py-1 text-xs text-gray-600 border border-transparent hover:border-amber-300 focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-100 rounded cursor-text"
+                            className="w-24 px-2 py-1 text-xs text-gray-600 border border-transparent hover:border-amber-300 focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-100 rounded cursor-text mb-0.5"
                           />
-                        </td>
-                        <td className="px-4 py-3">
                           <input
                             type="text"
                             value={product.sku || ''}
