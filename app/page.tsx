@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useData } from './context/DataContext'
@@ -183,10 +183,12 @@ export default function HomePage() {
 
   const [expandedSections, setExpandedSections] = useState<string[]>(['Category', 'Country', 'Brand'])
   const [selectedFilters, setSelectedFilters] = useState<Record<string, string[]>>({ category: [], country: [], brand: [], volume: [], price: [] })
+  const isFirstMount = useRef(true)
   const [searchQuery, setSearchQuery] = useState('')
 
-  // Sync URL ?category= param with selectedFilters.category (client-side only)
+  // Sync URL params to sidebar filters (runs only after mount and when navigation data changes)
   useEffect(() => {
+    if (isFirstMount.current) { isFirstMount.current = false; return; }
     const params = new URLSearchParams(window.location.search)
     const cat = params.get('category')
     if (cat) {
