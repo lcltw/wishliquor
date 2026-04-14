@@ -335,6 +335,19 @@
       "Wine",
       "Cognac",
       "Other"
+    ],
+    "volumes": [
+      "50ml",
+      "180ml",
+      "700ml",
+      "750ml",
+      "1000ml"
+    ],
+    "filterOrder": [
+      "category",
+      "country",
+      "brand",
+      "volume"
     ]
   },
   "assignments": {
@@ -694,6 +707,19 @@
       "img": "https://lh3.googleusercontent.com/u/0/d/15ij09mVuQVvTMVEwq0eQ7-0q80VLKjTm",
       "description": "",
       "barcode": "3245990780816"
+    },
+    {
+      "id": 25,
+      "name": "Distillery Exclusive",
+      "brand": "Yamazaki",
+      "country": "Scotland",
+      "category": "Single Malt",
+      "age": "",
+      "volume": "180ml",
+      "price": 99,
+      "img": "https://lh3.googleusercontent.com/u/0/d/15ij09mVuQVvTMVEwq0eQ7-0q80VLKjTm",
+      "description": "",
+      "alcohol": "48"
     }
   ],
   "filters": [

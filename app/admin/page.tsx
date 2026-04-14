@@ -177,6 +177,20 @@ export default function AdminPage() {
   const [isAddingProduct, setIsAddingProduct] = useState(false)
   const [hasChanges, setHasChanges] = useState(false)
   const [toast, setToast] = useState('')
+  const [editingCell, setEditingCell] = useState<{ productId: number; field: string } | null>(null)
+
+  // Close editing cell on outside click
+  useEffect(() => {
+    if (!editingCell) return
+    const handler = (e: MouseEvent) => {
+      const target = e.target as HTMLElement
+      if (!target.closest('[data-inline-edit]')) {
+        setEditingCell(null)
+      }
+    }
+    document.addEventListener('click', handler)
+    return () => document.removeEventListener('click', handler)
+  }, [editingCell])
   
   // Don't render until data is loaded from context
   if (!isLoaded) {
@@ -385,13 +399,139 @@ export default function AdminPage() {
                         <td className="px-4 py-3">
                           <img src={product.img} alt={product.name} className="w-12 h-12 object-cover border border-gray-200" suppressHydrationWarning />
                         </td>
-                        <td className="px-4 py-3 text-sm text-gray-600">{product.brand}</td>
+                        <td className="px-4 py-3">
+                          {editingCell?.productId === product.id && editingCell?.field === 'brand' ? (
+                            <select
+                              autoFocus
+                              value={product.brand}
+                              onChange={(e) => {
+                                const updated = products.map(p => p.id === product.id ? { ...p, brand: e.target.value } : p)
+                                setProducts(updated)
+                                setEditingCell(null)
+                              }}
+                              onBlur={() => setEditingCell(null)}
+                              onKeyDown={(e) => { if (e.key === 'Escape') setEditingCell(null) }}
+                              className="w-full px-2 py-1 text-sm border border-amber-400 rounded focus:outline-none focus:ring-1 focus:ring-amber-500"
+                            >
+                              {(settings?.brands || filters?.find(f => f.id === 'brand')?.values || []).map(b => (
+                                <option key={b} value={b}>{b}</option>
+                              ))}
+                            </select>
+                          ) : (
+                            <button
+                              onClick={() => setEditingCell({ productId: product.id, field: 'brand' })}
+                              className="text-sm text-gray-600 hover:text-amber-600 hover:underline cursor-pointer text-left w-full"
+                              title="點擊編輯"
+                            >{product.brand}</button>
+                          )}
+                        </td>
                         <td className="px-4 py-3">
                           <div className="text-sm font-medium text-gray-800">{product.name}</div>
-                          <div className="text-xs text-gray-500">{product.category}{product.age ? ` ${product.age}` : ''}{product.alcohol ? ` ${product.alcohol}%` : ''}{product.volume ? ` ${product.volume}` : ''}</div>
+                          <div className="flex flex-wrap gap-1 mt-0.5">
+                            {/* Category */}
+                            {editingCell?.productId === product.id && editingCell?.field === 'category' ? (
+                              <select
+                                autoFocus
+                                value={product.category}
+                                onChange={(e) => {
+                                  const updated = products.map(p => p.id === product.id ? { ...p, category: e.target.value } : p)
+                                  setProducts(updated)
+                                  setEditingCell(null)
+                                }}
+                                onBlur={() => setEditingCell(null)}
+                                onKeyDown={(e) => { if (e.key === 'Escape') setEditingCell(null) }}
+                                className="px-1 py-0.5 text-xs border border-amber-400 rounded focus:outline-none focus:ring-1 focus:ring-amber-500"
+                              >
+                                {(settings?.categories || filters?.find(f => f.id === 'category')?.values || []).map(c => (
+                                  <option key={c} value={c}>{c}</option>
+                                ))}
+                              </select>
+                            ) : (
+                              <button
+                                onClick={() => setEditingCell({ productId: product.id, field: 'category' })}
+                                className="text-xs px-1 py-0.5 bg-gray-100 hover:bg-amber-50 hover:text-amber-700 rounded cursor-pointer"
+                                title="點擊編輯 Category"
+                              >{product.category}</button>
+                            )}
+                            {/* Age */}
+                            <span className="text-xs text-gray-400">{product.age ? ` ${product.age}` : ''}{product.alcohol ? ` ${product.alcohol}%` : ''}</span>
+                            {/* Volume */}
+                            {editingCell?.productId === product.id && editingCell?.field === 'volume' ? (
+                              <select
+                                autoFocus
+                                value={product.volume}
+                                onChange={(e) => {
+                                  const updated = products.map(p => p.id === product.id ? { ...p, volume: e.target.value } : p)
+                                  setProducts(updated)
+                                  setEditingCell(null)
+                                }}
+                                onBlur={() => setEditingCell(null)}
+                                onKeyDown={(e) => { if (e.key === 'Escape') setEditingCell(null) }}
+                                className="px-1 py-0.5 text-xs border border-amber-400 rounded focus:outline-none focus:ring-1 focus:ring-amber-500"
+                              >
+                                {(settings?.volumes || filters?.find(f => f.id === 'volume')?.values || ['50ml', '700ml', '750ml', '1000ml']).map(v => (
+                                  <option key={v} value={v}>{v}</option>
+                                ))}
+                              </select>
+                            ) : (
+                              <button
+                                onClick={() => setEditingCell({ productId: product.id, field: 'volume' })}
+                                className="text-xs px-1 py-0.5 bg-gray-100 hover:bg-amber-50 hover:text-amber-700 rounded cursor-pointer"
+                                title="點擊編輯 Volume"
+                              >{product.volume}</button>
+                            )}
+                          </div>
                         </td>
-                        <td className="px-4 py-3 text-sm text-gray-600">{product.country}</td>
-                        <td className="px-4 py-3 text-sm font-semibold text-gray-800">${product.price}</td>
+                        <td className="px-4 py-3">
+                          {editingCell?.productId === product.id && editingCell?.field === 'country' ? (
+                            <select
+                              autoFocus
+                              value={product.country}
+                              onChange={(e) => {
+                                const updated = products.map(p => p.id === product.id ? { ...p, country: e.target.value } : p)
+                                setProducts(updated)
+                                setEditingCell(null)
+                              }}
+                              onBlur={() => setEditingCell(null)}
+                              onKeyDown={(e) => { if (e.key === 'Escape') setEditingCell(null) }}
+                              className="w-full px-2 py-1 text-sm border border-amber-400 rounded focus:outline-none focus:ring-1 focus:ring-amber-500"
+                            >
+                              {(settings?.countries || filters?.find(f => f.id === 'country')?.values || []).map(c => (
+                                <option key={c} value={c}>{c}</option>
+                              ))}
+                            </select>
+                          ) : (
+                            <button
+                              onClick={() => setEditingCell({ productId: product.id, field: 'country' })}
+                              className="text-sm text-gray-600 hover:text-amber-600 hover:underline cursor-pointer text-left w-full"
+                              title="點擊編輯"
+                            >{product.country}</button>
+                          )}
+                        </td>
+                        <td className="px-4 py-3">
+                          {editingCell?.productId === product.id && editingCell?.field === 'price' ? (
+                            <input
+                              autoFocus
+                              type="number"
+                              value={product.price}
+                              onChange={(e) => {
+                                const updated = products.map(p => p.id === product.id ? { ...p, price: Number(e.target.value) } : p)
+                                setProducts(updated)
+                                setEditingCell(null)
+                              }}
+                              onBlur={() => setEditingCell(null)}
+                              onKeyDown={(e) => { if (e.key === 'Escape') setEditingCell(null) }}
+                              className="w-20 px-2 py-1 text-sm border border-amber-400 rounded focus:outline-none focus:ring-1 focus:ring-amber-500"
+                              min="0"
+                            />
+                          ) : (
+                            <button
+                              onClick={() => setEditingCell({ productId: product.id, field: 'price' })}
+                              className="text-sm font-semibold text-gray-800 hover:text-amber-600 cursor-pointer text-left"
+                              title="點擊編輯 Price"
+                            >${product.price}</button>
+                          )}
+                        </td>
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-2">
                             <button
