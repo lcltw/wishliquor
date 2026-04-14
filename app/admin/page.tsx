@@ -186,8 +186,8 @@ export default function AdminPage() {
       const target = e.target as HTMLElement
       // Don't close if clicking inside the same editing cell
       if (target.closest(`[data-cell="${editingCell.productId}-${editingCell.field}"]`)) return
-      // Also don't close if clicking category/volume sub-fields inside the Name cell
-      if (['category', 'volume'].includes(editingCell.field)) {
+      // Also don't close if clicking sub-fields inside the Name cell
+      if (['category', 'volume', 'age', 'alcohol'].includes(editingCell.field)) {
         const nameCell = target.closest(`[data-cell="${editingCell.productId}-name"]`)
         if (nameCell && (nameCell as HTMLElement).dataset.cellFields?.includes(editingCell.field)) return
       }
@@ -430,7 +430,7 @@ export default function AdminPage() {
                             >{product.brand}</button>
                           )}
                         </td>
-                        <td data-cell={`${product.id}-name`} className="px-4 py-3">
+                        <td data-cell={`${product.id}-name`} data-cell-fields="category volume age alcohol" className="px-4 py-3">
                           <input
                             type="text"
                             value={product.name}
@@ -467,7 +467,27 @@ export default function AdminPage() {
                               >{product.category}</button>
                             )}
                             {/* Age */}
-                            <span className="text-xs text-gray-400">{product.age ? ` ${product.age}` : ''}{product.alcohol ? ` ${product.alcohol}%` : ''}</span>
+                            <input
+                              type="text"
+                              value={product.age || ''}
+                              placeholder="Age"
+                              onChange={(e) => {
+                                const updated = products.map(p => p.id === product.id ? { ...p, age: e.target.value } : p)
+                                setProducts(updated)
+                              }}
+                              className="w-14 px-1 py-0.5 text-xs text-gray-600 border border-transparent hover:border-amber-300 focus:border-amber-400 focus:outline-none rounded cursor-text"
+                            />
+                            {/* Alcohol */}
+                            <input
+                              type="text"
+                              value={product.alcohol || ''}
+                              placeholder=" Alc.%"
+                              onChange={(e) => {
+                                const updated = products.map(p => p.id === product.id ? { ...p, alcohol: e.target.value } : p)
+                                setProducts(updated)
+                              }}
+                              className="w-14 px-1 py-0.5 text-xs text-gray-600 border border-transparent hover:border-amber-300 focus:border-amber-400 focus:outline-none rounded cursor-text"
+                            />
                             {/* Volume */}
                             {editingCell?.productId === product.id && editingCell?.field === 'volume' ? (
                               <select
