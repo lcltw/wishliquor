@@ -356,7 +356,7 @@ export default function HomePage() {
                   {/* Layer 1 — top level */}
                   {item.sub && item.sub.filter(l2 => l2.enabled !== false).length > 0 ? (
                     <>
-                      <a href={item.href || '#'} onClick={(e) => { router.push(item.href || '#'); setSelectedFilters({ category: [item.label], country: [], brand: [], volume: [], price: [] }); }}
+                      <a href={item.href || '#'} onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', item.href || '/'); setSelectedFilters({ category: [item.label], country: [], brand: [], volume: [], price: [] }); }}
                         className="flex items-center justify-between w-full md:w-auto px-4 py-2 text-sm md:pr-2" style={{ color: s.navText }}>
                         {item.label}<span className="md:hidden ml-2">›</span>
                       </a>
