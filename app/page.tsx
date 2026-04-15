@@ -282,11 +282,19 @@ export default function HomePage() {
     return true
   })
 
-  const addToCart = (product: any) => {
+  const addToCart = (product: any, qty?: number) => {
+    const qtyToAdd = qty ?? 1
+    const cartItem = cart.find(item => item.id === product.id)
+    const currentCartQty = cartItem?.qty ?? 0
+    const availableStock = product.stock ?? Infinity
+    if (currentCartQty + qtyToAdd > availableStock) {
+      showToast(`Only ${availableStock - currentCartQty > 0 ? availableStock - currentCartQty : 0} left in stock`)
+      return
+    }
     setCart(prev => {
       const existing = prev.find(item => item.id === product.id)
-      if (existing) return prev.map(item => item.id === product.id ? { ...item, qty: item.qty + 1 } : item)
-      return [...prev, { ...product, qty: 1 }]
+      if (existing) return prev.map(item => item.id === product.id ? { ...item, qty: item.qty + qtyToAdd } : item)
+      return [...prev, { ...product, qty: qtyToAdd }]
     })
     showToast(`${product.name} added to cart`)
   }
@@ -296,6 +304,11 @@ export default function HomePage() {
       if (item.id === id) {
         const newQty = item.qty + delta
         if (newQty <= 0) return null
+        const maxStock = item.stock ?? Infinity
+        if (newQty > maxStock) {
+          showToast(`Only ${maxStock} available`)
+          return { ...item, qty: maxStock }
+        }
         return { ...item, qty: newQty }
       }
       return item
@@ -486,8 +499,12 @@ export default function HomePage() {
                     <p className="text-xs mb-3" style={{ color: '#6B7280' }}>{product.category}{product.age ? ` ${product.age}` : ''}{product.alcohol ? ` ${product.alcohol}%` : ''}{product.volume ? ` ${product.volume}` : ''}</p>
                     <div className="flex items-center justify-between">
                       <span className="text-lg font-bold" style={{ color: s.text }}>${product.price}</span>
-                      <button onClick={(e) => { e.stopPropagation(); addToCart(product); }}
-                        className="px-4 py-2 text-sm font-semibold text-white" style={{ backgroundColor: s.buttonPrimary }}>Add</button>
+                      {(product.stock != null && product.stock <= 0) ? (
+                        <span className="text-xs px-2 py-1" style={{ color: '#DC2626', backgroundColor: '#FEE2E2' }}>Out of stock</span>
+                      ) : (
+                        <button onClick={(e) => { e.stopPropagation(); addToCart(product, 1); }}
+                          className="px-4 py-2 text-sm font-semibold text-white" style={{ backgroundColor: s.buttonPrimary }}>Add</button>
+                      )}
                     </div>
                   </div>
                 </motion.div>
@@ -586,27 +603,30 @@ export default function HomePage() {
                     <p className="mb-1" style={{ color: s.secondary }}>{selectedProduct.category}{selectedProduct.age ? ` ${selectedProduct.age}` : ''}{selectedProduct.alcohol ? ` ${selectedProduct.alcohol}%` : ''}{selectedProduct.volume ? ` ${selectedProduct.volume}` : ''}</p>
                     <p className="mb-4 text-sm leading-relaxed" style={{ color: s.secondary }}>{selectedProduct.description}</p>
                     <p className="text-2xl md:text-3xl font-bold mb-3" style={{ color: s.text }}>${selectedProduct.price}</p>
-                    {(selectedProduct.stock != null && selectedProduct.stock > 0) && (
-                      <div className="flex items-center gap-3 mb-4">
-                        <span className="text-sm font-medium" style={{ color: '#16A34A' }}>{selectedProduct.stock} in stock</span>
-                        <select
-                          value={selectedQty}
-                          onChange={(e) => setSelectedQty(Number(e.target.value))}
-                          className="px-2 py-1 border text-sm"
-                          style={{ borderColor: s.cardBorder, color: s.text }}
-                        >
-                          {Array.from({ length: Math.min(selectedProduct.stock, 10) }, (_, i) => i + 1).map(n => (
-                            <option key={n} value={n}>{n}</option>
-                          ))}
-                        </select>
-                      </div>
-                    )}
-                    {selectedProduct.stock === 0 && (
-                      <p className="text-sm font-medium mb-4" style={{ color: '#DC2626' }}>Out of stock</p>
-                    )}
+                    {(() => {
+                      const cartItem = cart.find(item => item.id === selectedProduct.id)
+                      const cartQty = cartItem?.qty ?? 0
+                      const availableStock = (selectedProduct.stock ?? Infinity) - cartQty
+                      if (availableStock <= 0) return <p className="text-sm font-medium mb-4" style={{ color: '#DC2626' }}>Out of stock</p>
+                      return (
+                        <div className="flex items-center gap-3 mb-4">
+                          <span className="text-sm font-medium" style={{ color: '#16A34A' }}>{availableStock} in stock</span>
+                          <select
+                            value={selectedQty}
+                            onChange={(e) => setSelectedQty(Math.min(Number(e.target.value), availableStock))}
+                            className="px-2 py-1 border text-sm"
+                            style={{ borderColor: s.cardBorder, color: s.text }}
+                          >
+                            {Array.from({ length: Math.min(availableStock, 10) }, (_, i) => i + 1).map(n => (
+                              <option key={n} value={n}>{n}</option>
+                            ))}
+                          </select>
+                        </div>
+                      )
+                    })()}
                     <button
-                      onClick={() => { addToCart({ ...selectedProduct, qty: selectedQty }); setSelectedProduct(null); setSelectedQty(1); }}
-                      disabled={selectedProduct.stock === 0}
+                      onClick={() => { addToCart(selectedProduct, selectedQty); setSelectedProduct(null); setSelectedQty(1); }}
+                      disabled={(selectedProduct.stock ?? Infinity) - (cart.find(i => i.id === selectedProduct.id)?.qty ?? 0) <= 0}
                       className="w-full py-3 md:py-4 text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                       style={{ backgroundColor: s.buttonPrimary }}
                     >Add to Cart</button>

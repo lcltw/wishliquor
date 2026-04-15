@@ -467,7 +467,8 @@
       "price": 299,
       "img": "https://lh3.googleusercontent.com/u/0/d/164F013s_83J-DlVbB_GKbx8TxQTFB1HW",
       "description": "Heavy peat and exceptional balance. 167ppm ",
-      "alcohol": "58.5"
+      "alcohol": "58.5",
+      "stock": 1
     },
     {
       "id": 5,
@@ -480,7 +481,8 @@
       "price": 199,
       "img": "https://lh3.googleusercontent.com/u/0/d/1hkLPTMM91Xel_ecp7ffGFPdI-fRZqesI",
       "description": "Delicate and complex with citrus, grapefruit, and Japanese oak notes.",
-      "alcohol": "43"
+      "alcohol": "43",
+      "stock": 1
     },
     {
       "id": 6,
@@ -507,7 +509,8 @@
       "price": 459,
       "img": "https://lh3.googleusercontent.com/u/0/d/1TyCVq4D8dko3tZuVYcFJ6xgQdTp_7nfH",
       "description": "Harmonious blend with aged grain and malt, offering dried fruit and honey.",
-      "alcohol": "43"
+      "alcohol": "43",
+      "stock": 1
     },
     {
       "id": 8,
@@ -520,7 +523,8 @@
       "price": 189,
       "img": "https://lh3.googleusercontent.com/u/0/d/1U1tJkI-dyWw-yK5mJPm8oKzsRWCBI9_5",
       "description": "Fresh and herbal with notes of grapefruit, pear, and subtle peat.",
-      "alcohol": "43"
+      "alcohol": "43",
+      "stock": 1
     },
     {
       "id": 9,
@@ -548,7 +552,8 @@
       "price": 69,
       "img": "https://lh3.googleusercontent.com/u/0/d/1XISIPQbAky-8bh55vbfrE6optPNHsHfh",
       "description": "Light and refreshing with citrus, honey, and gentle spices.",
-      "alcohol": "57.8"
+      "alcohol": "57.8",
+      "stock": 1
     },
     {
       "id": 11,
@@ -561,7 +566,8 @@
       "price": 99,
       "img": "https://lh3.googleusercontent.com/u/0/d/1txWR-4GW7ZPRCmM4R2cl38Xzudxzv5Ln",
       "description": "",
-      "alcohol": "43"
+      "alcohol": "43",
+      "stock": 1
     },
     {
       "id": 12,
@@ -574,7 +580,8 @@
       "price": 79,
       "img": "https://lh3.googleusercontent.com/u/0/d/1jTtIJI6C9UA-Dulpli7HY3uN0nyGuKaI",
       "description": "Sweet and smooth with notes of caramel, vanilla, and wheat.",
-      "alcohol": "45"
+      "alcohol": "45",
+      "stock": 1
     },
     {
       "id": 13,
@@ -587,7 +594,8 @@
       "price": 59,
       "img": "https://lh3.googleusercontent.com/u/0/d/1Mb-VZUMCFpJIVWSMO4fPWrvQsrT8sJWk",
       "description": "",
-      "alcohol": "40"
+      "alcohol": "40",
+      "stock": 1
     },
     {
       "id": 14,
@@ -600,7 +608,8 @@
       "price": 149,
       "img": "https://lh3.googleusercontent.com/u/0/d/1DNRJYJTziw08HxDb5vSNMZ7nV4oZ6Qut",
       "description": "",
-      "alcohol": "52.5"
+      "alcohol": "52.5",
+      "stock": 1
     },
     {
       "id": 15,
@@ -613,7 +622,8 @@
       "price": 229,
       "img": "https://lh3.googleusercontent.com/u/0/d/1MgzvNH8OsubufhcBpEmhppDWP1zE-McI",
       "description": "",
-      "alcohol": "43"
+      "alcohol": "43",
+      "stock": 10
     },
     {
       "id": 16,
@@ -627,7 +637,8 @@
       "img": "https://lh3.googleusercontent.com/u/0/d/15ij09mVuQVvTMVEwq0eQ7-0q80VLKjTm",
       "description": "",
       "alcohol": "43",
-      "barcode": "5010278107887"
+      "barcode": "5010278107887",
+      "stock": 3
     },
     {
       "id": 17,
@@ -640,7 +651,8 @@
       "price": 399,
       "img": "https://lh3.googleusercontent.com/u/0/d/1cJtVOMwLNNunzV7oNRq75C8ZEgJOaU_6",
       "description": "",
-      "alcohol": "43"
+      "alcohol": "43",
+      "stock": 1
     },
     {
       "id": 19,
@@ -653,7 +665,8 @@
       "price": 666,
       "img": "https://lh3.googleusercontent.com/u/0/d/1vUA_ZxgL6aSgDiBwFd4v2FbK_HeY_1KK",
       "description": "",
-      "alcohol": "43"
+      "alcohol": "43",
+      "stock": 1
     },
     {
       "id": 20,
@@ -727,7 +740,8 @@
       "price": 99,
       "img": "https://lh3.googleusercontent.com/u/0/d/169qQ96xlf-itflcaO9wAUFhBKVudzggw",
       "description": "",
-      "alcohol": "48"
+      "alcohol": "48",
+      "stock": 1
     },
     {
       "id": 26,
@@ -806,7 +820,7 @@
       "description": "https://drive.google.com/file/d//view?usp=sharing",
       "barcode": "",
       "sku": "",
-      "stock": 0,
+      "stock": 10,
       "alcohol": "43"
     }
   ],
