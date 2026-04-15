@@ -469,7 +469,7 @@ export default function AdminPage() {
                               const updated = products.map(p => p.id === product.id ? { ...p, name: e.target.value } : p)
                               setProducts(updated)
                             }}
-                            className="w-full px-2 py-1 text-sm font-medium text-gray-800 border border-transparent hover:border-amber-300 focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-100 rounded cursor-text"
+                            className="w-full px-2 py-1 text-sm font-medium text-gray-800 border border-gray-300 hover:border-gray-400 focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-100 rounded cursor-text"
                           />
                           <div className="flex flex-wrap gap-1 mt-0.5">
                             {/* Category */}
@@ -506,7 +506,7 @@ export default function AdminPage() {
                                 const updated = products.map(p => p.id === product.id ? { ...p, age: e.target.value } : p)
                                 setProducts(updated)
                               }}
-                              className="w-14 px-1 py-0.5 text-xs text-gray-600 border border-transparent hover:border-amber-300 focus:border-amber-400 focus:outline-none rounded cursor-text"
+                              className="w-14 px-1 py-0.5 text-xs text-gray-600 border border-gray-300 hover:border-gray-400 focus:border-amber-400 focus:outline-none rounded cursor-text"
                             />
                             {/* Alcohol */}
                             <input
@@ -517,7 +517,7 @@ export default function AdminPage() {
                                 const updated = products.map(p => p.id === product.id ? { ...p, alcohol: e.target.value } : p)
                                 setProducts(updated)
                               }}
-                              className="w-14 px-1 py-0.5 text-xs text-gray-600 border border-transparent hover:border-amber-300 focus:border-amber-400 focus:outline-none rounded cursor-text"
+                              className="w-14 px-1 py-0.5 text-xs text-gray-600 border border-gray-300 hover:border-gray-400 focus:border-amber-400 focus:outline-none rounded cursor-text"
                             />
                             {/* Volume */}
                             {editingCell?.productId === product.id && editingCell?.field === 'volume' ? (
@@ -605,7 +605,7 @@ export default function AdminPage() {
                               const updated = products.map(p => p.id === product.id ? { ...p, stock: Number(e.target.value) } : p)
                               setProducts(updated)
                             }}
-                            className="w-16 px-2 py-1 text-sm text-gray-800 border border-transparent hover:border-amber-300 focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-100 rounded cursor-text"
+                            className="w-16 px-2 py-1 text-sm text-gray-800 border border-gray-300 hover:border-gray-400 focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-100 rounded cursor-text"
                           />
                         </td>
                         <td className="px-4 py-3">
@@ -617,7 +617,7 @@ export default function AdminPage() {
                               const updated = products.map(p => p.id === product.id ? { ...p, barcode: e.target.value } : p)
                               setProducts(updated)
                             }}
-                            className="block w-full px-1 py-0.5 text-xs text-gray-600 border border-transparent hover:border-amber-300 focus:border-amber-400 focus:outline-none rounded cursor-text mb-0.5"
+                            className="block w-full px-1 py-0.5 text-xs text-gray-600 border border-gray-300 hover:border-gray-400 focus:border-amber-400 focus:outline-none rounded cursor-text mb-0.5"
                           />
                           <input
                             type="text"
@@ -627,7 +627,7 @@ export default function AdminPage() {
                               const updated = products.map(p => p.id === product.id ? { ...p, sku: e.target.value } : p)
                               setProducts(updated)
                             }}
-                            className="block w-full px-1 py-0.5 text-xs text-gray-600 border border-transparent hover:border-amber-300 focus:border-amber-400 focus:outline-none rounded cursor-text"
+                            className="block w-full px-1 py-0.5 text-xs text-gray-600 border border-gray-300 hover:border-gray-400 focus:border-amber-400 focus:outline-none rounded cursor-text"
                           />
                         </td>
                         <td className="px-4 py-3">
