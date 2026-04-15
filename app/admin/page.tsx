@@ -447,7 +447,7 @@ export default function AdminPage() {
                               }}
                               onBlur={() => setEditingCell(null)}
                               onKeyDown={(e) => { if (e.key === 'Escape') setEditingCell(null) }}
-                              className="w-full px-2 py-1 text-sm border border-amber-400 rounded focus:outline-none focus:ring-1 focus:ring-amber-500"
+                              className="w-full px-2 py-1 text-sm border border-gray-300 bg-white rounded focus:outline-none focus:ring-1 focus:ring-gray-400"
                             >
                               {(settings?.brands || filters?.find(f => f.id === 'brand')?.values || []).map(b => (
                                 <option key={b} value={b}>{b}</option>
@@ -484,7 +484,7 @@ export default function AdminPage() {
                                 }}
                                 onBlur={() => setEditingCell(null)}
                                 onKeyDown={(e) => { if (e.key === 'Escape') setEditingCell(null) }}
-                                className="px-1 py-0.5 text-xs border border-amber-400 rounded focus:outline-none focus:ring-1 focus:ring-amber-500"
+                                className="px-1 py-0.5 text-xs border border-gray-300 bg-white rounded focus:outline-none focus:ring-1 focus:ring-gray-400"
                               >
                                 {(settings?.categories || filters?.find(f => f.id === 'category')?.values || []).map(c => (
                                   <option key={c} value={c}>{c}</option>
@@ -531,7 +531,7 @@ export default function AdminPage() {
                                 }}
                                 onBlur={() => setEditingCell(null)}
                                 onKeyDown={(e) => { if (e.key === 'Escape') setEditingCell(null) }}
-                                className="px-1 py-0.5 text-xs border border-amber-400 rounded focus:outline-none focus:ring-1 focus:ring-amber-500"
+                                className="px-1 py-0.5 text-xs border border-gray-300 bg-white rounded focus:outline-none focus:ring-1 focus:ring-gray-400"
                               >
                                 {(settings?.volumes || filters?.find(f => f.id === 'volume')?.values || ['50ml', '700ml', '750ml', '1000ml']).map(v => (
                                   <option key={v} value={v}>{v}</option>
@@ -558,7 +558,7 @@ export default function AdminPage() {
                               }}
                               onBlur={() => setEditingCell(null)}
                               onKeyDown={(e) => { if (e.key === 'Escape') setEditingCell(null) }}
-                              className="w-full px-2 py-1 text-sm border border-amber-400 rounded focus:outline-none focus:ring-1 focus:ring-amber-500"
+                              className="w-full px-2 py-1 text-sm border border-gray-300 bg-white rounded focus:outline-none focus:ring-1 focus:ring-gray-400"
                             >
                               {(settings?.countries || filters?.find(f => f.id === 'country')?.values || []).map(c => (
                                 <option key={c} value={c}>{c}</option>
@@ -585,7 +585,7 @@ export default function AdminPage() {
                               }}
                               onBlur={() => setEditingCell(null)}
                               onKeyDown={(e) => { if (e.key === 'Escape') setEditingCell(null) }}
-                              className="w-20 px-2 py-1 text-sm border border-amber-400 rounded focus:outline-none focus:ring-1 focus:ring-amber-500"
+                              className="w-20 px-2 py-1 text-sm border border-gray-300 bg-white rounded focus:outline-none focus:ring-1 focus:ring-gray-400"
                               min="0"
                             />
                           ) : (
