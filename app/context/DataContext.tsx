@@ -16,6 +16,7 @@ interface Product {
   description?: string
   barcode?: string
   sku?: string
+  stock?: number
 }
 
 interface FilterOption {

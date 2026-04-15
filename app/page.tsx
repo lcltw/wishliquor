@@ -160,6 +160,7 @@ export default function HomePage() {
   const [cartOpen, setCartOpen] = useState(false)
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState<any | null>(null)
+  const [selectedQty, setSelectedQty] = useState(1)
   const [toast, setToast] = useState('')
   const [footerModalCol, setFooterModalCol] = useState<{ colIndex: number; linkIndex: number } | null>(null)
   const [cart, setCart] = useState<CartItem[]>([])
@@ -475,7 +476,7 @@ export default function HomePage() {
 
             <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               {filteredProducts.map(product => (
-                <motion.div key={product.id} whileHover={{ y: -4 }} onClick={() => setSelectedProduct(product)}
+                <motion.div key={product.id} whileHover={{ y: -4 }} onClick={() => { setSelectedProduct(product); setSelectedQty(1); }}
                   className="border cursor-pointer transition-all" style={{ backgroundColor: s.cardBackground, borderColor: s.cardBorder }}>
                   <div className="aspect-square overflow-hidden"><img src={product.img} alt={product.name} className="w-full h-full object-cover" suppressHydrationWarning /></div>
                   <div className="p-4">
@@ -584,9 +585,31 @@ export default function HomePage() {
                     <h2 className="text-xl md:text-2xl font-bold mb-2" style={{ color: s.text }}>{selectedProduct.name}</h2>
                     <p className="mb-1" style={{ color: s.secondary }}>{selectedProduct.category}{selectedProduct.age ? ` ${selectedProduct.age}` : ''}{selectedProduct.alcohol ? ` ${selectedProduct.alcohol}%` : ''}{selectedProduct.volume ? ` ${selectedProduct.volume}` : ''}</p>
                     <p className="mb-4 text-sm leading-relaxed" style={{ color: s.secondary }}>{selectedProduct.description}</p>
-                    <p className="text-2xl md:text-3xl font-bold mb-6" style={{ color: s.text }}>${selectedProduct.price}</p>
-                    <button onClick={() => { addToCart(selectedProduct); setSelectedProduct(null); }}
-                      className="w-full py-3 md:py-4 text-white font-semibold" style={{ backgroundColor: s.buttonPrimary }}>Add to Cart</button>
+                    <p className="text-2xl md:text-3xl font-bold mb-3" style={{ color: s.text }}>${selectedProduct.price}</p>
+                    {(selectedProduct.stock != null && selectedProduct.stock > 0) && (
+                      <div className="flex items-center gap-3 mb-4">
+                        <span className="text-sm font-medium" style={{ color: '#16A34A' }}>{selectedProduct.stock} in stock</span>
+                        <select
+                          value={selectedQty}
+                          onChange={(e) => setSelectedQty(Number(e.target.value))}
+                          className="px-2 py-1 border text-sm"
+                          style={{ borderColor: s.cardBorder, color: s.text }}
+                        >
+                          {Array.from({ length: Math.min(selectedProduct.stock, 10) }, (_, i) => i + 1).map(n => (
+                            <option key={n} value={n}>{n}</option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
+                    {selectedProduct.stock === 0 && (
+                      <p className="text-sm font-medium mb-4" style={{ color: '#DC2626' }}>Out of stock</p>
+                    )}
+                    <button
+                      onClick={() => { addToCart({ ...selectedProduct, qty: selectedQty }); setSelectedProduct(null); setSelectedQty(1); }}
+                      disabled={selectedProduct.stock === 0}
+                      className="w-full py-3 md:py-4 text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                      style={{ backgroundColor: s.buttonPrimary }}
+                    >Add to Cart</button>
                   </div>
                 </div>
               </div>
