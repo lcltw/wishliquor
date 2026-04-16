@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import './globals.css'
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const DATA_FILE = path.join(process.cwd(), '.wishliquor-data.json')
 
@@ -38,6 +39,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="min-h-screen">
         {children}
+        <SpeedInsights />
       </body>
     </html>
   )
