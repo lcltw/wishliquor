@@ -1,0 +1,85 @@
+// Default settings for Server Components - no 'use client' directive
+// This file can be imported in both Server and Client Components
+
+export const defaultSettings = {
+  siteName: 'wishliquor.co',
+  logoUrl: '/Logo.png',
+  contactEmail: 'wishliquor@outlook.com',
+  ubn: '83120142',
+  colors: {
+    background: '#FFFFFF',
+    text: '#0a0a0a',
+    cardBackground: '#FFFFFF',
+    cardBorder: '#6B7280',
+    primary: '#DC2626',
+    secondary: '#6B7280',
+    accent: '#C9A227',
+    navBackground: '#DC2626',
+    navText: '#FFFFFF',
+    navHover: '#DC2626',
+    navDropdownBg: '#DC2626',
+    navDropdownText: '#FFFFFF',
+    navDropdownHover: '#DC2626',
+    navDropdownLabel: '#C9A227',
+    buttonPrimary: '#C9A227',
+    footerBackground: '#FFFFFF',
+    footerText: '#0a0a0a',
+    footerMuted: '#6B7280',
+    heroBackground: '#FFFFFF',
+    heroText: '#6B7280',
+    heroAccent: '#C9A227',
+  },
+  hero: {
+    title: 'Explore World Whiskies',
+    subtitle: 'Premium selection from Scotland, Japan, Taiwan and beyond.',
+    ctaText: 'Shop Now'
+  },
+  navigation: [],
+  footer: {
+    brand: 'wishliquor.co',
+    description: 'Premium whiskies curated from around the world.',
+    logoUrl: '/Logo.png',
+    logoWidth: 120,
+    logoHeight: 40,
+    logoAspectLocked: true,
+    copyright: '© 2026 wishliquor.co All rights reserved.',
+    columns: [
+      { title: 'Featured', links: [
+        { label: 'Bars', content: '' },
+        { label: 'The Whisky Map', content: '' },
+        { label: 'Reviews', content: '' },
+        { label: 'News', content: '' },
+        { label: 'Events', content: '' },
+      ]},
+      { title: 'Whisky Type', links: [
+        { label: 'Single Malt', content: '' },
+        { label: 'Sherry Cask', content: '' },
+        { label: 'Peated', content: '' },
+        { label: 'Bourbon Cask', content: '' },
+        { label: 'Independent', content: '' },
+      ]},
+      { title: 'About', links: [
+        { label: 'Shipping', content: 'Shipping & Deliveries\n\nDelivery Scope & Lead Times\n\nDelivery Scope: We only accept international orders. We do not offer delivery within Taiwan.\nDispatch Time: All orders are generally dispatched within 1–2 business days, unless otherwise stated.\nInternational Rates: Shipping rates are calculated at checkout based on your delivery location and order weight.\n\nMarketplace & Partner Retailers\nSome products are shipped directly from our partner retailers.\nShipping Policies: Specific shipping policies are displayed under the "Add to Cart" button on each product page.\nSeparate Charges: Orders shipped from different retailers may incur separate shipping charges.\n\nPre-Sales & Exclusive Releases\nFor pre-sale events or exclusive bottlings, estimated dispatch dates will be clearly stated on the product page.\n\nFAQs\n\nWhere do we deliver?\nWe deliver to most residential or business addresses. If your country is not listed at checkout, please contact us at wishliquor@outlook.com for a quote.\n\nHow much is the fee and how long does it take?\nTotal delivery costs and estimated times depend on your location and weight, and will be displayed at checkout.\n\nHow do I track my order?\nYou will receive a tracking number and an email notification once your order is dispatched.\n\nWill I have to sign for my delivery?\nYes, a signature is required upon delivery. Persons ordering alcoholic beverages must be over the legal drinking age in their respective jurisdiction.\n\nContact Us\nFor any inquiries, please contact us at: wishliquor@outlook.com' },
+        { label: 'Privacy', content: '' },
+        { label: 'Terms', content: '' },
+        { label: 'About Us', content: '' },
+        { label: 'Contact Us', content: '' },
+      ]},
+    ],
+  },
+  content: {
+    pageTitle: 'wishliquor.co | Premium Whiskies Curated From Around The World',
+    pageDescription: "Australia's largest online whisky store with exclusive bottlings and Whisky Lover's perks.",
+    featuredTitle: 'Featured Products',
+    featuredSubtitle: 'Handpicked selections from our finest collection',
+    aboutTitle: 'About Us',
+    aboutText: 'Wishliquor.co curates the finest whiskies from Scotland, Japan, Taiwan and beyond — delivered straight to your door.',
+  },
+  countries: ['Scotland', 'Japan', 'Taiwan', 'USA'],
+  brands: ['Macallan', 'Glenfiddich', 'Yamazaki', 'Kavalan', 'Octomore', 'Hibiki', 'Hakushu', 'Glenlivet', 'Talisker', 'W.L. Weller', "Jack Daniel's", 'Omar'],
+  categories: ['Single Malt', 'Blended', 'Bourbon', 'Rye', 'Cognac', 'Gin', 'Rum', 'Wine', 'Other'],
+  volumes: ['50ml', '700ml', '750ml', '1000ml'],
+  filterOrder: ['category', 'country', 'brand', 'volume'],
+}
+
+export const defaultProducts = []

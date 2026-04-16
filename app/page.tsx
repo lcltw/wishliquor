@@ -1,4 +1,4 @@
-import { defaultProducts, defaultSettings } from './context/DataContext'
+import { defaultProducts, defaultSettings } from './context/defaults'
 import ShopClient from './components/ShopClient'
 
 async function getInitialData() {
