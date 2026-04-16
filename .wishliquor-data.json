@@ -15,10 +15,10 @@
       "accent": "#C9A227",
       "navBackground": "#DC2626",
       "navText": "#FFFFFF",
-      "navHover": "#DC2626",
+      "navHover": "#6B7280",
       "navDropdownBg": "#6B7280",
       "navDropdownText": "#FFFFFF",
-      "navDropdownHover": "#6B7280",
+      "navDropdownHover": "#DC2626",
       "navDropdownLabel": "#C9A227",
       "buttonPrimary": "#C9A227",
       "footerBackground": "#FFFFFF",
@@ -26,7 +26,8 @@
       "footerMuted": "#6B7280",
       "heroBackground": "#FFFFFF",
       "heroText": "#0a0a0a",
-      "heroAccent": "#C9A227"
+      "heroAccent": "#C9A227",
+      "filterClearText": "#DC2626"
     },
     "hero": {
       "title": "Internal testing",
@@ -248,52 +249,46 @@
       "logoAspectLocked": true,
       "columns": [
         {
-          "title": "About wishliquor",
+          "title": "About",
           "links": [
             {
-              "0": "T",
-              "1": "e",
-              "2": "r",
-              "3": "m",
-              "4": "s",
-              "content": "Shipping & Deliveries\nDelivery Scope & Lead Times\nDelivery Scope: We only accept international orders. We do not offer delivery within Taiwan.\nDispatch Time: All orders are generally dispatched within 1-3 business days, unless otherwise stated.\nShipping Terms (DAP): All international orders are shipped under DAP (Delivered At Place) terms. Wish Liquor is responsible for the delivery of the goods to your specified address; however, the buyer is responsible for all import clearance, local taxes, and customs duties incurred in the destination country.\nMarketplace & Partner Retailers Some products are shipped directly from our partner retailers.\nShipping Policies: Specific shipping policies are displayed under the \"Add to Cart\" button on each product page.\nSeparate Charges: Orders shipped from different retailers may incur separate shipping charges.\nPre-Sales & Exclusive Releases For pre-sale events or exclusive bottlings, estimated dispatch dates will be clearly stated on the product page.\nFAQs\nWhere do we deliver? We deliver to most residential or business addresses. If your country is not listed at checkout, please contact us at wishliquor@outlook.com for a quote.\nHow much is the fee and how long does it take? Total delivery costs and estimated times depend on your location and weight, and will be displayed at checkout.\nHow do I track my order? You will receive a tracking number and an email notification once your order is dispatched.\nWill I have to sign for my delivery? Yes, a signature is required upon delivery. Persons ordering alcoholic beverages must be over the legal drinking age in their respective jurisdiction.\nContact Us For any inquiries, please contact us at: wishliquor@outlook.com",
-              "label": "Shipping Policy"
+              "label": "Shipping Policy",
+              "content": "<span id=\"docs-internal-guid-337c97a4-7fff-580b-61ef-efa7b7594a53\" style=\"caret-color: rgb(0, 0, 0); color: rgb(0, 0, 0);\"><h2 dir=\"ltr\" style=\"line-height: 1.56; margin-top: 18pt; margin-bottom: 4pt;\"><span style=\"font-size: 15pt; font-family: Arial, sans-serif; background-color: transparent; font-weight: 700; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\">Shipping &amp; Delivery</span></h2><h3 dir=\"ltr\" style=\"line-height: 1.56; margin-top: 18pt; margin-bottom: 4pt;\"><span style=\"font-size: 12pt; font-family: Arial, sans-serif; background-color: transparent; font-weight: 700; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\">Delivery Scope &amp; Fees</span></h3><ul style=\"padding-inline-start: 48px;\"><li dir=\"ltr\" aria-level=\"1\" style=\"list-style-type: disc; font-size: 11pt; font-family: Arial, sans-serif; background-color: transparent; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre;\"><p dir=\"ltr\" role=\"presentation\" style=\"line-height: 1.56; margin-top: 18pt; margin-bottom: 4pt;\"><span style=\"font-size: 11pt; background-color: transparent; font-weight: 700; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\">International Shipping:</span><span style=\"font-size: 11pt; background-color: transparent; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\"> We specialize in international orders and </span><span style=\"font-size: 11pt; background-color: transparent; font-weight: 700; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\">do not offer delivery within Taiwan</span><span style=\"font-size: 11pt; background-color: transparent; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\">.</span></p></li><li dir=\"ltr\" aria-level=\"1\" style=\"list-style-type: disc; font-size: 11pt; font-family: Arial, sans-serif; background-color: transparent; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre;\"><p dir=\"ltr\" role=\"presentation\" style=\"line-height: 1.56; margin-top: 18pt; margin-bottom: 4pt;\"><span style=\"font-size: 11pt; background-color: transparent; font-weight: 700; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\">Calculated Shipping:</span><span style=\"font-size: 11pt; background-color: transparent; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\"> Final shipping costs and estimated delivery times are based on your location and total weight, which will be displayed during </span><span style=\"font-size: 11pt; background-color: transparent; font-weight: 700; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\">checkout</span><span style=\"font-size: 11pt; background-color: transparent; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\">.</span></p></li><li dir=\"ltr\" aria-level=\"1\" style=\"list-style-type: disc; font-size: 11pt; font-family: Arial, sans-serif; background-color: transparent; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre;\"><p dir=\"ltr\" role=\"presentation\" style=\"line-height: 1.56; margin-top: 18pt; margin-bottom: 4pt;\"><span style=\"font-size: 11pt; background-color: transparent; font-weight: 700; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\">Special Quotes:</span><span style=\"font-size: 11pt; background-color: transparent; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\"> If your country is not listed at checkout, please contact us at </span><a href=\"mailto:wishliquor@outlook.com\" style=\"text-decoration: none;\"><span style=\"font-size: 11pt; font-family: &quot;Roboto Mono&quot;, monospace; color: rgb(17, 85, 204); background-color: transparent; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; text-decoration: underline; text-decoration-skip-ink: none; vertical-align: baseline; white-space: pre-wrap;\">wishliquor@outlook.com</span></a><span style=\"font-size: 11pt; background-color: transparent; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\"> for a custom shipping quote.</span></p></li></ul><h3 dir=\"ltr\" style=\"line-height: 1.56; margin-top: 18pt; margin-bottom: 4pt;\"><span style=\"font-size: 12pt; font-family: Arial, sans-serif; background-color: transparent; font-weight: 700; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\">Dispatch &amp; Tracking</span></h3><ul style=\"padding-inline-start: 48px;\"><li dir=\"ltr\" aria-level=\"1\" style=\"list-style-type: disc; font-size: 11pt; font-family: Arial, sans-serif; background-color: transparent; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre;\"><p dir=\"ltr\" role=\"presentation\" style=\"line-height: 1.56; margin-top: 18pt; margin-bottom: 4pt;\"><span style=\"font-size: 11pt; background-color: transparent; font-weight: 700; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\">Processing Time:</span><span style=\"font-size: 11pt; background-color: transparent; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\"> Standard items are generally dispatched within </span><span style=\"font-size: 11pt; background-color: transparent; font-weight: 700; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\">1–3 business days</span><span style=\"font-size: 11pt; background-color: transparent; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\">. Orders sourced from partner suppliers may require additional processing time.</span></p></li><li dir=\"ltr\" aria-level=\"1\" style=\"list-style-type: disc; font-size: 11pt; font-family: Arial, sans-serif; background-color: transparent; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre;\"><p dir=\"ltr\" role=\"presentation\" style=\"line-height: 1.56; margin-top: 18pt; margin-bottom: 4pt;\"><span style=\"font-size: 11pt; background-color: transparent; font-weight: 700; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\">Specialty Items:</span><span style=\"font-size: 11pt; background-color: transparent; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\"> For rare or \"hard-to-find\" bottles, dispatch times vary. We will keep you updated regarding the status of such orders.</span></p></li><li dir=\"ltr\" aria-level=\"1\" style=\"list-style-type: disc; font-size: 11pt; font-family: Arial, sans-serif; background-color: transparent; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre;\"><p dir=\"ltr\" role=\"presentation\" style=\"line-height: 1.56; margin-top: 18pt; margin-bottom: 4pt;\"><span style=\"font-size: 11pt; background-color: transparent; font-weight: 700; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\">Pre-Orders:</span><span style=\"font-size: 11pt; background-color: transparent; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\"> For limited releases or pre-sale items, please refer to the estimated dispatch dates provided on the specific product page.</span></p></li><li dir=\"ltr\" aria-level=\"1\" style=\"list-style-type: disc; font-size: 11pt; font-family: Arial, sans-serif; background-color: transparent; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre;\"><p dir=\"ltr\" role=\"presentation\" style=\"line-height: 1.56; margin-top: 18pt; margin-bottom: 4pt;\"><span style=\"font-size: 11pt; background-color: transparent; font-weight: 700; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\">Order Tracking:</span><span style=\"font-size: 11pt; background-color: transparent; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\"> Once your order is shipped, you will receive an email notification containing your </span><span style=\"font-size: 11pt; background-color: transparent; font-weight: 700; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\">tracking number</span><span style=\"font-size: 11pt; background-color: transparent; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\">.</span></p></li></ul><h3 dir=\"ltr\" style=\"line-height: 1.56; margin-top: 18pt; margin-bottom: 4pt;\"><span style=\"font-size: 12pt; font-family: Arial, sans-serif; background-color: transparent; font-weight: 700; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\">Customs &amp; Taxes (DAP)</span></h3><ul style=\"padding-inline-start: 48px;\"><li dir=\"ltr\" aria-level=\"1\" style=\"list-style-type: disc; font-size: 11pt; font-family: Arial, sans-serif; background-color: transparent; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre;\"><p dir=\"ltr\" role=\"presentation\" style=\"line-height: 1.56; margin-top: 18pt; margin-bottom: 4pt;\"><span style=\"font-size: 11pt; background-color: transparent; font-weight: 700; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\">Shipping Terms:</span><span style=\"font-size: 11pt; background-color: transparent; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\"> All orders are shipped under </span><span style=\"font-size: 11pt; background-color: transparent; font-weight: 700; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\">DAP (Delivered At Place)</span><span style=\"font-size: 11pt; background-color: transparent; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\"> terms. Wish Liquor is responsible for delivering the goods to your specified address; however, the </span><span style=\"font-size: 11pt; background-color: transparent; font-weight: 700; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\">buyer is responsible</span><span style=\"font-size: 11pt; background-color: transparent; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\"> for all import clearance, local taxes, and customs duties incurred in the destination country.</span></p></li></ul><h2 dir=\"ltr\" style=\"line-height: 1.56; margin-top: 18pt; margin-bottom: 4pt;\"><span style=\"font-size: 15pt; font-family: Arial, sans-serif; background-color: transparent; font-weight: 700; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\">Important Reminders</span></h2><ul style=\"padding-inline-start: 48px;\"><li dir=\"ltr\" aria-level=\"1\" style=\"list-style-type: disc; font-size: 11pt; font-family: Arial, sans-serif; background-color: transparent; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre;\"><p dir=\"ltr\" role=\"presentation\" style=\"line-height: 1.56; margin-top: 18pt; margin-bottom: 4pt;\"><span style=\"font-size: 11pt; background-color: transparent; font-weight: 700; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\">Signature Required:</span><span style=\"font-size: 11pt; background-color: transparent; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\"> To ensure secure delivery, all packages must be </span><span style=\"font-size: 11pt; background-color: transparent; font-weight: 700; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\">signed for by an adult</span><span style=\"font-size: 11pt; background-color: transparent; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\">.</span></p></li><li dir=\"ltr\" aria-level=\"1\" style=\"list-style-type: disc; font-size: 11pt; font-family: Arial, sans-serif; background-color: transparent; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre;\"><p dir=\"ltr\" role=\"presentation\" style=\"line-height: 1.56; margin-top: 18pt; margin-bottom: 4pt;\"><span style=\"font-size: 11pt; background-color: transparent; font-weight: 700; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\">Legal Age Compliance:</span><span style=\"font-size: 11pt; background-color: transparent; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\"> Both the sender and the recipient must meet the </span><span style=\"font-size: 11pt; background-color: transparent; font-weight: 700; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\">legal drinking age</span><span style=\"font-size: 11pt; background-color: transparent; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\"> required by their respective local jurisdictions.</span></p></li><li dir=\"ltr\" aria-level=\"1\" style=\"list-style-type: disc; font-size: 11pt; font-family: Arial, sans-serif; background-color: transparent; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre;\"><p dir=\"ltr\" role=\"presentation\" style=\"line-height: 1.56; margin-top: 18pt; margin-bottom: 4pt;\"><span style=\"font-size: 11pt; background-color: transparent; font-weight: 700; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\">Separate Shipments:</span><span style=\"font-size: 11pt; background-color: transparent; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\"> If an order contains products from different retailers, items may be shipped separately and may incur individual shipping charges.</span></p></li></ul><h2 dir=\"ltr\" style=\"line-height: 1.56; margin-top: 18pt; margin-bottom: 4pt;\"><span style=\"font-size: 15pt; font-family: Arial, sans-serif; background-color: transparent; font-weight: 700; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\">FAQs</span></h2><ul style=\"padding-inline-start: 48px;\"><li dir=\"ltr\" aria-level=\"1\" style=\"list-style-type: disc; font-size: 11pt; font-family: Arial, sans-serif; background-color: transparent; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre;\"><p dir=\"ltr\" role=\"presentation\" style=\"line-height: 1.56; margin-top: 18pt; margin-bottom: 4pt;\"><span style=\"font-size: 11pt; background-color: transparent; font-weight: 700; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\">How do I track my progress?</span><span style=\"font-size: 11pt; background-color: transparent; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\"> Please check your email for the tracking number or log in to your account on our website to view your order status.</span></p></li></ul><span style=\"font-size: 11pt; font-family: Arial, sans-serif; background-color: transparent; font-weight: 700; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\">Contact Us:</span><span style=\"font-size: 11pt; font-family: Arial, sans-serif; background-color: transparent; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\"> For any inquiries, please reach out to us at </span><a href=\"mailto:wishliquor@outlook.com\" style=\"text-decoration: none;\"><span style=\"font-size: 11pt; font-family: &quot;Roboto Mono&quot;, monospace; color: rgb(17, 85, 204); background-color: transparent; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; text-decoration: underline; text-decoration-skip-ink: none; vertical-align: baseline; white-space: pre-wrap;\">wishliquor@outlook.com</span></a><span style=\"font-size: 11pt; font-family: Arial, sans-serif; background-color: transparent; font-variant-alternates: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space: pre-wrap;\"> We are happy to assist you.</span></span>"
             },
             {
-              "0": "A",
-              "1": "b",
-              "2": "o",
-              "3": "u",
-              "4": "t",
-              "5": " ",
-              "6": "U",
-              "7": "s",
-              "label": "Privacy Policy"
+              "label": "Privacy Policy",
+              "content": "Privacy Policy\n\nLast updated: January 2025\n\nInformation We Collect\n\nWe collect information you provide directly to us, such as when you make a purchase, create an account, or contact us for support. This includes: name, email address, shipping address, billing address, and payment information.\n\nHow We Use Your Information\n\nWe use the information we collect to process transactions, send you order confirmations, and communicate with you about your orders. We do not sell or share your personal information with third parties for marketing purposes.\n\nData Security\n\nWe implement appropriate security measures to protect your personal information. All payment transactions are processed through secure payment gateways.\n\nContact Us\nIf you have any questions about this Privacy Policy, please contact us at wishliquor@outlook.com"
             },
             {
-              "0": "C",
-              "1": "o",
-              "2": "n",
-              "3": "t",
-              "4": "a",
-              "5": "c",
-              "6": "t",
-              "7": " ",
-              "8": "U",
-              "9": "s",
-              "label": "Terms and Conditions"
+              "label": "Terms and Conditions",
+              "content": "Terms and Conditions\n\nLast updated: January 2025\n\nGeneral\n\nBy accessing and using wishliquor.co, you agree to be bound by these Terms and Conditions. We reserve the right to modify these terms at any time.\n\nProducts & Pricing\n\nAll products are subject to availability. Prices are listed in USD and are subject to change without notice. We make every effort to ensure accurate product descriptions and pricing.\n\nAge Restriction\n\nYou must be of legal drinking age in your country of residence to purchase alcohol from this site. By placing an order, you confirm that you are of legal drinking age.\n\nInternational Orders\n\nWe only accept international orders. We do not deliver within Taiwan. All orders are shipped under DAP (Delivered At Place) terms.\n\nLimitation of Liability\n\nWish Liquor shall not be liable for any indirect, incidental, or consequential damages arising from the use of this website or our products.\n\nContact Us\nFor any questions about these Terms, please contact us at wishliquor@outlook.com"
             },
             {
               "label": "About Us",
-              "content": "Trading Name\n\"wishliquor.co\" and \"HERO LIQUOR\" are trading names of HERO LIQUOR CO., LTD.\n\nCompany Information\n\nCompany Name: HERO LIQUOR CO., LTD.\n\nUnified Business Number: 83120142\n\nDate of Incorporation: September 14, 2020\n\nRepresentative: LIN CHUANLUNG\n\nCompany Address: 1F., No. 72, Ln. 8, Xuetian Rd., Sanhe Vil., Wuri Dist., Taichung City 414010, Taiwan (R.O.C.)\n\nEmail: wishliquor@outlook.com\n\nContact Number: +886 988 368 626"
-            },
+              "content": "About Wish Liquor\n\nWelcome to wishliquor.co - your destination for premium whiskies curated from around the world.\n\nWe source and deliver exceptional spirits from Scotland, Japan, Taiwan, and beyond. Our mission is to bring rare and limited-edition bottlings to enthusiasts worldwide.\n\nFounded by whisky lovers, for whisky lovers. We work directly with distilleries and authorized retailers to ensure authenticity and quality.\n\nContact Us\nEmail: wishliquor@outlook.com\nUBN: 83120142"
+            }
+          ]
+        },
+        {
+          "title": "Contact",
+          "links": [
             {
               "label": "Contact Us",
-              "content": ""
+              "content": "Contact Us\n\nWe'd love to hear from you!\n\nFor inquiries about orders, products, or partnerships, please contact us:\n\nEmail: wishliquor@outlook.com\n\nWe typically respond within 1-2 business days.\n\nFor bulk orders or corporate inquiries, please include details about your requirements and we'll get back to you with a tailored quote."
+            },
+            {
+              "label": "Wish for It",
+              "content": "Wish for It\n\nCan't find what you're looking for? Tell us what you wish for!\n\nWe continuously source rare and limited-edition bottlings from around the world. If there's a specific whisky you're after, let us know and we'll do our best to make your wish come true.\n\nContact us at: wishliquor@outlook.com"
+            },
+            {
+              "label": "Corporate & Bulk",
+              "content": "Corporate & Bulk Orders\n\nWe offer special pricing for corporate events, gifting programs, and bulk purchases.\n\nBenefits include:\n- Volume discounts\n- Custom packaging options\n- Dedicated account manager\n- Flexible payment terms for qualified buyers\n\nContact us at wishliquor@outlook.com with your requirements for a tailored quote."
             }
           ]
         }
-      ]
+      ],
+      "modalWidth": 660,
+      "ubn": "83120142"
     },
     "content": {
       "pageTitle": "wishliquor.co Your Whiskey Wishes",
@@ -349,22 +344,23 @@
       "country",
       "brand",
       "volume"
-    ]
+    ],
+    "filterSidebarWidth": 230
   },
   "assignments": {
     "background": "general",
     "text": "primary",
     "cardBackground": "general",
     "cardBorder": "secondary",
-    "primary": "nav",
+    "primary": "visual",
     "secondary": "secondary",
     "accent": "buttons",
-    "navBackground": "nav",
+    "navBackground": "visual",
     "navText": "general",
-    "navHover": "nav",
+    "navHover": "secondary",
     "navDropdownBg": "secondary",
     "navDropdownText": "general",
-    "navDropdownHover": "secondary",
+    "navDropdownHover": "visual",
     "navDropdownLabel": "buttons",
     "buttonPrimary": "buttons",
     "footerBackground": "general",
@@ -372,18 +368,22 @@
     "footerMuted": "secondary",
     "heroBackground": "general",
     "heroText": "primary",
-    "heroAccent": "buttons"
+    "heroAccent": "buttons",
+    "filterClearText": "visual"
   },
   "blockColors": {
     "general": "#FFFFFF",
     "primary": "#0a0a0a",
     "secondary": "#6B7280",
     "accent": "#C9A227",
-    "nav": "#DC2626",
+    "visual": "#DC2626",
     "dropdown": "#DC2626",
     "buttons": "#C9A227",
     "footer": "#F9FAFB",
-    "hero": "#FFFFFF"
+    "hero": "#FFFFFF",
+    "clearall": "#DC2626",
+    "newblock": "#CCCCCC",
+    "newblock2": "#CCCCCC"
   },
   "blocks": [
     {
@@ -402,7 +402,7 @@
       "labelZh": "Gray"
     },
     {
-      "id": "nav",
+      "id": "visual",
       "label": "Visual",
       "labelZh": "Visual"
     },
@@ -841,7 +841,7 @@
       "label": "Brand",
       "values": [
         "Macallan",
-        "Glenfiddich",
+        "Johnnie Walker",
         "Yamazaki",
         "Kavalan",
         "Octomore",
@@ -852,13 +852,16 @@
         "W.L. Weller",
         "Jack Daniel's",
         "Omar",
-        "Hennessy"
+        "Hennessy",
+        "Ki No Bi"
       ]
     },
     {
       "id": "volume",
       "label": "Volume",
       "values": [
+        "50ml",
+        "180ml",
         "700ml",
         "750ml",
         "1000ml"

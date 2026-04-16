@@ -173,7 +173,7 @@ function loadFiltersFromStorage(): FilterOption[] {
 export default function AdminPage() {
   const { products, setProducts, filters, setFilters, isLoaded, settings } = useData()
   const [activeTab, setActiveTab] = useState<'products' | 'filters' | 'settings'>('products')
-  const [activeCategory, setActiveCategory] = useState<string>(settings?.navigation?.[0]?.label || '')
+  const [activeCategory, setActiveCategory] = useState<string>('Whisky')
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
   const [isAddingProduct, setIsAddingProduct] = useState(false)
   const [hasChanges, setHasChanges] = useState(false)

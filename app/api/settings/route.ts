@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { dataStore } from '../shared-data/store'
 
 export async function GET() {
-  return NextResponse.json(dataStore.getSettings())
+  return NextResponse.json(dataStore.getAll().settings)
 }
 
 export async function POST(request: Request) {

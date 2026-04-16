@@ -1,6 +1,8 @@
 import fs from 'fs'
 import path from 'path'
 import './globals.css'
+import { DataProvider } from './context/DataContext'
+import DocumentMeta from './components/DocumentMeta'
 
 const DATA_FILE = path.join(process.cwd(), '.wishliquor-data.json')
 
@@ -37,7 +39,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen">
-        {children}
+        <DataProvider>
+          <DocumentMeta />
+          {children}
+        </DataProvider>
       </body>
     </html>
   )

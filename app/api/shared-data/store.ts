@@ -34,7 +34,8 @@ export interface SiteSettings {
   colors: Record<string, string>
   hero: { title: string; subtitle: string; ctaText: string }
   navigation: Array<{ label: string; href?: string; enabled?: boolean; sub?: Array<{ label: string; href?: string; enabled?: boolean; sub?: Array<{ label: string; href: string; enabled?: boolean }> }> }>
-  footer: { brand: string; description: string; logoUrl: string; logoWidth: number; logoHeight: number; logoAspectLocked: boolean; copyright: string; columns: Array<{ title: string; links: Array<{ label: string; content: string }> }> }
+  footer: { brand: string; description: string; logoUrl: string; logoWidth: number; logoHeight: number; logoAspectLocked: boolean; copyright: string; columns: Array<{ title: string; links: Array<{ label: string; content: string }> }>; modalWidth?: number; ubn?: string }
+  filterSidebarWidth?: number
   countries: string[]
   brands: string[]
   categories: string[]
@@ -102,10 +103,29 @@ const defaultSettings: SiteSettings = {
     logoHeight: 40,
     logoAspectLocked: true,
     copyright: '© 2026 wishliquor.co All rights reserved.',
+    ubn: '83120142',
     columns: [
-      { title: 'Featured', links: ['Bars', 'The Whisky Map', 'Reviews', 'News', 'Events'] },
-      { title: 'Whisky Type', links: ['Single Malt', 'Sherry Cask', 'Peated', 'Bourbon Cask', 'Independent'] },
-      { title: 'About', links: ['Shipping', 'Privacy', 'Terms', 'About Us', 'Contact Us'] },
+      { title: 'Featured', links: [
+        { label: 'Bars', content: '' },
+        { label: 'The Whisky Map', content: '' },
+        { label: 'Reviews', content: '' },
+        { label: 'News', content: '' },
+        { label: 'Events', content: '' },
+      ] },
+      { title: 'Whisky Type', links: [
+        { label: 'Single Malt', content: '' },
+        { label: 'Sherry Cask', content: '' },
+        { label: 'Peated', content: '' },
+        { label: 'Bourbon Cask', content: '' },
+        { label: 'Independent', content: '' },
+      ] },
+      { title: 'About', links: [
+        { label: 'Shipping Policy', content: 'Shipping & Deliveries\n\nDelivery Scope & Lead Times\n\nDelivery Scope: We only accept international orders. We do not offer delivery within Taiwan.\nDispatch Time: All orders are generally dispatched within 1-2 business days, unless otherwise stated.\nInternational Rates: Shipping rates are calculated at checkout based on your delivery location and order weight.\n\nMarketplace & Partner Retailers\nSome products are shipped directly from our partner retailers.\nShipping Policies: Specific shipping policies are displayed under the "Add to Cart" button on each product page.\nSeparate Charges: Orders shipped from different retailers may incur separate shipping charges.\n\nPre-Sales & Exclusive Releases\nFor pre-sale events or exclusive bottlings, estimated dispatch dates will be clearly stated on the product page.\n\nFAQs\n\nWhere do we deliver?\nWe deliver to most residential or business addresses. If your country is not listed at checkout, please contact us at wishliquor@outlook.com for a quote.\n\nHow much is the fee and how long does it take?\nTotal delivery costs and estimated times depend on your location and weight, and will be displayed at checkout.\n\nHow do I track my order?\nYou will receive a tracking number and an email notification once your order is dispatched.\n\nWill I have to sign for my delivery?\nYes, a signature is required upon delivery. Persons ordering alcoholic beverages must be over the legal drinking age in their respective jurisdiction.\n\nContact Us\nFor any inquiries, please contact us at: wishliquor@outlook.com' },
+        { label: 'Privacy Policy', content: 'Privacy Policy\n\nLast updated: January 2025\n\nInformation We Collect\n\nWe collect information you provide directly to us, such as when you make a purchase, create an account, or contact us for support. This includes: name, email address, shipping address, billing address, and payment information.\n\nHow We Use Your Information\n\nWe use the information we collect to process transactions, send you order confirmations, and communicate with you about your orders. We do not sell or share your personal information with third parties for marketing purposes.\n\nData Security\n\nWe implement appropriate security measures to protect your personal information. All payment transactions are processed through secure payment gateways.\n\nContact Us\nIf you have any questions about this Privacy Policy, please contact us at wishliquor@outlook.com' },
+        { label: 'Terms and Conditions', content: 'Terms and Conditions\n\nLast updated: January 2025\n\nGeneral\n\nBy accessing and using wishliquor.co, you agree to be bound by these Terms and Conditions. We reserve the right to modify these terms at any time.\n\nProducts & Pricing\n\nAll products are subject to availability. Prices are listed in USD and are subject to change without notice. We make every effort to ensure accurate product descriptions and pricing.\n\nAge Restriction\n\nYou must be of legal drinking age in your country of residence to purchase alcohol from this site. By placing an order, you confirm that you are of legal drinking age.\n\nInternational Orders\n\nWe only accept international orders. We do not deliver within Taiwan. All orders are shipped under DAP (Delivered At Place) terms.\n\nLimitation of Liability\n\nWish Liquor shall not be liable for any indirect, incidental, or consequential damages arising from the use of this website or our products.\n\nContact Us\nFor any questions about these Terms, please contact us at wishliquor@outlook.com' },
+        { label: 'About Us', content: 'About Wish Liquor\n\nWelcome to wishliquor.co - your destination for premium whiskies curated from around the world.\n\nWe source and deliver exceptional spirits from Scotland, Japan, Taiwan, and beyond. Our mission is to bring rare and limited-edition bottlings to enthusiasts worldwide.\n\nFounded by whisky lovers, for whisky lovers. We work directly with distilleries and authorized retailers to ensure authenticity and quality.\n\nContact Us\nEmail: wishliquor@outlook.com\nUBN: 83120142' },
+        { label: 'Contact Us', content: 'Contact Us\n\nWe\'d love to hear from you!\n\nFor inquiries about orders, products, or partnerships, please contact us:\n\nEmail: wishliquor@outlook.com\n\nWe typically respond within 1-2 business days.\n\nFor bulk orders or corporate inquiries, please include details about your requirements and we\'ll get back to you with a tailored quote.' },
+      ] },
     ],
   },
   countries: ['Scotland', 'Japan', 'Taiwan', 'USA'],
@@ -113,6 +133,7 @@ const defaultSettings: SiteSettings = {
   categories: ['Single Malt', 'Blended', 'Bourbon', 'Rye', 'Cognac', 'Gin', 'Rum', 'Wine', 'Other'],
   volumes: ['50ml', '700ml', '750ml', '1000ml'],
   filterOrder: ['category', 'country', 'brand', 'volume'],
+  filterSidebarWidth: 256,
 }
 
 const defaultDesignData = {

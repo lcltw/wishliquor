@@ -29,7 +29,8 @@ interface SiteSettings {
     aboutTitle: string
     aboutText: string
   }
-  footer: { brand: string; description: string; logoUrl: string; logoWidth: number; logoHeight: number; logoAspectLocked: boolean; copyright: string; columns: Array<{ title: string; links: string[] }> }
+  footer: { brand: string; description: string; logoUrl: string; logoWidth: number; logoHeight: number; logoAspectLocked: boolean; copyright: string; columns: Array<{ title: string; links: string[] }>; modalWidth?: number; ubn?: string }
+  filterSidebarWidth?: number
   countries: string[]
   brands: string[]
   categories: string[]
@@ -60,6 +61,7 @@ const BLOCK_META: Record<string, { id: string; label: string; labelZh: string }>
   heroBackground: { id: 'hero',       label: 'Hero',       labelZh: 'Hero' },
   heroText:       { id: 'hero',       label: 'Hero',       labelZh: 'Hero' },
   heroAccent:     { id: 'hero',       label: 'Hero',       labelZh: 'Hero' },
+  filterClearText: { id: 'clearAll',   label: 'Clear All', labelZh: 'Clear All' },
 }
 
 // 顏色 key 用途對照表（用於提示）
@@ -86,6 +88,7 @@ const COLOR_KEY_HINTS: Record<string, string> = {
   heroBackground: 'Hero 區塊背景',
   heroText: 'Hero 標題文字',
   heroAccent: 'Hero 按鈕',
+  filterClearText: 'Clear All（清除所有）',
 }
 
 // 固定附掛在BLOCK_META的key（不可刪）
@@ -120,6 +123,7 @@ const defaultColors: Record<string, string> = {
   heroBackground: '#FFFFFF',
   heroText: '#333333',
   heroAccent: '#C9A227',
+  filterClearText: '#6B7280',
 }
 
 const defaultSettings: SiteSettings = {
@@ -184,6 +188,8 @@ const defaultBlocks: Block[] = [
   { id: 'buttons',  label: 'Buttons',    labelZh: 'Buttons' },
   { id: 'footer',   label: 'Footer',    labelZh: 'Footer' },
   { id: 'hero',     label: 'Hero',       labelZh: 'Hero' },
+  { id: 'filter',   label: 'Filter',    labelZh: 'Filter' },
+  { id: 'clearAll', label: 'Clear All', labelZh: 'Clear All' },
 ]
 
 const defaultAssignments: Record<string, string> = (() => {
@@ -321,7 +327,7 @@ export default function DesignClient({ initialData }: DesignClientProps) {
 
   const [activeTab, setActiveTab] = useState<'general' | 'colors' | 'hero' | 'navigation' | 'footer' | 'content'>('navigation')
   const [toast, setToast] = useState('')
-
+  const [filterSidebarWidth, setFilterSidebarWidth] = useState(settings.filterSidebarWidth || 256)
   // 動態區塊列表
   const [blocks, setBlocks] = useState<Block[]>(() => {
     if (initialData?.blocks?.length) return initialData.blocks
@@ -383,6 +389,9 @@ export default function DesignClient({ initialData }: DesignClientProps) {
     if (savedBlocks) {
       try { setBlocks(JSON.parse(savedBlocks)) } catch {}
     }
+
+
+
     // Note: no API fetch here — useState initializers already have correct server disk data
     setInitialLoadComplete(true)
   }, [])
@@ -428,7 +437,12 @@ export default function DesignClient({ initialData }: DesignClientProps) {
     const colors: Record<string, string> = {}
     FIXED_KEYS.forEach(key => {
       const blockId = currentAssignments[key]
-      colors[key] = currentBlockColors[blockId] || '#CCCCCC'
+      if (blockId === 'clearAll' && currentBlockColors['clearAll']) {
+        // clearAll block: always use its block color directly
+        colors[key] = currentBlockColors['clearAll']
+      } else {
+        colors[key] = currentBlockColors[blockId] || '#CCCCCC'
+      }
     })
 
     const newSettings = {
@@ -482,7 +496,7 @@ export default function DesignClient({ initialData }: DesignClientProps) {
 
   const handleBlockDrop = (blockId: string) => {
     if (!draggingKey) return
-    const blockLabel = blocksRef.current.find((b: Block) => b.id !== blockId)?.labelZh || blockId
+    const blockLabel = blocksRef.current.find((b: Block) => b.id === blockId)?.labelZh || blockId
     setAssignments(prev => ({ ...prev, [draggingKey]: blockId }))
     showToast(`「${draggingKey}」已移至 ${blockLabel}`)
     setDraggingKey(null)
@@ -503,7 +517,27 @@ export default function DesignClient({ initialData }: DesignClientProps) {
   }
 
   const saveEditBlock = (blockId: string) => {
-    setBlocks(prev => prev.map(b => b.id === blockId ? { ...b, label: editingBlockName, labelZh: editingBlockName } : b))
+    const newId = editingBlockName.toLowerCase().replace(/\s+/g, '')
+    if (newId !== blockId) {
+      // ID changed — migrate all references
+      setBlocks(prev => prev.map(b => b.id === blockId ? { ...b, id: newId, label: editingBlockName, labelZh: editingBlockName } : b))
+      // Update assignments: old blockId → newId
+      setAssignments(prev => {
+        const next: Record<string, string> = {}
+        Object.entries(prev).forEach(([k, v]) => { next[k] = v === blockId ? newId : v })
+        return next
+      })
+      // Update blockColors: rename key
+      setBlockColors(prev => {
+        const next: Record<string, string> = {}
+        Object.entries(prev).forEach(([k, v]) => { next[k === blockId ? newId : k] = v })
+        return next
+      })
+      showToast(`已更新為「${editingBlockName}」`)
+    } else {
+      // Just rename label
+      setBlocks(prev => prev.map(b => b.id === blockId ? { ...b, label: editingBlockName, labelZh: editingBlockName } : b))
+    }
     setEditingBlockId(null)
   }
 
@@ -515,16 +549,19 @@ export default function DesignClient({ initialData }: DesignClientProps) {
       return next
     })
     setBlocks(prev => prev.filter(b => b.id !== blockId))
-    showToast('區塊已刪除')
+    showToast('Block 已刪除')
   }
 
   const addBlock = () => {
     const id = 'custom_' + Date.now()
-    const newBlock: Block = { id, label: 'New Block', labelZh: 'New Block' }
+    const existingNewBlocks = blocks.filter(b => b.labelZh.startsWith('New Block')).length
+    const nextNum = existingNewBlocks + 1
+    const label = nextNum === 1 ? 'New Block' : `New Block ${nextNum}`
+    const newBlock: Block = { id, label, labelZh: label }
     setBlocks(prev => [...prev, newBlock])
     setBlockColors(prev => ({ ...prev, [id]: '#CCCCCC' }))
     setEditingBlockId(id)
-    setEditingBlockName('New Block')
+    setEditingBlockName(label)
   }
 
   // 根據 assignments 分組
@@ -583,7 +620,7 @@ export default function DesignClient({ initialData }: DesignClientProps) {
             {/* Colors Tab */}
             {activeTab === 'colors' && (
               <div className="space-y-3">
-                <p className="text-xs text-gray-500 mb-2">拖移細項到不同區塊，即可將該細項的顏色切換為目標區塊的顏色。</p>
+                <p className="text-xs text-gray-500 mb-2">拖移 Color Key 到不同 Block，即可將該 Color Key 的顏色切換為目標 Block 的顏色。</p>
 
                 {/* Dynamic Blocks */}
                 {keysByBlock.map(block => (
@@ -637,7 +674,7 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                       <button
                         onClick={() => deleteBlock(block.id)}
                         className="p-1 text-gray-400 hover:text-red-500 transition-colors"
-                        title="刪除區塊"
+                        title="刪除 Block"
                       >
                         <Icons.Trash />
                       </button>
@@ -655,14 +692,14 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                             }`}
                           draggable
                           onDragStart={() => handleKeyDragStart(key)}
-                          title={`${key}：${COLOR_KEY_HINTS[key] || '點擊拖移到其他區塊'}`}
+                          title={`${key}：${COLOR_KEY_HINTS[key] || '拖移到其他 Block'}`}
                         >
                           <div className="w-3 h-3 border border-gray-300 rounded-full flex-shrink-0" style={{ backgroundColor: blockColors[block.id] || '#CCCCCC' }} />
                           <span>{key}</span>
                         </div>
                       ))}
                       {block.keys.length === 0 && (
-                        <p className="text-xs text-gray-400 italic py-1">拖移細項到這裡</p>
+                        <p className="text-xs text-gray-400 italic py-1">拖移 Color Key 到這裡</p>
                       )}
                     </div>
                   </div>
@@ -673,13 +710,13 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                   onClick={addBlock}
                   className="w-full py-2.5 border-2 border-dashed border-gray-300 text-gray-500 hover:border-amber-400 hover:text-amber-600 transition-colors flex items-center justify-center gap-2 text-sm font-medium rounded-lg"
                 >
-                  <Icons.Plus /> 新增區塊
+                  <Icons.Plus /> 新增 Block
                 </button>
 
                 {/* Drag hint */}
                 <div className="p-3 bg-amber-50 border border-amber-200 rounded">
                   <p className="text-xs text-amber-800 font-medium mb-1">💡 拖移說明</p>
-                  <p className="text-xs text-amber-700">拖移任一細項標籤（如 primary）到其他區塊，該細項就會套用該區塊的統一顏色。點擊區塊名稱可重新命名。按 💾 儲存。</p>
+                  <p className="text-xs text-amber-700">拖移任一 Color Key 標籤（如 primary）到其他 Block，該 Color Key 就會套用該 Block 的統一顏色。點擊 Block 名稱可重新命名。按 💾 儲存。</p>
                 </div>
               </div>
             )}
@@ -711,12 +748,12 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                           const data = await res.json()
                           if (data.url) {
                             setSettings(prev => ({ ...prev, logoUrl: data.url }))
-                            showToast('✅ Logo 已上傳！')
+                            showToast('Logo 已上傳！')
                           } else {
-                            showToast('❌ 上傳失敗：' + data.error)
+                            showToast('上傳失敗：' + data.error)
                           }
                         } catch {
-                          showToast('❌ 上傳失敗')
+                          showToast('上傳失敗')
                         }
                       }} />
                     </label>
@@ -732,11 +769,7 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                   <input type="email" value={settings.contactEmail} onChange={(e) => { setSettings(prev => ({ ...prev, contactEmail: e.target.value })); }}
                     className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500" />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">UBN</label>
-                  <input type="text" value={settings.ubn} onChange={(e) => { setSettings(prev => ({ ...prev, ubn: e.target.value })); }}
-                    className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500" />
-                </div>
+
               </div>
             )}
 
@@ -767,6 +800,13 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                 <p className="text-xs text-gray-500">Layer 1 / 2 / 3 三層導航編輯器</p>
 
                 {/* Filter Section Editors — ordered by filterOrder, draggable */}
+                <div className="flex items-center gap-3 mb-2 px-2 py-1.5 bg-gray-100 rounded-lg">
+                  <span className="text-xs text-gray-500">側邊欄寬度：</span>
+                  <input type="number" value={settings.filterSidebarWidth || 256}
+                    onChange={(e) => { const v = Math.min(400, Math.max(200, Number(e.target.value))); setSettings(prev => ({ ...prev, filterSidebarWidth: v })); setFilterSidebarWidth(v); }}
+                    className="w-20 px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:border-amber-400" />
+                  <span className="text-xs text-gray-500">px</span>
+                </div>
                 {/* Countries Editor */}
                 <FilterEditor section="country" label="Countries（國家選項）" items={settings.countries || []}
                   bg="bg-amber-50" border="border-amber-200" text="text-amber-700"
@@ -977,12 +1017,12 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                           const data = await res.json()
                           if (data.url) {
                             setSettings(prev => ({ ...prev, footer: { ...prev.footer, logoUrl: data.url } }))
-                            showToast('✅ Logo 已上傳！')
+                            showToast('Logo 已上傳！')
                           } else {
-                            showToast('❌ 上傳失敗：' + data.error)
+                            showToast('上傳失敗：' + data.error)
                           }
                         } catch {
-                          showToast('❌ 上傳失敗')
+                          showToast('上傳失敗')
                         }
                       }} />
                     </label>
@@ -1002,7 +1042,7 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                             ? <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                             : <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
                           }
-                          {settings?.footer?.logoAspectLocked ? '鎖定' : '解鎖'}
+                          {settings?.footer?.logoAspectLocked ? '比例鎖定' : '比例解鎖'}
                         </button>
                       </div>
                       <div className="flex gap-3">
@@ -1071,8 +1111,16 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <label className="block text-sm font-medium text-gray-700">Footer 欄位（分層）</label>
-                    <button onClick={() => { setSettings(prev => ({ ...prev, footer: { ...prev.footer, columns: [...(prev.footer.columns || []), { title: 'New Column', links: [{ label: 'New Link', content: '' }] }] } })); showToast('已新增欄位') }}
+                    <button onClick={() => { setSettings(prev => { const cols = [...(prev.footer.columns || [])]; const nextNum = cols.length + 1; return { ...prev, footer: { ...prev.footer, columns: [...cols, { title: `New Column ${nextNum}`, links: [{ label: `New Link ${nextNum}-1`, content: '' }] }] } }; }); showToast('已新增欄位') }}
                       className="px-3 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded hover:bg-amber-200 transition-colors">+ 新增欄位</button>
+                  </div>
+                  {/* L2 編輯彈窗寬度調整 */}
+                  <div className="flex items-center gap-3 mb-2 px-2 py-1.5 bg-gray-100 rounded-lg">
+                    <span className="text-xs text-gray-500">彈窗寬度：</span>
+                    <input type="number" value={settings.footer.modalWidth || 600}
+                      onChange={(e) => { const v = Math.min(900, Math.max(400, Number(e.target.value))); setSettings(prev => ({ ...prev, footer: { ...prev.footer, modalWidth: v } })); }}
+                      className="w-20 px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:border-amber-400" />
+                    <span className="text-xs text-gray-500">px</span>
                   </div>
                   <div className="space-y-4">
                     {(settings?.footer?.columns || []).map((col, ci) => (
@@ -1081,7 +1129,12 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center gap-2">
                             <span className="text-xs text-gray-400 font-medium">L1</span>
-                            <span className="text-sm font-semibold text-gray-700">{col.title}</span>
+                            <input
+                              type="text"
+                              value={col.title}
+                              onChange={(e) => { setSettings(prev => { const cols = [...(prev.footer.columns || [])]; cols[ci] = { ...cols[ci], title: e.target.value }; return { ...prev, footer: { ...prev.footer, columns: cols } }; }); }}
+                              className="flex-1 px-2 py-1 text-sm font-semibold border border-gray-200 rounded focus:outline-none focus:border-amber-400"
+                            />
                           </div>
                           <button onClick={() => { setSettings(prev => { const cols = [...(prev.footer.columns || [])]; cols.splice(ci, 1); return { ...prev, footer: { ...prev.footer, columns: cols } }; }); showToast('欄位已移除') }}
                             className="px-2 py-1.5 text-gray-400 hover:text-red-500 transition-colors"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
@@ -1104,13 +1157,20 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                                   className="ml-1 text-gray-400 hover:text-red-500 transition-colors"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
                               </button>
                             ))}
-                            <button onClick={() => { setSettings(prev => { const cols = [...(prev.footer.columns || [])]; const newLinks = [...(cols[ci].links || [])]; newLinks.push({ label: 'New Link', content: '' }); cols[ci] = { ...cols[ci], links: newLinks }; return { ...prev, footer: { ...prev.footer, columns: cols } }; }); showToast('已新增連結') }}
+                            <button onClick={() => { setSettings(prev => { const cols = [...(prev.footer.columns || [])]; const newLinks = [...(cols[ci].links || [])]; const nextLinkNum = newLinks.length + 1; newLinks.push({ label: `New Link ${ci + 1}-${nextLinkNum}`, content: '' }); cols[ci] = { ...cols[ci], links: newLinks }; return { ...prev, footer: { ...prev.footer, columns: cols } }; }); showToast('已新增連結') }}
                               className="px-2.5 py-1.5 border border-dashed border-gray-300 text-gray-400 text-xs rounded-lg hover:border-amber-400 hover:text-amber-600 transition-colors">+</button>
                           </div>
                         </div>
                       </div>
                     ))}
                   </div>
+                </div>
+
+                {/* UBN */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">UBN</label>
+                  <input type="text" value={settings.footer.ubn || ''} onChange={(e) => { setSettings(prev => ({ ...prev, footer: { ...prev.footer, ubn: e.target.value } })); }}
+                    className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500" />
                 </div>
 
                 {/* Copyright */}
@@ -1290,14 +1350,14 @@ export default function DesignClient({ initialData }: DesignClientProps) {
               exit={{ opacity: 0 }}
               className="fixed inset-0 z-50 flex items-center justify-center p-4"
               style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
-              onClick={(e) => { if (e.target === e.currentTarget) setFooterLinksModal(null) }}
             >
               <motion.div
                 initial={{ scale: 0.95, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.95, opacity: 0 }}
-                className="relative w-full max-w-md rounded-xl shadow-2xl overflow-hidden"
-                style={{ backgroundColor: s.background || '#ffffff' }}
+                className="relative rounded-none shadow-2xl overflow-hidden"
+                style={{ backgroundColor: s.background || '#ffffff', width: settings.footer.modalWidth || 600, maxWidth: '90vw', maxHeight: '85vh', display: 'flex', flexDirection: 'column' }}
+                onClick={(e) => e.stopPropagation()}
               >
                 {/* Close button */}
                 <button
@@ -1309,7 +1369,7 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                 </button>
 
                 {/* Modal body */}
-                <div className="p-6 md:p-8 flex flex-col justify-center">
+                <div className="p-6 md:p-8 flex flex-col justify-center overflow-y-auto">
                   {/* L2 Label */}
                   <div className="mb-4">
                     <label className="block text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: s.primary || '#DC2626' }}>L2 標題</label>
@@ -1319,15 +1379,24 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                       style={{ borderColor: s.primary || '#DC2626', color: s.text }} />
                   </div>
 
-                  {/* L2 Content */}
-                  <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: s.primary || '#DC2626' }}>內文</label>
-                    <textarea value={linkItem?.content || ''}
-                      onChange={(e) => { setSettings(prev => { const cols = [...(prev.footer.columns || [])]; const newLinks = [...(cols[colIndex].links || [])]; newLinks[linkIndex] = { ...newLinks[linkIndex], content: e.target.value }; cols[colIndex] = { ...cols[colIndex], links: newLinks }; return { ...prev, footer: { ...prev.footer, columns: cols } }; }); }}
-                      rows={12}
-                      className="w-full px-3 py-2.5 border rounded-lg text-sm outline-none resize-none leading-relaxed"
-                      style={{ borderColor: s.cardBorder || '#D1D5DB', color: s.text }} />
-                  </div>
+      {/* Rich Text Editor Toolbar */}
+      <div className="flex items-center gap-1 mb-2 p-2 border rounded-lg" style={{ borderColor: s.cardBorder || '#D1D5DB', backgroundColor: s.cardBackground || '#F9FAFB' }}>
+        <button type="button" onClick={() => document.execCommand('bold', false)} className="p-1.5 rounded hover:bg-gray-200 font-bold" title="粗體">B</button>
+        <button type="button" onClick={() => document.execCommand('italic', false)} className="p-1.5 rounded hover:bg-gray-200 italic" title="斜體">I</button>
+        <button type="button" onClick={() => document.execCommand('underline', false)} className="p-1.5 rounded hover:bg-gray-200 underline" title="底線">U</button>
+        <div className="w-px h-6 bg-gray-300 mx-1" />
+        <input type="color" id="rt-color-picker" className="w-8 h-8 rounded cursor-pointer" title="文字顏色" defaultValue="#000000" onChange={(e) => document.execCommand('foreColor', false, e.target.value)} />
+        <button type="button" onClick={() => { const url = prompt('輸入連結網址:'); if (url) document.execCommand('createLink', false, url); }} className="p-1.5 rounded hover:bg-gray-200" title="加入連結">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 256 256" fill="currentColor"><path d="M137.54,186.36a8,8,0,0,1,0,11.31l-9.94,10A56,56,0,0,1,48.38,128.4L72.5,104.28A56,56,0,0,1,149.31,102a8,8,0,1,1-10.64,12,40,40,0,0,0-54.85,1.63L59.7,139.72a40,40,0,0,0,56.58,56.58l9.94-9.94A8,8,0,0,1,137.54,186.36Zm70.08-138a56.08,56.08,0,0,0-79.22,0l-9.94,9.95a8,8,0,0,0,11.32,11.31l9.94-9.94a40,40,0,0,1,56.58,56.58L172.18,140a40,40,0,0,1-54.85,1.63,8,8,0,1,0-10.64,12,56,56,0,0,0,76.81-2.63l24.12-24.12A56.08,56.08,0,0,0,207.62,48.38Z"/></svg>
+        </button>
+      </div>
+      {/* Rich Text Area */}
+      <div
+        ref={(el) => { if (el) { el.innerHTML = linkItem?.content || ''; el.addEventListener('input', () => { setSettings(prev => { const cols = [...(prev.footer.columns || [])]; const newLinks = [...(cols[colIndex].links || [])]; newLinks[linkIndex] = { ...newLinks[linkIndex], content: el.innerHTML }; cols[colIndex] = { ...cols[colIndex], links: newLinks }; return { ...prev, footer: { ...prev.footer, columns: cols } }; }); }); el.contentEditable = 'true'; }}}
+        className="w-full min-h-[200px] max-h-60 px-3 py-2.5 border rounded-lg text-sm outline-none leading-relaxed overflow-y-auto"
+        style={{ borderColor: s.cardBorder || '#D1D5DB', color: s.text }}
+        suppressContentEditableWarning
+      />
                 </div>
               </motion.div>
             </motion.div>

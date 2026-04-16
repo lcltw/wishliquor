@@ -1,0 +1,888 @@
+{
+  "settings": {
+    "siteName": "wishliquor.co",
+    "logo": "W",
+    "logoUrl": "/Logo.png",
+    "contactEmail": "wishliquor@outlook.com",
+    "ubn": "83120142",
+    "colors": {
+      "background": "#FFFFFF",
+      "text": "#0a0a0a",
+      "cardBackground": "#FFFFFF",
+      "cardBorder": "#6B7280",
+      "primary": "#DC2626",
+      "secondary": "#6B7280",
+      "accent": "#C9A227",
+      "navBackground": "#DC2626",
+      "navText": "#FFFFFF",
+      "navHover": "#6B7280",
+      "navDropdownBg": "#6B7280",
+      "navDropdownText": "#FFFFFF",
+      "navDropdownHover": "#DC2626",
+      "navDropdownLabel": "#C9A227",
+      "buttonPrimary": "#C9A227",
+      "footerBackground": "#FFFFFF",
+      "footerText": "#C9A227",
+      "footerMuted": "#6B7280",
+      "heroBackground": "#FFFFFF",
+      "heroText": "#0a0a0a",
+      "heroAccent": "#C9A227",
+      "filterClearText": "#DC2626"
+    },
+    "hero": {
+      "title": "Internal testing",
+      "subtitle": "Coming soon",
+      "ctaText": "Shop Now"
+    },
+    "navigation": [
+      {
+        "label": "Whisky",
+        "href": "",
+        "sub": [
+          {
+            "label": "Scotland",
+            "sub": [
+              {
+                "label": "Macallan",
+                "href": ""
+              },
+              {
+                "label": "Octomore",
+                "href": ""
+              },
+              {
+                "label": "Johnnie Walker",
+                "href": ""
+              },
+              {
+                "label": "Royal Salute",
+                "href": ""
+              },
+              {
+                "label": "Balvenie",
+                "href": ""
+              }
+            ]
+          },
+          {
+            "label": "Japan",
+            "sub": [
+              {
+                "label": "Yamazaki",
+                "href": ""
+              },
+              {
+                "label": "Hakushu",
+                "href": ""
+              },
+              {
+                "label": "Hibiki",
+                "href": ""
+              }
+            ]
+          },
+          {
+            "label": "USA",
+            "sub": [
+              {
+                "label": "W.L. Weller",
+                "href": ""
+              },
+              {
+                "label": "Jack Daniel's",
+                "href": ""
+              }
+            ]
+          },
+          {
+            "label": "Taiwan",
+            "sub": [
+              {
+                "label": "Kavalan",
+                "href": ""
+              },
+              {
+                "label": "Omar",
+                "href": ""
+              },
+              {
+                "label": "Grainvest",
+                "href": ""
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "label": "Brandy",
+        "href": "",
+        "sub": [
+          {
+            "label": "France",
+            "sub": [
+              {
+                "label": "Hennessy",
+                "href": ""
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "label": "Rum",
+        "href": "",
+        "sub": [
+          {
+            "label": "Taiwan",
+            "sub": [
+              {
+                "label": "TTL",
+                "href": ""
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "label": "Gin",
+        "href": "",
+        "sub": [
+          {
+            "label": "Japanese",
+            "sub": [
+              {
+                "label": "Ki No Bi",
+                "href": ""
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "label": "Baijiu",
+        "href": "",
+        "sub": [
+          {
+            "label": "Taiwan",
+            "sub": [
+              {
+                "label": "Kinmen",
+                "href": ""
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "label": "Wine",
+        "href": "",
+        "sub": [
+          {
+            "label": "Taiwan",
+            "sub": [
+              {
+                "label": "Shu Sheug",
+                "href": ""
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "label": "Goods",
+        "href": "",
+        "sub": [
+          {
+            "label": "Drinkware",
+            "sub": [
+              {
+                "label": "Glass",
+                "href": ""
+              }
+            ]
+          },
+          {
+            "label": "Other",
+            "sub": [
+              {
+                "label": "Gifts",
+                "href": ""
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "label": "Contact",
+        "href": "",
+        "enabled": false
+      }
+    ],
+    "footer": {
+      "brand": "wishliquor.co",
+      "description": "Premium whiskies curated from around the world.",
+      "featuredLinks": [
+        "Bars",
+        "The Whisky Map",
+        "Reviews",
+        "News",
+        "Events"
+      ],
+      "whiskyTypes": [
+        "Single Malt",
+        "Sherry Cask",
+        "Peated",
+        "Bourbon Cask",
+        "Independent"
+      ],
+      "aboutLinks": [
+        "Shipping",
+        "Privacy",
+        "Terms",
+        "About Us",
+        "Contact Us"
+      ],
+      "copyright": "© 2026 wishliquor.co All rights reserved.",
+      "logoUrl": "/uploads/logo-1776018088897.png",
+      "logoWidth": 360,
+      "logoHeight": 120,
+      "logoAspectLocked": true,
+      "columns": [
+        {
+          "title": "About",
+          "links": [
+            {
+              "label": "Shipping Policy",
+              "content": "１２３\n"
+            },
+            {
+              "label": "Privacy Policy",
+              "content": ""
+            },
+            {
+              "label": "Terms and Conditions",
+              "content": ""
+            },
+            {
+              "label": "About Us",
+              "content": ""
+            }
+          ]
+        },
+        {
+          "title": "Contact",
+          "links": [
+            {
+              "label": "Contact Us",
+              "content": ""
+            },
+            {
+              "label": "Wish for It",
+              "content": ""
+            },
+            {
+              "label": "Corporate & Bulk",
+              "content": ""
+            }
+          ]
+        }
+      ]
+    },
+    "content": {
+      "pageTitle": "wishliquor.co Your Whiskey Wishes",
+      "pageDescription": "Find the dram you've been wishing for",
+      "featuredTitle": "Featured Products",
+      "featuredSubtitle": "From your Wishlist to your Collection",
+      "aboutTitle": "About Us",
+      "aboutText": "Wishliquor.co curates the finest whiskies from Scotland, Japan, Taiwan and beyond — delivered straight to your door."
+    },
+    "countries": [
+      "Scotland",
+      "Japan",
+      "Taiwan",
+      "USA",
+      "France"
+    ],
+    "brands": [
+      "Macallan",
+      "Johnnie Walker",
+      "Yamazaki",
+      "Kavalan",
+      "Octomore",
+      "Hibiki",
+      "Hakushu",
+      "Glenlivet",
+      "Talisker",
+      "W.L. Weller",
+      "Jack Daniel's",
+      "Omar",
+      "Hennessy",
+      "Ki No Bi"
+    ],
+    "categories": [
+      "Single Malt",
+      "Blended",
+      "Bourbon",
+      "Rye",
+      "Gin",
+      "Rum",
+      "Wine",
+      "Cognac",
+      "Other"
+    ],
+    "volumes": [
+      "50ml",
+      "180ml",
+      "700ml",
+      "750ml",
+      "1000ml"
+    ],
+    "filterOrder": [
+      "category",
+      "country",
+      "brand",
+      "volume"
+    ]
+  },
+  "assignments": {
+    "background": "general",
+    "text": "primary",
+    "cardBackground": "general",
+    "cardBorder": "secondary",
+    "primary": "visual",
+    "secondary": "secondary",
+    "accent": "buttons",
+    "navBackground": "visual",
+    "navText": "general",
+    "navHover": "secondary",
+    "navDropdownBg": "secondary",
+    "navDropdownText": "general",
+    "navDropdownHover": "visual",
+    "navDropdownLabel": "buttons",
+    "buttonPrimary": "buttons",
+    "footerBackground": "general",
+    "footerText": "buttons",
+    "footerMuted": "secondary",
+    "heroBackground": "general",
+    "heroText": "primary",
+    "heroAccent": "buttons",
+    "filterClearText": "visual"
+  },
+  "blockColors": {
+    "general": "#FFFFFF",
+    "primary": "#0a0a0a",
+    "secondary": "#6B7280",
+    "accent": "#C9A227",
+    "visual": "#DC2626",
+    "dropdown": "#DC2626",
+    "buttons": "#C9A227",
+    "footer": "#F9FAFB",
+    "hero": "#FFFFFF",
+    "clearall": "#DC2626",
+    "newblock": "#CCCCCC",
+    "newblock2": "#CCCCCC"
+  },
+  "blocks": [
+    {
+      "id": "general",
+      "label": "White",
+      "labelZh": "White"
+    },
+    {
+      "id": "primary",
+      "label": "Black",
+      "labelZh": "Black"
+    },
+    {
+      "id": "secondary",
+      "label": "Gray",
+      "labelZh": "Gray"
+    },
+    {
+      "id": "visual",
+      "label": "Visual",
+      "labelZh": "Visual"
+    },
+    {
+      "id": "buttons",
+      "label": "Buttons",
+      "labelZh": "Buttons"
+    }
+  ],
+  "products": [
+    {
+      "id": 1,
+      "name": "Litha",
+      "brand": "Macallan",
+      "country": "Scotland",
+      "category": "Single Malt",
+      "age": "",
+      "volume": "700ml",
+      "price": 199,
+      "img": "https://lh3.googleusercontent.com/u/0/d/1eT3q5HN78AfDxp4idNeC8LxSkl8V9N0q",
+      "description": "Rich sherry cask maturation with notes of dried fruits, chocolate, and oak.",
+      "alcohol": "40",
+      "stock": 1,
+      "barcode": "5010314312169"
+    },
+    {
+      "id": 2,
+      "name": "Boutique Collection 2020 Release",
+      "brand": "Macallan",
+      "country": "Scotland",
+      "category": "Single Malt",
+      "age": "",
+      "volume": "700ml",
+      "price": 499,
+      "img": "https://lh3.googleusercontent.com/u/0/d/1FLS3LI1ww0HdHTlbjOcuJYbCxl0Zxk2j",
+      "description": "Complex and elegant with rich dried fruits, spices, and chocolate orange.",
+      "alcohol": "52",
+      "stock": 1
+    },
+    {
+      "id": 3,
+      "name": "Small Batch Collection Batch 5 Taiwan Exclusive",
+      "brand": "Royal Salute",
+      "country": "Scotland",
+      "category": "Blended",
+      "age": "25 Years Old",
+      "volume": "700ml",
+      "price": 288,
+      "img": "https://lh3.googleusercontent.com/u/0/d/1p57BGK41uyZDsS9TUz9BXyEJGJnSu99i",
+      "description": "",
+      "alcohol": "40",
+      "stock": 1
+    },
+    {
+      "id": 4,
+      "name": "2012 Single Cask Taiwan Exclusive",
+      "brand": "Octomore",
+      "country": "Scotland",
+      "category": "Single Malt",
+      "age": "12 Years Old",
+      "volume": "700ml",
+      "price": 299,
+      "img": "https://lh3.googleusercontent.com/u/0/d/164F013s_83J-DlVbB_GKbx8TxQTFB1HW",
+      "description": "Heavy peat and exceptional balance. 167ppm ",
+      "alcohol": "58.5",
+      "stock": 1
+    },
+    {
+      "id": 5,
+      "name": "Story of the Distillery 2025 Edition",
+      "brand": "Yamazaki",
+      "country": "Japan",
+      "category": "Single Malt",
+      "age": "",
+      "volume": "700ml",
+      "price": 199,
+      "img": "https://lh3.googleusercontent.com/u/0/d/1hkLPTMM91Xel_ecp7ffGFPdI-fRZqesI",
+      "description": "Delicate and complex with citrus, grapefruit, and Japanese oak notes.",
+      "alcohol": "43",
+      "stock": 1
+    },
+    {
+      "id": 6,
+      "name": "Limtied Edition",
+      "brand": "Yamazaki",
+      "country": "Japan",
+      "category": "Single Malt",
+      "age": "18 Years Old",
+      "volume": "700ml",
+      "price": 399,
+      "img": "https://lh3.googleusercontent.com/u/0/d/1r4AuwrVeyNDp8K1X8NDkRNvbeEmtIhVH",
+      "description": "",
+      "alcohol": "43",
+      "stock": 1
+    },
+    {
+      "id": 7,
+      "name": "100th Anniversary Wooden Box",
+      "brand": "Hibiki",
+      "country": "Japan",
+      "category": "Blended",
+      "age": "",
+      "volume": "700ml",
+      "price": 459,
+      "img": "https://lh3.googleusercontent.com/u/0/d/1TyCVq4D8dko3tZuVYcFJ6xgQdTp_7nfH",
+      "description": "Harmonious blend with aged grain and malt, offering dried fruit and honey.",
+      "alcohol": "43",
+      "stock": 1
+    },
+    {
+      "id": 8,
+      "name": "Story of the Distillery 2025 Edition",
+      "brand": "Hakushu",
+      "country": "Japan",
+      "category": "Single Malt",
+      "age": "12 Years Old",
+      "volume": "700ml",
+      "price": 189,
+      "img": "https://lh3.googleusercontent.com/u/0/d/1U1tJkI-dyWw-yK5mJPm8oKzsRWCBI9_5",
+      "description": "Fresh and herbal with notes of grapefruit, pear, and subtle peat.",
+      "alcohol": "43",
+      "stock": 1
+    },
+    {
+      "id": 9,
+      "name": "Blue Label Galloping Glory (Year of the Horse) Special Edition",
+      "brand": "Johnnie Walker",
+      "country": "Scotland",
+      "category": "Blended",
+      "age": "",
+      "volume": "750ml",
+      "price": 200,
+      "img": "https://lh3.googleusercontent.com/u/0/d/1MfCqLv5hzNeMNxsI95vdEw-xuYc7V3h8",
+      "description": "Smooth and fruity with notes of tropical fruits, vanilla, and oak.",
+      "alcohol": "40",
+      "stock": 10,
+      "barcode": "5000267201351"
+    },
+    {
+      "id": 10,
+      "name": "Solist Oloroso Port Single Cask",
+      "brand": "Kavalan",
+      "country": "Taiwan",
+      "category": "Single Malt",
+      "age": "",
+      "volume": "700ml",
+      "price": 69,
+      "img": "https://lh3.googleusercontent.com/u/0/d/1XISIPQbAky-8bh55vbfrE6optPNHsHfh",
+      "description": "Light and refreshing with citrus, honey, and gentle spices.",
+      "alcohol": "57.8",
+      "stock": 1
+    },
+    {
+      "id": 11,
+      "name": "Virgin Oak",
+      "brand": "Omar",
+      "country": "Taiwan",
+      "category": "Single Malt",
+      "age": "NAS",
+      "volume": "700ml",
+      "price": 99,
+      "img": "https://lh3.googleusercontent.com/u/0/d/1txWR-4GW7ZPRCmM4R2cl38Xzudxzv5Ln",
+      "description": "",
+      "alcohol": "43",
+      "stock": 1
+    },
+    {
+      "id": 12,
+      "name": "Year of the Snake Taiwan Exclusive",
+      "brand": "W.L. Weller",
+      "country": "USA",
+      "category": "Bourbon",
+      "age": "12 Years Old",
+      "volume": "750ml",
+      "price": 79,
+      "img": "https://lh3.googleusercontent.com/u/0/d/1jTtIJI6C9UA-Dulpli7HY3uN0nyGuKaI",
+      "description": "Sweet and smooth with notes of caramel, vanilla, and wheat.",
+      "alcohol": "45",
+      "stock": 1
+    },
+    {
+      "id": 13,
+      "name": "No.7 Limited Edition",
+      "brand": "Jack Daniel's",
+      "country": "USA",
+      "category": "Bourbon",
+      "age": "",
+      "volume": "700ml",
+      "price": 59,
+      "img": "https://lh3.googleusercontent.com/u/0/d/1Mb-VZUMCFpJIVWSMO4fPWrvQsrT8sJWk",
+      "description": "",
+      "alcohol": "40",
+      "stock": 1
+    },
+    {
+      "id": 14,
+      "name": "Millet Bourbon Cask",
+      "brand": "Glenlivet",
+      "country": "Taiwan",
+      "category": "Single Malt",
+      "age": "",
+      "volume": "700ml",
+      "price": 149,
+      "img": "https://lh3.googleusercontent.com/u/0/d/1DNRJYJTziw08HxDb5vSNMZ7nV4oZ6Qut",
+      "description": "",
+      "alcohol": "52.5",
+      "stock": 1
+    },
+    {
+      "id": 15,
+      "name": "Moscatel Cask Taiwan Exclusive",
+      "brand": "Balvenie",
+      "country": "Scotland",
+      "category": "Single Malt",
+      "age": "13 Years Old",
+      "volume": "700ml",
+      "price": 229,
+      "img": "https://lh3.googleusercontent.com/u/0/d/1MgzvNH8OsubufhcBpEmhppDWP1zE-McI",
+      "description": "",
+      "alcohol": "43",
+      "stock": 10
+    },
+    {
+      "id": 16,
+      "name": "Master's Select Lunar New Year Edition",
+      "brand": "Hibiki",
+      "country": "Japan",
+      "category": "Blended",
+      "age": "",
+      "volume": "700ml",
+      "price": 999,
+      "img": "https://lh3.googleusercontent.com/u/0/d/15ij09mVuQVvTMVEwq0eQ7-0q80VLKjTm",
+      "description": "",
+      "alcohol": "43",
+      "barcode": "5010278107887",
+      "stock": 3
+    },
+    {
+      "id": 17,
+      "name": "Japanese Harmony Lunar New Year Limited Edition",
+      "brand": "Hibiki",
+      "country": "Japan",
+      "category": "Blended",
+      "age": "",
+      "volume": "700ml",
+      "price": 399,
+      "img": "https://lh3.googleusercontent.com/u/0/d/1cJtVOMwLNNunzV7oNRq75C8ZEgJOaU_6",
+      "description": "",
+      "alcohol": "43",
+      "stock": 1
+    },
+    {
+      "id": 19,
+      "name": "Kacho Fugetsu Limtied Edition",
+      "brand": "Hibiki",
+      "country": "Japan",
+      "category": "Blended",
+      "age": "21 Years Old",
+      "volume": "700ml",
+      "price": 666,
+      "img": "https://lh3.googleusercontent.com/u/0/d/1vUA_ZxgL6aSgDiBwFd4v2FbK_HeY_1KK",
+      "description": "",
+      "alcohol": "43",
+      "stock": 1
+    },
+    {
+      "id": 20,
+      "name": "New Product",
+      "brand": "Brand",
+      "country": "Scotland",
+      "category": "Whisky",
+      "age": "NAS",
+      "volume": "700ml",
+      "price": 99,
+      "img": "https://lh3.googleusercontent.com/u/0/d/15ij09mVuQVvTMVEwq0eQ7-0q80VLKjTm",
+      "description": "Test"
+    },
+    {
+      "id": 21,
+      "name": "New Product",
+      "brand": "Brand",
+      "country": "Scotland",
+      "category": "Whisky",
+      "age": "NAS",
+      "volume": "700ml",
+      "price": 99,
+      "img": "https://lh3.googleusercontent.com/u/0/d/15ij09mVuQVvTMVEwq0eQ7-0q80VLKjTm",
+      "description": "Test"
+    },
+    {
+      "id": 22,
+      "name": "New Product",
+      "brand": "Brand",
+      "country": "Scotland",
+      "category": "Whisky",
+      "age": "NAS",
+      "volume": "700ml",
+      "price": 99,
+      "img": "https://lh3.googleusercontent.com/u/0/d/15ij09mVuQVvTMVEwq0eQ7-0q80VLKjTm",
+      "description": "Test"
+    },
+    {
+      "id": 23,
+      "name": "New Product",
+      "brand": "Brand",
+      "country": "Scotland",
+      "category": "Whisky",
+      "age": "NAS",
+      "volume": "700ml",
+      "price": 99,
+      "img": "https://lh3.googleusercontent.com/u/0/d/15ij09mVuQVvTMVEwq0eQ7-0q80VLKjTm",
+      "description": "Test"
+    },
+    {
+      "id": 24,
+      "name": "XO Spirit of Travel Taipei Edition Cognac",
+      "brand": "Hennessy",
+      "country": "France",
+      "category": "Brandy",
+      "age": "",
+      "volume": "1000ml",
+      "price": 399,
+      "img": "https://lh3.googleusercontent.com/u/0/d/15ij09mVuQVvTMVEwq0eQ7-0q80VLKjTm",
+      "description": "",
+      "barcode": "3245990780816"
+    },
+    {
+      "id": 25,
+      "name": "Distillery Exclusive 2 Bottles Set",
+      "brand": "Yamazaki",
+      "country": "Scotland",
+      "category": "Single Malt",
+      "age": "",
+      "volume": "180ml",
+      "price": 99,
+      "img": "https://lh3.googleusercontent.com/u/0/d/169qQ96xlf-itflcaO9wAUFhBKVudzggw",
+      "description": "",
+      "alcohol": "48",
+      "stock": 1
+    },
+    {
+      "id": 26,
+      "name": "Black Label Striding City Edition",
+      "brand": "Johnnie Walker",
+      "country": "Scotland",
+      "category": "Single Malt",
+      "age": "12 Years Old",
+      "volume": "700ml",
+      "price": 99,
+      "img": "https://lh3.googleusercontent.com/u/0/d/1flo0RPMMDEiZUEoLj3A8haT3ZFnBEDu7",
+      "description": "",
+      "barcode": "",
+      "sku": "",
+      "stock": 6,
+      "alcohol": "40"
+    },
+    {
+      "id": 27,
+      "name": "Edition K",
+      "brand": "Ki No Bi",
+      "country": "Japan",
+      "category": "Gin",
+      "age": "",
+      "volume": "700ml",
+      "price": 159,
+      "img": "https://lh3.googleusercontent.com/u/0/d/1DlRRj7K2Rfe5DKcNKjfH8rmwMl1_I11U",
+      "description": "",
+      "barcode": "",
+      "sku": "",
+      "stock": 1,
+      "alcohol": "46"
+    },
+    {
+      "id": 28,
+      "name": "Limtied Edition",
+      "brand": "Yamazaki",
+      "country": "Japan",
+      "category": "Single Malt",
+      "age": "25 Years Old",
+      "volume": "700ml",
+      "price": 9999,
+      "img": "https://lh3.googleusercontent.com/u/0/d/1GozncwHBt3JS9TwsAjtWRVcH4IGNO6Ee",
+      "description": "",
+      "barcode": "",
+      "sku": "",
+      "stock": 1,
+      "alcohol": "43"
+    },
+    {
+      "id": 29,
+      "name": "Kacho Fugetsu Limtied Edition",
+      "brand": "Hibiki",
+      "country": "Scotland",
+      "category": "Single Malt",
+      "age": "30 Years Old",
+      "volume": "700ml",
+      "price": 9999,
+      "img": "https://lh3.googleusercontent.com/u/0/d/1QPjqssOhRXdxpczhe08vSMZEH9vJJSEO",
+      "description": "",
+      "barcode": "",
+      "sku": "",
+      "stock": 0,
+      "alcohol": "43"
+    },
+    {
+      "id": 30,
+      "name": " ",
+      "brand": "Brand",
+      "country": "Scotland",
+      "category": "Single Malt",
+      "age": "17 Years Old",
+      "volume": "50ml",
+      "price": 99,
+      "img": "https://lh3.googleusercontent.com/u/0/d/1TcKNkRYX7d10JGY21JgTUvycWO0NQ5h0",
+      "description": "https://drive.google.com/file/d//view?usp=sharing",
+      "barcode": "",
+      "sku": "",
+      "stock": 10,
+      "alcohol": "43"
+    }
+  ],
+  "filters": [
+    {
+      "id": "country",
+      "label": "Country",
+      "values": [
+        "Scotland",
+        "Japan",
+        "Taiwan",
+        "USA",
+        "France"
+      ]
+    },
+    {
+      "id": "brand",
+      "label": "Brand",
+      "values": [
+        "Macallan",
+        "Johnnie Walker",
+        "Yamazaki",
+        "Kavalan",
+        "Octomore",
+        "Hibiki",
+        "Hakushu",
+        "Glenlivet",
+        "Talisker",
+        "W.L. Weller",
+        "Jack Daniel's",
+        "Omar",
+        "Hennessy",
+        "Ki No Bi"
+      ]
+    },
+    {
+      "id": "volume",
+      "label": "Volume",
+      "values": [
+        "50ml",
+        "180ml",
+        "700ml",
+        "750ml",
+        "1000ml"
+      ]
+    },
+    {
+      "id": "price",
+      "label": "Price",
+      "values": []
+    },
+    {
+      "id": "category",
+      "label": "Category",
+      "values": [
+        "Single Malt",
+        "Blended",
+        "Bourbon",
+        "Rye",
+        "Gin",
+        "Rum",
+        "Wine",
+        "Cognac",
+        "Other"
+      ]
+    }
+  ]
+}
