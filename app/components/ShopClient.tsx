@@ -498,7 +498,7 @@ export default function ShopClient({ initialProducts, initialSettings }: ShopCli
           <div className="mt-8 pt-8 border-t flex flex-col md:flex-row items-center justify-between gap-4" style={{ borderColor: s.cardBorder }}>
             <div className="flex items-center gap-2">
               {(settings.footer?.paymentIcons || []).filter(p => p.visible).sort((a, b) => a.order - b.order).map(icon => (
-                <img key={icon.id} alt={icon.id} src={icon.src} style={{ width: `${icon.width}px`, height: `${icon.height || Math.round(icon.width * 0.4)}px` }} />
+                <img key={icon.id} alt={icon.id} src={icon.src} style={{ width: `${icon.width}px`, height: `${icon.height || Math.round(icon.width * 0.6)}px` }} />
               ))}
             </div>
             <p className="text-sm" style={{ color: s.footerMuted }}>{settings.footer?.copyright || `© 2026 ${settings.siteName} All rights reserved.`}</p>
