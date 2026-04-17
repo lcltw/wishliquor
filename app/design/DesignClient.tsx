@@ -2428,12 +2428,33 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                                 };
                               });
                             }}
-                            className={`text-sm px-1 ${icon.aspectLocked ? "text-green-600" : "text-gray-400"}`}
+                            className={`flex items-center gap-1 px-2 py-1 rounded text-xs font-medium transition-colors ${icon.aspectLocked ? "bg-amber-100 text-amber-700" : "bg-gray-100 text-gray-400"}`}
                             title={
-                              icon.aspectLocked ? "已鎖定比例" : "鎖定比例"
+                              icon.aspectLocked
+                                ? "已鎖定比例，點擊解鎖"
+                                : "鎖定比例"
                             }
                           >
-                            {icon.aspectLocked ? "🔒" : "🔓"}
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="12"
+                              height="12"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                            >
+                              <rect
+                                x="3"
+                                y="11"
+                                width="18"
+                                height="11"
+                                rx="2"
+                                ry="2"
+                              ></rect>
+                              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg>
+                            比例鎖定
                           </button>
                           <label
                             className="cursor-pointer text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
