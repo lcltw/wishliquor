@@ -20,6 +20,7 @@ interface Product {
   barcode?: string
   sku?: string
   stock?: number
+  display?: boolean // 展示控制（stock=0時是否顯示）
 }
 
 interface FilterOption {
@@ -994,6 +995,23 @@ function EditProductModal({
                 placeholder="Enter product description..."
                 className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-amber-500 resize-none"
               />
+            </div>
+
+            {/* 展示控制 */}
+            <div className="flex items-center gap-3 pt-4 border-t border-gray-200">
+              <button
+                type="button"
+                onClick={() => setForm({ ...form, display: !form.display })}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${form.display !== false ? 'bg-amber-500' : 'bg-gray-300'}`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${form.display !== false ? 'translate-x-6' : 'translate-x-1'}`}
+                />
+              </button>
+              <div>
+                <span className="text-sm font-medium text-gray-700">缺貨時顯示</span>
+                <p className="text-xs text-gray-500">關閉後，庫存=0時商品將隱藏不顯示</p>
+              </div>
             </div>
 
             <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
