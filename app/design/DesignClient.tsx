@@ -2359,11 +2359,21 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                                     10,
                                     Math.min(200, Number(e.target.value)),
                                   );
+                                  const ratio =
+                                    icon.width > 0
+                                      ? icon.height / icon.width
+                                      : 0.4;
                                   icons[idx] = {
                                     ...icon,
                                     width: newWidth,
                                     height: icon.aspectLocked
-                                      ? Math.round(newWidth * 0.4)
+                                      ? Math.max(
+                                          10,
+                                          Math.min(
+                                            200,
+                                            Math.round(newWidth * ratio),
+                                          ),
+                                        )
                                       : icon.height,
                                   };
                                   return {
@@ -2384,9 +2394,7 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                               type="number"
                               min="10"
                               max="200"
-                              value={
-                                icon.height || Math.round(icon.width * 0.4)
-                              }
+                              value={icon.height}
                               onChange={(e) => {
                                 if (icon.aspectLocked) return;
                                 setSettings((prev) => {
@@ -2430,9 +2438,6 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                                   icons[idx] = {
                                     ...icon,
                                     aspectLocked: !icon.aspectLocked,
-                                    height: !icon.aspectLocked
-                                      ? Math.round(icon.width * 0.4)
-                                      : icon.height,
                                   };
                                   return {
                                     ...prev,
