@@ -2260,7 +2260,7 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                       .sort((a, b) => a.order - b.order)
                       .map((icon, idx) => (
                         <div
-                          draggable
+                          draggable={true}
                           onDragStart={(e) => {
                             e.dataTransfer.effectAllowed = "move";
                             e.dataTransfer.setData("text/plain", icon.id);
