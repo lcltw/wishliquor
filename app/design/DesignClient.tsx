@@ -2454,7 +2454,7 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                               ></rect>
                               <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                             </svg>
-                            比例鎖定
+                            比例
                           </button>
                           <label className="px-2 py-1 bg-amber-500 text-white text-xs font-medium cursor-pointer hover:bg-amber-600 flex items-center">
                             <svg
