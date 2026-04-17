@@ -2305,7 +2305,7 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                             setDraggingIcon(null);
                             setOverIcon(null);
                           }}
-                          className={`flex items-center gap-1 cursor-grab select-none transition-all border border-gray-300 rounded px-2 py-1 ${draggingIcon === icon.id ? "opacity-30" : ""} ${overIcon === icon.id && draggingIcon !== icon.id ? "ring-2 ring-amber-400" : ""}`}
+                          className={`flex items-center gap-1 cursor-grab select-none transition-all border border-gray-300 rounded px-2 py-1 mb-1 ${draggingIcon === icon.id ? "opacity-30" : ""} ${overIcon === icon.id && draggingIcon !== icon.id ? "ring-2 ring-amber-400" : ""}`}
                         >
                           <span className="text-gray-300 text-xs shrink-0">
                             ⠿
