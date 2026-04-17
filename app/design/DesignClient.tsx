@@ -2260,58 +2260,61 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                       .sort((a, b) => a.order - b.order)
                       .map((icon, idx) => (
                         <div
-                          draggable={true}
-                          onDragStart={(e) => {
-                            e.dataTransfer.effectAllowed = "move";
-                            e.dataTransfer.setData("text/plain", icon.id);
-                            setDraggingIcon(icon.id);
+                          // Custom drag implementation - more reliable than HTML5 drag
+                          onMouseDown={(e) => {
+                            // Start drag when mouse down on the row
+                            if (e.button === 0 && !e.defaultPrevented) {
+                              setDraggingIcon(icon.id);
+                            }
                           }}
-                          onDragOver={(e) => {
-                            e.preventDefault();
-                            e.dataTransfer.dropEffect = "move";
-                            setOverIcon(icon.id);
+                          onMouseMove={(e) => {
+                            if (draggingIcon === icon.id && e.buttons === 1) {
+                              // While dragging, track which element we're over
+                              // This is handled by onMouseEnter on each row
+                            }
                           }}
-                          onDrop={(e) => {
-                            e.preventDefault();
-                            const draggedId =
-                              e.dataTransfer.getData("text/plain");
-                            if (!draggedId || draggedId === icon.id) return;
-                            setSettings((prev) => {
-                              const icons = [
-                                ...(prev.footer?.paymentIcons || []),
-                              ];
-                              const fromIdx = icons.findIndex(
-                                (i) => i.id === draggedId,
-                              );
-                              const toIdx = icons.findIndex(
-                                (i) => i.id === icon.id,
-                              );
-                              if (fromIdx < 0 || toIdx < 0) return prev;
-                              // Move dragged item to target position, shift others
-                              const [moved] = icons.splice(fromIdx, 1);
-                              icons.splice(toIdx, 0, moved);
-                              // Re-assign order values based on new array positions
-                              icons.forEach((ic, idx) => {
-                                ic.order = idx;
+                          onMouseUp={(e) => {
+                            if (draggingIcon && draggingIcon !== icon.id) {
+                              // Drop: reorder
+                              setSettings((prev) => {
+                                const icons = [
+                                  ...(prev.footer?.paymentIcons || []),
+                                ];
+                                const fromIdx = icons.findIndex(
+                                  (i) => i.id === draggingIcon,
+                                );
+                                const toIdx = icons.findIndex(
+                                  (i) => i.id === icon.id,
+                                );
+                                if (fromIdx < 0 || toIdx < 0) return prev;
+                                const [moved] = icons.splice(fromIdx, 1);
+                                icons.splice(toIdx, 0, moved);
+                                icons.forEach((ic, idx) => {
+                                  ic.order = idx;
+                                });
+                                return {
+                                  ...prev,
+                                  footer: {
+                                    ...prev.footer,
+                                    paymentIcons: icons,
+                                  },
+                                };
                               });
-                              return {
-                                ...prev,
-                                footer: {
-                                  ...prev.footer,
-                                  paymentIcons: icons,
-                                },
-                              };
-                            });
+                            }
                             setDraggingIcon(null);
                             setOverIcon(null);
                           }}
-                          onDragEnd={() => {
-                            setDraggingIcon(null);
+                          className={`flex items-center gap-1 select-none transition-all border border-gray-300 rounded px-2 py-1 mb-1 ${draggingIcon === icon.id ? "opacity-30" : ""} ${overIcon === icon.id && draggingIcon !== icon.id ? "ring-2 ring-amber-400" : ""}`}
+                          onMouseEnter={() => {
+                            if (draggingIcon && draggingIcon !== icon.id) {
+                              setOverIcon(icon.id);
+                            }
+                          }}
+                          onMouseLeave={() => {
                             setOverIcon(null);
                           }}
-                          className={`flex items-center gap-1 cursor-grab select-none transition-all border border-gray-300 rounded px-2 py-1 mb-1 ${draggingIcon === icon.id ? "opacity-30" : ""} ${overIcon === icon.id && draggingIcon !== icon.id ? "ring-2 ring-amber-400" : ""}`}
                         >
-                          <span className="text-gray-300 text-xs shrink-0">
+                          <span className="text-gray-300 text-xs shrink-0 cursor-grab">
                             ⠿
                           </span>
                           <button
