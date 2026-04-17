@@ -2556,10 +2556,10 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                         const newIcon = {
                           id: `icon_${Date.now()}`,
                           src: "",
-                          width: 80,
-                          height: 32,
+                          width: 86,
+                          height: 54,
                           aspectLocked: true,
-                          visible: true,
+                          visible: false,
                           order: icons.length,
                         };
                         return {
