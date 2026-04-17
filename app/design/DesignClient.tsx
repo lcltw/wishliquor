@@ -2510,25 +2510,40 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                                 if (file) {
                                   const reader = new FileReader();
                                   reader.onload = (ev) => {
-                                    setSettings((prev) => {
-                                      const icons = [
-                                        ...(prev.footer?.paymentIcons || []),
-                                      ];
-                                      const idx = icons.findIndex(
-                                        (i) => i.id === icon.id,
-                                      );
-                                      icons[idx] = {
-                                        ...icon,
-                                        src: ev.target?.result as string,
-                                      };
-                                      return {
-                                        ...prev,
-                                        footer: {
-                                          ...prev.footer,
-                                          paymentIcons: icons,
-                                        },
-                                      };
-                                    });
+                                    const img = new Image();
+                                    img.onload = () => {
+                                      // Use original image dimensions, cap at 200px
+                                      let newWidth = img.naturalWidth;
+                                      let newHeight = img.naturalHeight;
+                                      // Scale down if larger than 200px on either side
+                                      if (newWidth > 200 || newHeight > 200) {
+                                        const scale = 200 / Math.max(newWidth, newHeight);
+                                        newWidth = Math.round(newWidth * scale);
+                                        newHeight = Math.round(newHeight * scale);
+                                      }
+                                      setSettings((prev) => {
+                                        const icons = [
+                                          ...(prev.footer?.paymentIcons || []),
+                                        ];
+                                        const idx = icons.findIndex(
+                                          (i) => i.id === icon.id,
+                                        );
+                                        icons[idx] = {
+                                          ...icon,
+                                          src: ev.target?.result as string,
+                                          width: newWidth,
+                                          height: newHeight,
+                                        };
+                                        return {
+                                          ...prev,
+                                          footer: {
+                                            ...prev.footer,
+                                            paymentIcons: icons,
+                                          },
+                                        };
+                                      });
+                                    };
+                                    img.src = ev.target?.result as string;
                                     reader.readAsDataURL(file);
                                   };
                                 }
