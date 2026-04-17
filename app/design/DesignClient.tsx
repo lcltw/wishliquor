@@ -2303,17 +2303,18 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                           className={`flex items-center gap-2 p-2 bg-gray-50 rounded-lg border cursor-grab select-none transition-all ${draggingIcon === icon.id ? "opacity-30" : ""} ${overIcon === icon.id && draggingIcon !== icon.id ? "ring-2 ring-amber-400" : ""}`}
                         >
                           <span className="text-gray-300 text-xs">⠿</span>
-                          <input
-                            type="checkbox"
-                            checked={icon.visible}
-                            onChange={(e) => {
+                          <button
+                            onClick={() => {
                               setSettings((prev) => {
                                 const icons = [
                                   ...(prev.footer?.paymentIcons || []),
                                 ];
                                 icons[
                                   icons.findIndex((i) => i.id === icon.id)
-                                ] = { ...icon, visible: e.target.checked };
+                                ] = {
+                                  ...icon,
+                                  visible: !icon.visible,
+                                };
                                 return {
                                   ...prev,
                                   footer: {
@@ -2323,10 +2324,13 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                                 };
                               });
                             }}
-                            className="w-4 h-4"
-                            style={{ accentColor: s.primary }}
-                            title="顯示"
-                          />
+                            className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors shrink-0 ${icon.visible ? "bg-amber-500" : "bg-gray-300"}`}
+                            title={icon.visible ? "隱藏" : "顯示"}
+                          >
+                            <span
+                              className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform ${icon.visible ? "translate-x-4" : "translate-x-0.5"}`}
+                            ></span>
+                          </button>
                           <img
                             src={icon.src}
                             alt={icon.id}
@@ -2509,9 +2513,6 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                         </div>
                       ))}
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">
-                    ▲▼拖移排序 / 勾選顯示 / 寬高調整 / 🔒鎖定比例 / 📤上傳圖片
-                  </p>
                 </div>
               </div>
             )}
