@@ -2260,25 +2260,28 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                       .sort((a, b) => a.order - b.order)
                       .map((icon, idx) => (
                         <div
-                          key={icon.id}
                           draggable
-                          onDragStart={() => {
+                          onDragStart={(e) => {
+                            e.dataTransfer.effectAllowed = "move";
+                            e.dataTransfer.setData("text/plain", icon.id);
                             setDraggingIcon(icon.id);
                           }}
                           onDragOver={(e) => {
                             e.preventDefault();
+                            e.dataTransfer.dropEffect = "move";
                             setOverIcon(icon.id);
                           }}
                           onDrop={(e) => {
                             e.preventDefault();
-                            if (!draggingIcon || draggingIcon === icon.id)
-                              return;
+                            const draggedId =
+                              e.dataTransfer.getData("text/plain");
+                            if (!draggedId || draggedId === icon.id) return;
                             setSettings((prev) => {
                               const icons = [
                                 ...(prev.footer?.paymentIcons || []),
                               ];
                               const fromIdx = icons.findIndex(
-                                (i) => i.id === draggingIcon,
+                                (i) => i.id === draggedId,
                               );
                               const toIdx = icons.findIndex(
                                 (i) => i.id === icon.id,
@@ -2289,10 +2292,7 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                               icons[toIdx].order = temp;
                               return {
                                 ...prev,
-                                footer: {
-                                  ...prev.footer,
-                                  paymentIcons: icons,
-                                },
+                                footer: { ...prev.footer, paymentIcons: icons },
                               };
                             });
                             setDraggingIcon(null);
@@ -2304,222 +2304,220 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                           }}
                           className={`flex items-center gap-2 p-2 bg-gray-50 rounded-lg border cursor-grab select-none transition-all ${draggingIcon === icon.id ? "opacity-30" : ""} ${overIcon === icon.id && draggingIcon !== icon.id ? "ring-2 ring-amber-400" : ""}`}
                         >
-                          <div className="flex items-center gap-2 pointer-events-none">
-                            <span className="text-gray-300 text-xs shrink-0 pointer-events-none">
-                              ⠿
-                            </span>
-                            <button
-                              onClick={() => {
-                                setSettings((prev) => {
-                                  const icons = [
-                                    ...(prev.footer?.paymentIcons || []),
-                                  ];
-                                  icons[
-                                    icons.findIndex((i) => i.id === icon.id)
-                                  ] = {
-                                    ...icon,
-                                    visible: !icon.visible,
-                                  };
-                                  return {
-                                    ...prev,
-                                    footer: {
-                                      ...prev.footer,
-                                      paymentIcons: icons,
-                                    },
-                                  };
-                                });
-                              }}
-                              className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors shrink-0 pointer-events-auto ${icon.visible ? "bg-amber-500" : "bg-gray-300"}`}
-                              title={icon.visible ? "隱藏" : "顯示"}
-                            >
-                              <span
-                                className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform ${icon.visible ? "translate-x-4" : "translate-x-0.5"}`}
-                              ></span>
-                            </button>
-                            <img
-                              src={icon.src}
-                              alt={icon.id}
-                              className="h-6 w-auto pointer-events-auto"
-                            />
-                            <input
-                              type="number"
-                              min="10"
-                              max="200"
-                              value={icon.width}
-                              onChange={(e) => {
-                                setSettings((prev) => {
-                                  const icons = [
-                                    ...(prev.footer?.paymentIcons || []),
-                                  ];
-                                  const idx = icons.findIndex(
-                                    (i) => i.id === icon.id,
-                                  );
-                                  const newWidth = Math.max(
+                          <span className="text-gray-300 text-xs shrink-0">
+                            ⠿
+                          </span>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSettings((prev) => {
+                                const icons = [
+                                  ...(prev.footer?.paymentIcons || []),
+                                ];
+                                icons[
+                                  icons.findIndex((i) => i.id === icon.id)
+                                ] = { ...icon, visible: !icon.visible };
+                                return {
+                                  ...prev,
+                                  footer: {
+                                    ...prev.footer,
+                                    paymentIcons: icons,
+                                  },
+                                };
+                              });
+                            }}
+                            className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors shrink-0 ${icon.visible ? "bg-amber-500" : "bg-gray-300"}`}
+                            title={icon.visible ? "隱藏" : "顯示"}
+                          >
+                            <span
+                              className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform ${icon.visible ? "translate-x-4" : "translate-x-0.5"}`}
+                            ></span>
+                          </button>
+                          <img
+                            src={icon.src}
+                            alt={icon.id}
+                            className="h-6 w-auto"
+                          />
+                          <input
+                            type="number"
+                            min="10"
+                            max="200"
+                            value={icon.width}
+                            onChange={(e) => {
+                              setSettings((prev) => {
+                                const icons = [
+                                  ...(prev.footer?.paymentIcons || []),
+                                ];
+                                const idx = icons.findIndex(
+                                  (i) => i.id === icon.id,
+                                );
+                                const newWidth = Math.max(
+                                  10,
+                                  Math.min(200, Number(e.target.value)),
+                                );
+                                icons[idx] = {
+                                  ...icon,
+                                  width: newWidth,
+                                  height: icon.aspectLocked
+                                    ? Math.round(newWidth * 0.4)
+                                    : icon.height,
+                                };
+                                return {
+                                  ...prev,
+                                  footer: {
+                                    ...prev.footer,
+                                    paymentIcons: icons,
+                                  },
+                                };
+                              });
+                            }}
+                            onClick={(e) => e.stopPropagation()}
+                            className="w-16 px-2 py-1 text-sm border rounded"
+                            title="寬度"
+                          />
+                          <span className="text-xs text-gray-500">x</span>
+                          <input
+                            type="number"
+                            min="10"
+                            max="200"
+                            value={icon.height || Math.round(icon.width * 0.4)}
+                            onChange={(e) => {
+                              if (icon.aspectLocked) return;
+                              setSettings((prev) => {
+                                const icons = [
+                                  ...(prev.footer?.paymentIcons || []),
+                                ];
+                                const idx = icons.findIndex(
+                                  (i) => i.id === icon.id,
+                                );
+                                icons[idx] = {
+                                  ...icon,
+                                  height: Math.max(
                                     10,
                                     Math.min(200, Number(e.target.value)),
-                                  );
-                                  icons[idx] = {
-                                    ...icon,
-                                    width: newWidth,
-                                    height: icon.aspectLocked
-                                      ? Math.round(newWidth * 0.4)
-                                      : icon.height,
-                                  };
-                                  return {
-                                    ...prev,
-                                    footer: {
-                                      ...prev.footer,
-                                      paymentIcons: icons,
-                                    },
-                                  };
-                                });
-                              }}
-                              className="w-16 px-2 py-1 text-sm border rounded pointer-events-auto"
-                              title="寬度"
-                            />
-                            <span className="text-xs text-gray-500 pointer-events-none">
-                              x
-                            </span>
-                            <input
-                              type="number"
-                              min="10"
-                              max="200"
-                              value={
-                                icon.height || Math.round(icon.width * 0.4)
-                              }
-                              onChange={(e) => {
-                                if (icon.aspectLocked) return;
-                                setSettings((prev) => {
-                                  const icons = [
-                                    ...(prev.footer?.paymentIcons || []),
-                                  ];
-                                  const idx = icons.findIndex(
-                                    (i) => i.id === icon.id,
-                                  );
-                                  icons[idx] = {
-                                    ...icon,
-                                    height: Math.max(
-                                      10,
-                                      Math.min(200, Number(e.target.value)),
-                                    ),
-                                  };
-                                  return {
-                                    ...prev,
-                                    footer: {
-                                      ...prev.footer,
-                                      paymentIcons: icons,
-                                    },
-                                  };
-                                });
-                              }}
-                              className={`w-16 px-2 py-1 text-sm border rounded pointer-events-auto ${icon.aspectLocked ? "bg-gray-100 cursor-not-allowed" : ""}`}
-                              disabled={icon.aspectLocked}
-                              title="高度"
-                            />
-                            <button
-                              onClick={() => {
-                                setSettings((prev) => {
-                                  const icons = [
-                                    ...(prev.footer?.paymentIcons || []),
-                                  ];
-                                  const idx = icons.findIndex(
-                                    (i) => i.id === icon.id,
-                                  );
-                                  icons[idx] = {
-                                    ...icon,
-                                    aspectLocked: !icon.aspectLocked,
-                                    height: !icon.aspectLocked
-                                      ? Math.round(icon.width * 0.4)
-                                      : icon.height,
-                                  };
-                                  return {
-                                    ...prev,
-                                    footer: {
-                                      ...prev.footer,
-                                      paymentIcons: icons,
-                                    },
-                                  };
-                                });
-                              }}
-                              className={`flex items-center gap-1 px-2 py-1 rounded text-xs font-medium transition-colors pointer-events-auto ${icon.aspectLocked ? "bg-amber-100 text-amber-700" : "bg-gray-100 text-gray-400"}`}
-                              title={
-                                icon.aspectLocked
-                                  ? "已鎖定比例，點擊解鎖"
-                                  : "鎖定比例"
-                              }
+                                  ),
+                                };
+                                return {
+                                  ...prev,
+                                  footer: {
+                                    ...prev.footer,
+                                    paymentIcons: icons,
+                                  },
+                                };
+                              });
+                            }}
+                            onClick={(e) => e.stopPropagation()}
+                            className={`w-16 px-2 py-1 text-sm border rounded ${icon.aspectLocked ? "bg-gray-100 cursor-not-allowed" : ""}`}
+                            disabled={icon.aspectLocked}
+                            title="高度"
+                          />
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSettings((prev) => {
+                                const icons = [
+                                  ...(prev.footer?.paymentIcons || []),
+                                ];
+                                const idx = icons.findIndex(
+                                  (i) => i.id === icon.id,
+                                );
+                                icons[idx] = {
+                                  ...icon,
+                                  aspectLocked: !icon.aspectLocked,
+                                  height: !icon.aspectLocked
+                                    ? Math.round(icon.width * 0.4)
+                                    : icon.height,
+                                };
+                                return {
+                                  ...prev,
+                                  footer: {
+                                    ...prev.footer,
+                                    paymentIcons: icons,
+                                  },
+                                };
+                              });
+                            }}
+                            className={`flex items-center gap-1 px-2 py-1 rounded text-xs font-medium transition-colors ${icon.aspectLocked ? "bg-amber-100 text-amber-700" : "bg-gray-100 text-gray-400"}`}
+                            title={
+                              icon.aspectLocked
+                                ? "已鎖定比例，點擊解鎖"
+                                : "鎖定比例"
+                            }
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="12"
+                              height="12"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
                             >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="12"
-                                height="12"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                              >
-                                <rect
-                                  x="3"
-                                  y="11"
-                                  width="18"
-                                  height="11"
-                                  rx="2"
-                                  ry="2"
-                                ></rect>
-                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                              </svg>
-                              比例
-                            </button>
-                            <label className="px-2 py-1 bg-amber-500 text-white text-xs font-medium cursor-pointer hover:bg-amber-600 flex items-center pointer-events-auto">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="12"
-                                height="12"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                className="mr-1"
-                              >
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                <polyline points="17 8 12 3 7 8"></polyline>
-                                <line x1="12" y1="3" x2="12" y2="15"></line>
-                              </svg>
-                              上傳
-                              <input
-                                accept="image/*"
-                                className="hidden"
-                                type="file"
-                                onChange={(e) => {
-                                  const file = e.target.files?.[0];
-                                  if (file) {
-                                    const reader = new FileReader();
-                                    reader.onload = (ev) => {
-                                      setSettings((prev) => {
-                                        const icons = [
-                                          ...(prev.footer?.paymentIcons || []),
-                                        ];
-                                        const idx = icons.findIndex(
-                                          (i) => i.id === icon.id,
-                                        );
-                                        icons[idx] = {
-                                          ...icon,
-                                          src: ev.target?.result as string,
-                                        };
-                                        return {
-                                          ...prev,
-                                          footer: {
-                                            ...prev.footer,
-                                            paymentIcons: icons,
-                                          },
-                                        };
-                                      });
-                                      reader.readAsDataURL(file);
-                                    };
-                                  }
-                                }}
-                              />
-                            </label>
-                          </div>
+                              <rect
+                                x="3"
+                                y="11"
+                                width="18"
+                                height="11"
+                                rx="2"
+                                ry="2"
+                              ></rect>
+                              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg>
+                            比例
+                          </button>
+                          <label
+                            className="px-2 py-1 bg-amber-500 text-white text-xs font-medium cursor-pointer hover:bg-amber-600 flex items-center"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="12"
+                              height="12"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              className="mr-1"
+                            >
+                              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                              <polyline points="17 8 12 3 7 8"></polyline>
+                              <line x1="12" y1="3" x2="12" y2="15"></line>
+                            </svg>
+                            上傳
+                            <input
+                              accept="image/*"
+                              className="hidden"
+                              type="file"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  const reader = new FileReader();
+                                  reader.onload = (ev) => {
+                                    setSettings((prev) => {
+                                      const icons = [
+                                        ...(prev.footer?.paymentIcons || []),
+                                      ];
+                                      const idx = icons.findIndex(
+                                        (i) => i.id === icon.id,
+                                      );
+                                      icons[idx] = {
+                                        ...icon,
+                                        src: ev.target?.result as string,
+                                      };
+                                      return {
+                                        ...prev,
+                                        footer: {
+                                          ...prev.footer,
+                                          paymentIcons: icons,
+                                        },
+                                      };
+                                    });
+                                    reader.readAsDataURL(file);
+                                  };
+                                }
+                              }}
+                            />
+                          </label>
                         </div>
                       ))}
                   </div>
