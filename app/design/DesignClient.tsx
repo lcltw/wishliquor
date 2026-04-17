@@ -2261,55 +2261,59 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                       .map((icon, idx) => (
                         <div
                           key={icon.id}
-                          draggable
-                          onDragStart={(e) => {
-                            e.dataTransfer.effectAllowed = "move";
-                            e.dataTransfer.setData("text/plain", icon.id);
-                            setDraggingIcon(icon.id);
-                          }}
-                          onDragOver={(e) => {
-                            e.preventDefault();
-                            e.dataTransfer.dropEffect = "move";
-                            setOverIcon(icon.id);
-                          }}
-                          onDrop={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            const draggedId =
-                              e.dataTransfer.getData("text/plain");
-                            if (!draggedId || draggedId === icon.id) return;
-                            setSettings((prev) => {
-                              const icons = [
-                                ...(prev.footer?.paymentIcons || []),
-                              ];
-                              const fromIdx = icons.findIndex(
-                                (i) => i.id === draggedId,
-                              );
-                              const toIdx = icons.findIndex(
-                                (i) => i.id === icon.id,
-                              );
-                              if (fromIdx < 0 || toIdx < 0) return prev;
-                              const temp = icons[fromIdx].order;
-                              icons[fromIdx].order = icons[toIdx].order;
-                              icons[toIdx].order = temp;
-                              return {
-                                ...prev,
-                                footer: {
-                                  ...prev.footer,
-                                  paymentIcons: icons,
-                                },
-                              };
-                            });
-                            setDraggingIcon(null);
-                            setOverIcon(null);
-                          }}
-                          onDragEnd={() => {
-                            setDraggingIcon(null);
-                            setOverIcon(null);
-                          }}
-                          className={`flex items-center gap-2 p-2 bg-gray-50 rounded-lg border cursor-grab select-none transition-all ${draggingIcon === icon.id ? "opacity-30" : ""} ${overIcon === icon.id && draggingIcon !== icon.id ? "ring-2 ring-amber-400" : ""}`}
+                          className={`flex items-center gap-2 p-2 bg-gray-50 rounded-lg border select-none transition-all ${draggingIcon === icon.id ? "opacity-30" : ""} ${overIcon === icon.id && draggingIcon !== icon.id ? "ring-2 ring-amber-400" : ""}`}
                         >
-                          <span className="text-gray-300 text-xs">⠿</span>
+                          <span
+                            draggable
+                            onDragStart={(e) => {
+                              e.dataTransfer.effectAllowed = "move";
+                              e.dataTransfer.setData("text/plain", icon.id);
+                              setDraggingIcon(icon.id);
+                            }}
+                            onDragOver={(e) => {
+                              e.preventDefault();
+                              e.dataTransfer.dropEffect = "move";
+                              setOverIcon(icon.id);
+                            }}
+                            onDrop={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              const draggedId =
+                                e.dataTransfer.getData("text/plain");
+                              if (!draggedId || draggedId === icon.id) return;
+                              setSettings((prev) => {
+                                const icons = [
+                                  ...(prev.footer?.paymentIcons || []),
+                                ];
+                                const fromIdx = icons.findIndex(
+                                  (i) => i.id === draggedId,
+                                );
+                                const toIdx = icons.findIndex(
+                                  (i) => i.id === icon.id,
+                                );
+                                if (fromIdx < 0 || toIdx < 0) return prev;
+                                const temp = icons[fromIdx].order;
+                                icons[fromIdx].order = icons[toIdx].order;
+                                icons[toIdx].order = temp;
+                                return {
+                                  ...prev,
+                                  footer: {
+                                    ...prev.footer,
+                                    paymentIcons: icons,
+                                  },
+                                };
+                              });
+                              setDraggingIcon(null);
+                              setOverIcon(null);
+                            }}
+                            onDragEnd={() => {
+                              setDraggingIcon(null);
+                              setOverIcon(null);
+                            }}
+                            className="text-gray-300 text-xs cursor-grab shrink-0"
+                          >
+                            ⠿
+                          </span>
                           <button
                             onClick={() => {
                               setSettings((prev) => {
