@@ -2454,11 +2454,11 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                                 };
                               });
                             }}
-                            className={`flex items-center gap-1 px-2 py-1 rounded text-xs font-medium transition-colors ${icon.aspectLocked ? "bg-amber-100 text-amber-700" : "bg-gray-100 text-gray-400"}`}
+                            className={`flex items-center gap-1 px-2 py-1 rounded text-xs font-medium transition-colors ${icon.aspectLocked ? "bg-amber-100 text-amber-700" : "bg-gray-100 text-gray-500"}`}
                             title={
                               icon.aspectLocked
                                 ? "已鎖定比例，點擊解鎖"
-                                : "鎖定比例"
+                                : "未鎖定比例，點擊鎖定"
                             }
                           >
                             <svg
@@ -2478,9 +2478,9 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                                 rx="2"
                                 ry="2"
                               ></rect>
-                              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                              <path d="M7 11V7a5 5 0 0 1 9.9-1"></path>
                             </svg>
-                            比例
+                            {icon.aspectLocked ? "比例鎖定" : "比例解鎖"}
                           </button>
                           <label
                             className="px-2 py-1 bg-amber-500 text-white text-xs font-medium cursor-pointer hover:bg-amber-600 flex items-center"
