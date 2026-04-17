@@ -2456,11 +2456,11 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                             </svg>
                             比例鎖定
                           </button>
-                          <label className="px-4 py-2 bg-amber-500 text-white text-sm font-medium cursor-pointer hover:bg-amber-600 flex items-center">
+                          <label className="px-2 py-1 bg-amber-500 text-white text-xs font-medium cursor-pointer hover:bg-amber-600 flex items-center">
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
-                              width="16"
-                              height="16"
+                              width="12"
+                              height="12"
                               viewBox="0 0 24 24"
                               fill="none"
                               stroke="currentColor"
