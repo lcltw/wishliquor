@@ -2287,9 +2287,13 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                                 (i) => i.id === icon.id,
                               );
                               if (fromIdx < 0 || toIdx < 0) return prev;
-                              const temp = icons[fromIdx].order;
-                              icons[fromIdx].order = icons[toIdx].order;
-                              icons[toIdx].order = temp;
+                              // Move dragged item to target position, shift others
+                              const [moved] = icons.splice(fromIdx, 1);
+                              icons.splice(toIdx, 0, moved);
+                              // Re-assign order values based on new array positions
+                              icons.forEach((ic, idx) => {
+                                ic.order = idx;
+                              });
                               return {
                                 ...prev,
                                 footer: {
