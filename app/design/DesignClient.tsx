@@ -2262,21 +2262,28 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                         <div
                           key={icon.id}
                           draggable
-                          onDragStart={() => setDraggingIcon(icon.id)}
+                          onDragStart={(e) => {
+                            e.dataTransfer.effectAllowed = "move";
+                            e.dataTransfer.setData("text/plain", icon.id);
+                            setDraggingIcon(icon.id);
+                          }}
                           onDragOver={(e) => {
                             e.preventDefault();
+                            e.dataTransfer.dropEffect = "move";
                             setOverIcon(icon.id);
                           }}
                           onDrop={(e) => {
                             e.preventDefault();
-                            if (!draggingIcon || draggingIcon === icon.id)
-                              return;
+                            e.stopPropagation();
+                            const draggedId =
+                              e.dataTransfer.getData("text/plain");
+                            if (!draggedId || draggedId === icon.id) return;
                             setSettings((prev) => {
                               const icons = [
                                 ...(prev.footer?.paymentIcons || []),
                               ];
                               const fromIdx = icons.findIndex(
-                                (i) => i.id === draggingIcon,
+                                (i) => i.id === draggedId,
                               );
                               const toIdx = icons.findIndex(
                                 (i) => i.id === icon.id,
