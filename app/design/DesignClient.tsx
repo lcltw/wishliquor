@@ -2524,10 +2524,57 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                                 }}
                               />
                             </label>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSettings((prev) => {
+                                  const icons = (
+                                    prev.footer?.paymentIcons || []
+                                  ).filter((i) => i.id !== icon.id);
+                                  return {
+                                    ...prev,
+                                    footer: {
+                                      ...prev.footer,
+                                      paymentIcons: icons,
+                                    },
+                                  };
+                                });
+                              }}
+                              className="text-gray-400 hover:text-red-500 ml-1"
+                              title="刪除"
+                            >
+                              ×
+                            </button>
                           </div>
                         </div>
                       ))}
                   </div>
+                  <button
+                    onClick={() => {
+                      setSettings((prev) => {
+                        const icons = prev.footer?.paymentIcons || [];
+                        const newIcon = {
+                          id: `icon_${Date.now()}`,
+                          src: "",
+                          width: 80,
+                          height: 32,
+                          aspectLocked: true,
+                          visible: true,
+                          order: icons.length,
+                        };
+                        return {
+                          ...prev,
+                          footer: {
+                            ...prev.footer,
+                            paymentIcons: [...icons, newIcon],
+                          },
+                        };
+                      });
+                    }}
+                    className="mt-2 w-full py-2 border-2 border-dashed border-gray-300 text-gray-500 text-sm rounded-lg hover:border-amber-400 hover:text-amber-600 transition-colors"
+                  >
+                    + 新增圖示
+                  </button>
                 </div>
               </div>
             )}
