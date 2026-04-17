@@ -632,6 +632,9 @@ export default function DesignClient({ initialData }: DesignClientProps) {
     item: string;
   } | null>(null);
   const [overTag, setOverTag] = useState<string | null>(null);
+  // Drag state for payment icons
+  const [draggingIcon, setDraggingIcon] = useState<string | null>(null);
+  const [overIcon, setOverIcon] = useState<string | null>(null);
 
   // Track if initial load from localStorage is complete
   const [initialLoadComplete, setInitialLoadComplete] = useState(false);
@@ -2258,71 +2261,48 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                       .map((icon, idx) => (
                         <div
                           key={icon.id}
-                          className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg border"
+                          draggable
+                          onDragStart={() => setDraggingIcon(icon.id)}
+                          onDragOver={(e) => {
+                            e.preventDefault();
+                            setOverIcon(icon.id);
+                          }}
+                          onDrop={(e) => {
+                            e.preventDefault();
+                            if (!draggingIcon || draggingIcon === icon.id)
+                              return;
+                            setSettings((prev) => {
+                              const icons = [
+                                ...(prev.footer?.paymentIcons || []),
+                              ];
+                              const fromIdx = icons.findIndex(
+                                (i) => i.id === draggingIcon,
+                              );
+                              const toIdx = icons.findIndex(
+                                (i) => i.id === icon.id,
+                              );
+                              if (fromIdx < 0 || toIdx < 0) return prev;
+                              const temp = icons[fromIdx].order;
+                              icons[fromIdx].order = icons[toIdx].order;
+                              icons[toIdx].order = temp;
+                              return {
+                                ...prev,
+                                footer: {
+                                  ...prev.footer,
+                                  paymentIcons: icons,
+                                },
+                              };
+                            });
+                            setDraggingIcon(null);
+                            setOverIcon(null);
+                          }}
+                          onDragEnd={() => {
+                            setDraggingIcon(null);
+                            setOverIcon(null);
+                          }}
+                          className={`flex items-center gap-2 p-2 bg-gray-50 rounded-lg border cursor-grab select-none transition-all ${draggingIcon === icon.id ? "opacity-30" : ""} ${overIcon === icon.id && draggingIcon !== icon.id ? "ring-2 ring-amber-400" : ""}`}
                         >
-                          <button
-                            onClick={() => {
-                              setSettings((prev) => {
-                                const icons = [
-                                  ...(prev.footer?.paymentIcons || []),
-                                ];
-                                const currentIdx = icons.findIndex(
-                                  (i) => i.id === icon.id,
-                                );
-                                if (currentIdx > 0) {
-                                  const temp = icons[currentIdx].order;
-                                  icons[currentIdx].order =
-                                    icons[currentIdx - 1].order;
-                                  icons[currentIdx - 1].order = temp;
-                                }
-                                return {
-                                  ...prev,
-                                  footer: {
-                                    ...prev.footer,
-                                    paymentIcons: icons,
-                                  },
-                                };
-                              });
-                            }}
-                            disabled={idx === 0}
-                            className="text-gray-400 hover:text-gray-600 disabled:opacity-30"
-                            title="向上移"
-                          >
-                            ▲
-                          </button>
-                          <button
-                            onClick={() => {
-                              setSettings((prev) => {
-                                const icons = [
-                                  ...(prev.footer?.paymentIcons || []),
-                                ];
-                                const currentIdx = icons.findIndex(
-                                  (i) => i.id === icon.id,
-                                );
-                                if (currentIdx < icons.length - 1) {
-                                  const temp = icons[currentIdx].order;
-                                  icons[currentIdx].order =
-                                    icons[currentIdx + 1].order;
-                                  icons[currentIdx + 1].order = temp;
-                                }
-                                return {
-                                  ...prev,
-                                  footer: {
-                                    ...prev.footer,
-                                    paymentIcons: icons,
-                                  },
-                                };
-                              });
-                            }}
-                            disabled={
-                              idx ===
-                              (settings.footer?.paymentIcons || []).length - 1
-                            }
-                            className="text-gray-400 hover:text-gray-600 disabled:opacity-30"
-                            title="向下移"
-                          >
-                            ▼
-                          </button>
+                          <span className="text-gray-300 text-xs">⠿</span>
                           <input
                             type="checkbox"
                             checked={icon.visible}
