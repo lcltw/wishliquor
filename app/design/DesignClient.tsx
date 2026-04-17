@@ -2354,41 +2354,17 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                             max="200"
                             value={icon.width}
                             onChange={(e) => {
+                              const newWidth = Math.max(10, Math.min(200, Number(e.target.value)));
                               setSettings((prev) => {
-                                const icons = [
-                                  ...(prev.footer?.paymentIcons || []),
-                                ];
-                                const idx = icons.findIndex(
-                                  (i) => i.id === icon.id,
-                                );
-                                const newWidth = Math.max(
-                                  10,
-                                  Math.min(200, Number(e.target.value)),
-                                );
-                                const ratio =
-                                  icon.width > 0
-                                    ? icon.height / icon.width
-                                    : 0.4;
+                                const icons = [...(prev.footer?.paymentIcons || [])];
+                                const idx = icons.findIndex((i) => i.id === icon.id);
+                                const ratio = icon.width > 0 ? icon.height / icon.width : 1;
                                 icons[idx] = {
                                   ...icon,
                                   width: newWidth,
-                                  height: icon.aspectLocked
-                                    ? Math.max(
-                                        10,
-                                        Math.min(
-                                          200,
-                                          Math.round(newWidth * ratio),
-                                        ),
-                                      )
-                                    : icon.height,
+                                  height: icon.aspectLocked ? Math.max(10, Math.min(200, Math.round(newWidth * ratio))) : icon.height,
                                 };
-                                return {
-                                  ...prev,
-                                  footer: {
-                                    ...prev.footer,
-                                    paymentIcons: icons,
-                                  },
-                                };
+                                return { ...prev, footer: { ...prev.footer, paymentIcons: icons } };
                               });
                             }}
                             onClick={(e) => e.stopPropagation()}
@@ -2402,33 +2378,21 @@ export default function DesignClient({ initialData }: DesignClientProps) {
                             max="200"
                             value={icon.height}
                             onChange={(e) => {
-                              if (icon.aspectLocked) return;
+                              const newHeight = Math.max(10, Math.min(200, Number(e.target.value)));
                               setSettings((prev) => {
-                                const icons = [
-                                  ...(prev.footer?.paymentIcons || []),
-                                ];
-                                const idx = icons.findIndex(
-                                  (i) => i.id === icon.id,
-                                );
+                                const icons = [...(prev.footer?.paymentIcons || [])];
+                                const idx = icons.findIndex((i) => i.id === icon.id);
+                                const ratio = icon.width > 0 ? icon.height / icon.width : 1;
                                 icons[idx] = {
                                   ...icon,
-                                  height: Math.max(
-                                    10,
-                                    Math.min(200, Number(e.target.value)),
-                                  ),
+                                  height: newHeight,
+                                  width: icon.aspectLocked ? Math.max(10, Math.min(200, Math.round(newHeight / ratio))) : icon.width,
                                 };
-                                return {
-                                  ...prev,
-                                  footer: {
-                                    ...prev.footer,
-                                    paymentIcons: icons,
-                                  },
-                                };
+                                return { ...prev, footer: { ...prev.footer, paymentIcons: icons } };
                               });
                             }}
                             onClick={(e) => e.stopPropagation()}
-                            className={`w-16 px-2 py-1 text-sm border rounded ${icon.aspectLocked ? "bg-gray-100 cursor-not-allowed" : ""}`}
-                            disabled={icon.aspectLocked}
+                            className="w-16 px-2 py-1 text-sm border rounded"
                             title="高度"
                           />
                           <button
